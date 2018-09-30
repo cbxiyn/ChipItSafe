@@ -21,7 +21,7 @@ public class BluetoothConnectionManager {
     private BluetoothAdapter mBluetoothAdapter;
     final BluetoothManager bluetoothManager;
 
-    
+
     private boolean scanning;
     private BluetoothLeScanner scanner;
     private Handler handler = new Handler();
