@@ -1,35 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".StartActivity">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
 
     <Button
         android:id="@+id/scanButton"
-        android:layout_width="146dp"
-        android:layout_height="72dp"
+        android:layout_gravity="center"
+        android:layout_width="320dp"
+        android:layout_height="40dp"
         android:layout_marginBottom="16dp"
         android:layout_marginEnd="20dp"
         android:layout_marginStart="20dp"
         android:background="@android:color/holo_red_light"
-        android:onClick="onClick"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:text="@string/scan_button_text" />
+        android:textColor="@android:color/white"
+        android:textAlignment="center"
+        android:textSize="25dp"
+        android:text="@string/scan_button_text" />
 
-    <LinearLayout
-        android:layout_width="368dp"
-        android:layout_height="536dp"
-        android:orientation="vertical"
-        tools:layout_editor_absoluteX="8dp"
-        tools:layout_editor_absoluteY="8dp">
+    <ListView
+        android:id="@+id/listViewDemo"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
+    </ListView>
 
-        <ListView
-            android:id="@+id/devices_list_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </LinearLayout>
-</android.support.constraint.ConstraintLayout>
+</LinearLayout>

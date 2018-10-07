@@ -11,6 +11,9 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.util.Log;
+import android.widget.Adapter;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,17 +25,31 @@ public class BluetoothConnectionManager {
     private BluetoothAdapter mBluetoothAdapter;
     final BluetoothManager bluetoothManager;
 
+    ArrayAdapter adapter;
+
+    public void setAdapterForNewDeviceNotification(ArrayAdapter a){
+        adapter = a;
+    }
+
+    Activity activity;
+    ListView listView;
+
+    public void setListViewReference(ListView list){
+        listView = list;
+    }
 
     private boolean scanning;
     private BluetoothLeScanner scanner;
     private Handler handler = new Handler();
-    private final static int SCAN_PERIOD = 10000;
+    private final static int SCAN_PERIOD = 20000;
 
     private ArrayList<BluetoothDevice> scannedDevices = new ArrayList<BluetoothDevice>();
     List<String> scannedDevNames = new ArrayList<String>();
 
 
     public BluetoothConnectionManager(Activity activity){
+
+        this.activity = activity;
         // Initializes Bluetooth adapter.
         bluetoothManager =
                 (BluetoothManager) activity.getSystemService(Context.BLUETOOTH_SERVICE);
@@ -45,10 +62,8 @@ public class BluetoothConnectionManager {
         return mBluetoothAdapter;
     }
 
-
-
-
     public void startBleScan() {
+        Log.d(LOG_TAG,"within startBLEScan");
         scannedDevices = new ArrayList<BluetoothDevice>();
         scannedDevNames = new ArrayList<String>();
         // scanning a true significa "scansione in corso"
@@ -58,6 +73,7 @@ public class BluetoothConnectionManager {
             @Override
             public void run() {
                 // avvio della scansione
+                Log.d(LOG_TAG,"starting scan");
                 scanner.startScan(leScanCallback);
             }
         });
@@ -67,6 +83,7 @@ public class BluetoothConnectionManager {
             public void run() {
                 // tempo scaduto per la scansione
                 // scansione interrotta
+                Log.d(LOG_TAG,"stopping scan");
                 scanner.stopScan(onStopScanCallback);
                 // scanning=false significa "Nessuna scansione in corso"
                 scanning = false;
@@ -90,6 +107,7 @@ public class BluetoothConnectionManager {
             che presenta metodi da cui trarre informazioni (getAddress() per l’indirizzo e getName() per il nome associato
             all’apparecchio, tanto per fare un paio di esempi) ed altri dedicati alla connessione GATT.
             */
+            Log.d(LOG_TAG,"onScanResult!");
 
             BluetoothDevice device = result.getDevice();
 
@@ -98,13 +116,16 @@ public class BluetoothConnectionManager {
 
             // Process scan result here. filter movesense devices.
             if (device!=null &&
-                    device.getName() != null &&
-                    device.getName().startsWith("Movesense")) {
-                Log.d(LOG_TAG,"scanResult: " + device.getAddress());
+                    device.getName() != null
+                    //&& device.getName().startsWith("Movesense")
+                    ) {
+                Log.d("BluetoothDev FOUND","scanName: " + device.getName());
+                Log.d("BluetoothDev FOUND","scanAddr: " + device.getAddress());
                 // replace if exists already, add otherwise
                 scannedDevices.add(device);
                 scannedDevNames.add(device.getName()+ " : " + device.getAddress());
-
+                //adapter.notifyDataSetChanged();
+                //adapter.add(device.getName()+ " : " + device.getAddress());
 
                 //mScanResArrayAdapter.notifyDataSetChanged();
             }
@@ -120,6 +141,10 @@ public class BluetoothConnectionManager {
 
 
             // scan not succeeded
+
+            ArrayAdapter<String> arrayAdapter =
+                    new ArrayAdapter<String>(activity, R.layout.row, R.id.textViewList, scannedDevNames);
+            listView.setAdapter(arrayAdapter);
         }
     };
 
