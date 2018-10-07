@@ -13,6 +13,7 @@ import android.os.Handler;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class BluetoothConnectionManager {
 
@@ -28,7 +29,7 @@ public class BluetoothConnectionManager {
     private final static int SCAN_PERIOD = 10000;
 
     private ArrayList<BluetoothDevice> scannedDevices = new ArrayList<BluetoothDevice>();
-
+    List<String> scannedDevNames = new ArrayList<String>();
 
 
     public BluetoothConnectionManager(Activity activity){
@@ -49,7 +50,7 @@ public class BluetoothConnectionManager {
 
     public void startBleScan() {
         scannedDevices = new ArrayList<BluetoothDevice>();
-
+        scannedDevNames = new ArrayList<String>();
         // scanning a true significa "scansione in corso"
         scanning = true;
         // avviamo la scansione da un thread secondario
@@ -102,6 +103,7 @@ public class BluetoothConnectionManager {
                 Log.d(LOG_TAG,"scanResult: " + device.getAddress());
                 // replace if exists already, add otherwise
                 scannedDevices.add(device);
+                scannedDevNames.add(device.getName()+ " : " + device.getAddress());
 
 
                 //mScanResArrayAdapter.notifyDataSetChanged();

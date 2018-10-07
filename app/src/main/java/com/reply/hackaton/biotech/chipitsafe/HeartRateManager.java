@@ -7,9 +7,11 @@ import android.util.Log;
 import com.movesense.mds.Mds;
 import com.movesense.mds.MdsConnectionListener;
 import com.movesense.mds.MdsException;
+import com.movesense.mds.MdsNotificationListener;
 import com.movesense.mds.MdsResponseListener;
+import com.movesense.mds.MdsSubscription;
 
-public class HeartRateManager {
+public class HeartRateManager implements MdsNotificationListener{
 
     private String LOG_TAG = "HeartRateManager";
 
@@ -130,6 +132,8 @@ The MDS library exposes the REST api on the Movesense devices via the following 
 
     */
 
+    private final String SCHEME_PREFIX = "suunto://";
+
     public void getDeviceInfo(){
         //String uri = SCHEME_PREFIX + device.connectedSerial + "/Info";
         String uri = SCHEME_PREFIX + hearRateDeviceSerial + "/Info";
@@ -141,8 +145,8 @@ The MDS library exposes the REST api on the Movesense devices via the following 
              * @param data Response in String format
              */
             @Override
-            public void onSuccess(String s) {
-                Log.i(LOG_TAG, "Device " + hearRateDeviceSerial+ " /info request succesful: " + s);
+            public void onSuccess(String data) {
+                Log.i(LOG_TAG, "Device " + hearRateDeviceSerial+ " /info request succesful: " + data);
                 // Display info in alert dialog
                 /*
                 AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
@@ -157,7 +161,7 @@ The MDS library exposes the REST api on the Movesense devices via the following 
             /**
              * Called when Mds operation failed for any reason
              *
-             * @param error Object containing the error
+             * @param e Object containing the error
              */
             @Override
             public void onError(MdsException e) {
@@ -181,7 +185,11 @@ The MDS library exposes the REST api on the Movesense devices via the following 
                 "{\"Uri\": \"" + deviceSerialNumber + "/" + uriToSubscribeTo + "\"}",
                 callback); // MdsNotificationListener callback class
 
-    E.g. if the uriToSubsribeTo is set to Meas/Acc/13, the application would receive the updates from the Movesense sensor's accelerometer measurements with 13Hz sampling rate. The notifications (in JSON formatted string) and errors are returned to the callback object given in the call:
+    E.g. if the uriToSubsribeTo is set to Meas/Acc/13,
+    the application would receive the updates from the Movesense sensor's accelerometer
+    measurements with 13Hz sampling rate.
+    The notifications (in JSON formatted string) and errors are returned to the callback
+    object given in the call:
 
     public interface MdsNotificationListener {
         void onNotification(String data);
@@ -192,11 +200,27 @@ The MDS library exposes the REST api on the Movesense devices via the following 
     NOTE: After the application is done with the notifications it should call the unsubscribe()
     methods in the MdsSubscription object that was returned from the call to subscribe().
     */
-    public void subscribeToHeartRateNotifications(){
+    public void subscribeToHeartECGNotifications(){
+        String uri = SCHEME_PREFIX + hearRateDeviceSerial + "/Meas/ECG";
+        String uriToSubscribeTo = "/Meas/ECG";
+        MdsSubscription subscription =
+                mMds.subscribe("suunto://MDS/EventListener",
+                        "{\"Uri\": \"" + hearRateDeviceSerial + "/" + uriToSubscribeTo + "\"}",
+                        this); // MdsNotificationListener callback class
+
+
+
 
     }
 
 
+    @Override
+    public void onNotification(String s) {
 
+    }
 
+    @Override
+    public void onError(MdsException e) {
+
+    }
 }
