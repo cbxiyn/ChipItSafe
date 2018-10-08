@@ -29,19 +29,24 @@ public class StartActivity extends AppCompatActivity {
                     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                         Fragment selectedFragment = null;
                         switch (item.getItemId()) {
-
+                            case R.id.navigation_healt_state:
+                                selectedFragment = HealtStateFragment.newInstance();
+                                break;
+                            case R.id.navigation_emergency:
+                                selectedFragment = EmergencyFragment.newInstance();
+                                break;
                         }
                         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                       // transaction.replace(R.id.frame_layout, selectedFragment);
+                        transaction.replace(R.id.container, selectedFragment);
                         transaction.commit();
                         return true;
                     }
                 });
 
         //Manually displaying the first fragment - one time only
-       // FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-       // transaction.replace(R.id.frame_layout, ItemOneFragment.newInstance());
-       // transaction.commit();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.container, HealtStateFragment.newInstance());
+        transaction.commit();
 
         //Used to select an item programmatically
         //bottomNavigationView.getMenu().getItem(2).setChecked(true);

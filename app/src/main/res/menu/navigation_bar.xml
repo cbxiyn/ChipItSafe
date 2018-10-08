@@ -2,15 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/navigation_songs"
-        android:title="Section1"/>
+        android:id="@+id/navigation_healt_state"
+        android:title="Healt State"/>
 
     <item
-        android:id="@+id/navigation_albums"
-        android:title="Section2"/>
-
-    <item
-        android:id="@+id/navigation_artists"
-        android:title="Section3"/>
+        android:id="@+id/navigation_emergency"
+        android:title="Emergency"/>
 
 </menu>
