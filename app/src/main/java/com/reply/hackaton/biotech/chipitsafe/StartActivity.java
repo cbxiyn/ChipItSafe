@@ -15,6 +15,8 @@ import android.database.Cursor;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -32,7 +34,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class StartActivity extends AppCompatActivity {
+public class StartActivity extends AppCompatActivity implements BluetoothConnectionManager.BluetoothConnectionManagerListener {
 
 
     StartActivity startActivityContext;
@@ -42,10 +44,11 @@ public class StartActivity extends AppCompatActivity {
     private BluetoothConnectionManager bluetoothConnManager;
     private HeartRateManager heartManager;
     // This is the Adapter being used to display the list's data
-    SimpleCursorAdapter mAdapter;
-    ArrayAdapter arrayAdapter;
+//    SimpleCursorAdapter mAdapter;
+//    ArrayAdapter arrayAdapter;
 
     ListView listView;
+    private BluetoothDeviceAdapter bluetoothDevAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -61,12 +64,17 @@ public class StartActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Log.d("BluetoothConnection", "onclick");
                 bluetoothConnManager.startBleScan();
-                ListView listView = (ListView)findViewById(R.id.listViewDemo);
-                String [] array = {"Antonio","Giovanni","Michele","Giuseppe", "Leonardo", "Alessandro"};
-                //arrayAdapter = new ArrayAdapter<String>(startActivityContext, R.layout.row, R.id.textViewList, bluetoothConnManager.scannedDevNames);
-                //listView.setAdapter(arrayAdapter);
 
-                bluetoothConnManager.setListViewReference(listView);
+                RecyclerView recyclerView = (RecyclerView) findViewById(R.id.listViewDemo);
+                LinearLayoutManager llm = new LinearLayoutManager(getApplicationContext());
+                llm.setOrientation(LinearLayoutManager.VERTICAL);
+                recyclerView.setLayoutManager(llm);
+                //String [] array = {"Antonio","Giovanni","Michele","Giuseppe", "Leonardo", "Alessandro"};
+                //arrayAdapter = new ArrayAdapter<String>(startActivityContext, R.layout.row, R.id.textViewList, bluetoothConnManager.scannedDevNames);
+                bluetoothDevAdapter = new BluetoothDeviceAdapter( bluetoothConnManager.scannedDevices);
+
+                //(startActivityContext, R.layout.row, R.id.textViewList, bluetoothConnManager.scannedDevNames);
+                recyclerView.setAdapter(bluetoothDevAdapter);
             }
         });
     }
@@ -124,7 +132,7 @@ public class StartActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        bluetoothConnManager = new BluetoothConnectionManager(this);
+        bluetoothConnManager = new BluetoothConnectionManager(this, this);
 
         // Ensures Bluetooth is available on the device and it is enabled. If not,
         // displays a dialog requesting user permission to enable Bluetooth.
@@ -242,4 +250,13 @@ public class StartActivity extends AppCompatActivity {
         return true;
     }
 
+    @Override
+    public void onNewDeviceFound(BluetoothDevice bluetoothDevice) {
+        if(bluetoothDevAdapter == null)
+            bluetoothDevAdapter = new BluetoothDeviceAdapter(bluetoothConnManager.scannedDevices);
+
+        bluetoothDevAdapter.addElement(bluetoothDevice);
+
+
+    }
 }

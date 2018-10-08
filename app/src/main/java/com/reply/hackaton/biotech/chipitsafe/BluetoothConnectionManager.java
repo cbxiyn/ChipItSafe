@@ -1,6 +1,7 @@
 package com.reply.hackaton.biotech.chipitsafe;
 
 import android.app.Activity;
+import android.app.Application;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
@@ -18,43 +19,38 @@ import android.widget.ListView;
 import java.util.ArrayList;
 import java.util.List;
 
+
+
 public class BluetoothConnectionManager {
+
+    private final BluetoothConnectionManagerListener listener;
+
+    interface BluetoothConnectionManagerListener{
+        void onNewDeviceFound(BluetoothDevice bluetoothDevice);
+    }
 
     private String LOG_TAG = "BluetoothConnectionManager";
 
     private BluetoothAdapter mBluetoothAdapter;
     final BluetoothManager bluetoothManager;
 
-    ArrayAdapter adapter;
-
-    public void setAdapterForNewDeviceNotification(ArrayAdapter a){
-        adapter = a;
-    }
-
-    Activity activity;
-    ListView listView;
-
-    public void setListViewReference(ListView list){
-        listView = list;
-    }
 
     private boolean scanning;
     private BluetoothLeScanner scanner;
     private Handler handler = new Handler();
     private final static int SCAN_PERIOD = 20000;
 
-    private ArrayList<BluetoothDevice> scannedDevices = new ArrayList<BluetoothDevice>();
-    List<String> scannedDevNames = new ArrayList<String>();
+
+    ArrayList<BluetoothDevice> scannedDevices = new ArrayList<BluetoothDevice>();
+    List<String> scannedDevNames = new ArrayList<>();
 
 
-    public BluetoothConnectionManager(Activity activity){
-
-        this.activity = activity;
+    public BluetoothConnectionManager(BluetoothConnectionManagerListener listener, Context context){
+        this.listener = listener;
         // Initializes Bluetooth adapter.
-        bluetoothManager =
-                (BluetoothManager) activity.getSystemService(Context.BLUETOOTH_SERVICE);
+        bluetoothManager = (BluetoothManager) context.getSystemService(Context.BLUETOOTH_SERVICE);
         mBluetoothAdapter = bluetoothManager.getAdapter();
-        scanner=mBluetoothAdapter.getBluetoothLeScanner();
+        scanner = mBluetoothAdapter.getBluetoothLeScanner();
     }
 
 
@@ -124,6 +120,9 @@ public class BluetoothConnectionManager {
                 // replace if exists already, add otherwise
                 scannedDevices.add(device);
                 scannedDevNames.add(device.getName()+ " : " + device.getAddress());
+                if(listener != null) {
+                    listener.onNewDeviceFound(device);
+                }
                 //adapter.notifyDataSetChanged();
                 //adapter.add(device.getName()+ " : " + device.getAddress());
 
@@ -142,9 +141,8 @@ public class BluetoothConnectionManager {
 
             // scan not succeeded
 
-            ArrayAdapter<String> arrayAdapter =
-                    new ArrayAdapter<String>(activity, R.layout.row, R.id.textViewList, scannedDevNames);
-            listView.setAdapter(arrayAdapter);
+            //ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(activity, R.layout.row, R.id.textViewList, scannedDevNames);
+            //listView.setAdapter(arrayAdapter);
         }
     };
 

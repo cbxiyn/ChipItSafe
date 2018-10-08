@@ -38,7 +38,7 @@ public class HeartRateActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
 
-        bluetoothConnManager = new BluetoothConnectionManager(this);
+        //bluetoothConnManager = new BluetoothConnectionManager(this);
         heartManager = new HeartRateManager(this);
         heartManager.initMds();
         /*
