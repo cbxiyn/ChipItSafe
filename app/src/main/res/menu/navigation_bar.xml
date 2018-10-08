@@ -3,10 +3,13 @@
 
     <item
         android:id="@+id/navigation_healt_state"
+        android:icon="@android:drawable/ic_dialog_info"
         android:title="Healt State"/>
 
     <item
         android:id="@+id/navigation_emergency"
+        android:icon="@android:drawable/ic_dialog_alert"
         android:title="Emergency"/>
+>
 
 </menu>
