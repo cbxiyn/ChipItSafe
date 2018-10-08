@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "481101600087",
+    "firebase_url": "https://chipitsafe.firebaseio.com",
+    "project_id": "chipitsafe",
+    "storage_bucket": "chipitsafe.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:481101600087:android:91caf950f851c525",
+        "android_client_info": {
+          "package_name": "com.reply.hackaton.biotech.chipitsafe"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "481101600087-nu06mqun5nvgbsa59jh2svv4l47oe6v6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.reply.hackaton.biotech.chipitsafe",
+            "certificate_hash": "a9b1beb76a0e5af33b1d27b910c22025755dad3e"
+          }
+        },
+        {
+          "client_id": "481101600087-0gr43uf63n6ab62og6uvjre6u78tgg18.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDyVl_fPAZkFF9M5Hdd6VFj5EMJ-GuUhEA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "481101600087-0gr43uf63n6ab62og6uvjre6u78tgg18.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -39,12 +39,25 @@ public class EmailPasswordActivity extends AppCompatActivity {
         updateUI(currentUser);
     }
 
-    public void onClick(View view) {
+    public void registerButton_onClick(View view) {
         String email = emailText.getText().toString();
         String password = passwordText.getText().toString();
 
-        //TODO: Data validation on views. Password Min 6 characters/Email must include @ symbol etc.
+        //TODO: Unit tests
 
+        //TODO: Data validation on views. Password Min 6 characters/Email must include @ symbol etc.
+        if(!email.contains("@"))
+        {
+            Toast.makeText(EmailPasswordActivity.this, "Enter a valid email",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if(password.length()<6)
+        {
+            Toast.makeText(EmailPasswordActivity.this, "Enter a password longer than 6 characters",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -62,11 +75,20 @@ public class EmailPasswordActivity extends AppCompatActivity {
                         } else {
                             // If registration  fails, attempt to continue and try to login.
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
+                            Toast.makeText(EmailPasswordActivity.this, task.getException().getMessage(),
+                                    Toast.LENGTH_SHORT).show();
                         }
 
                         // ...
                     }
                 });
+    }
+    public void loginButton_onClick(View view)
+    {
+
+        String email = emailText.getText().toString();
+        String password = passwordText.getText().toString();
+
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -90,8 +112,6 @@ public class EmailPasswordActivity extends AppCompatActivity {
                         // ...
                     }
                 });
-
-
     }
 
     public void updateUI(FirebaseUser user) {
