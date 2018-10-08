@@ -121,10 +121,12 @@ public class BluetoothConnectionManager {
                 Log.d("BluetoothDev FOUND","scanName: " + device.getName());
                 Log.d("BluetoothDev FOUND","scanAddr: " + device.getAddress());
                 // replace if exists already, add otherwise
-                scannedDevices.put(device.getAddress(),device);
-                scannedDevNames.add(device.getName() + " - address:" + device.getAddress());
-                if (listener != null) {
-                    listener.onNewDeviceFound(device);
+                if(!scannedDevices.containsKey(device.getAddress())) {
+                    scannedDevices.put(device.getAddress(), device);
+                    scannedDevNames.add(device.getName() + " - address:" + device.getAddress());
+                    if (listener != null) {
+                        listener.onNewDeviceFound(device);
+                    }
                 }
 
             }

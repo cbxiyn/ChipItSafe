@@ -3,31 +3,20 @@ package com.reply.hackaton.biotech.chipitsafe;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
-import android.app.LoaderManager;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.Loader;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.ProgressBar;
-import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -57,7 +46,8 @@ public class StartActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
         startActivityContext = this;
-
+        heartManager = new HeartRateManager(this);
+        heartManager.initMds();
         recyclerView = (RecyclerView) findViewById(R.id.listViewDemo);
         LinearLayoutManager llm = new LinearLayoutManager(getApplicationContext());
         llm.setOrientation(LinearLayoutManager.VERTICAL);
@@ -266,6 +256,17 @@ public class StartActivity extends AppCompatActivity
 
     @Override
     public void onItemClick(BluetoothDevice dev) {
-        Toast.makeText(this, dev.getName(), Toast.LENGTH_SHORT).show();
+        //bluetoothConnManager.stopBleScan();
+        Toast.makeText(this, "attempting to connect to "+ dev.getName(), Toast.LENGTH_SHORT).show();
+
+        final BluetoothDevice device = dev;
+        //AsyncTask.execute(new Runnable() {
+            //@Override
+            //public void run() {
+                //TODO your background code
+                heartManager.connectToDevice(device);
+            //}
+        //});
+
     }
 }

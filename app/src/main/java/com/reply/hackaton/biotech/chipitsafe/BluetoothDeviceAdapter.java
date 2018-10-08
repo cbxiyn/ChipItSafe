@@ -63,8 +63,10 @@ public class BluetoothDeviceAdapter extends RecyclerView.Adapter<DeviceViewHolde
     }
 
     void addElement(BluetoothDevice dev){
-        this.items.put(dev.getAddress(),dev);
-        update();
+        //if(!items.containsKey(dev.getAddress())) {
+            this.items.put(dev.getAddress(), dev);
+            update();
+        //}
     }
 
 }

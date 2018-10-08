@@ -59,9 +59,11 @@ public class HeartRateManager implements MdsNotificationListener{
                 */
                 @Override
                 public void onConnectionComplete(String macAddress, String serial) {
-                    Log.d(LOG_TAG, "onConnectionComplete:" + macAddress);
+                    Log.d(LOG_TAG, "onConnectionComplete:devSerial" + serial);
                     heartRateDevice = deviceAttemptingToConnectTo;
                     hearRateDeviceSerial = serial;
+                    //subscribeToHeartECGNotifications();
+                    getDeviceInfo();
                     /*
                     for (MyScanResult sr : mScanResArrayList) {
                         if (sr.macAddress.equalsIgnoreCase(macAddress)) {
@@ -201,6 +203,7 @@ The MDS library exposes the REST api on the Movesense devices via the following 
     methods in the MdsSubscription object that was returned from the call to subscribe().
     */
     public void subscribeToHeartECGNotifications(){
+        Log.d("subscribeToHeartECGNot", "doing..");
         String uri = SCHEME_PREFIX + hearRateDeviceSerial + "/Meas/ECG";
         String uriToSubscribeTo = "/Meas/ECG";
         MdsSubscription subscription =
@@ -213,9 +216,15 @@ The MDS library exposes the REST api on the Movesense devices via the following 
 
     }
 
+    public void unsubscribeToHeartECGNotifications(){
+        Log.d("unsubscribeToHrtECGNot", "doing..");
+
+    }
+
 
     @Override
     public void onNotification(String s) {
+        Log.e("NOTIFICATION", s);
 
     }
 
