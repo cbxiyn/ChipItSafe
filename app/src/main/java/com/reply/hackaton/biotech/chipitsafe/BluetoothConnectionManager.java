@@ -17,8 +17,10 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-
+import java.util.Map;
 
 
 public class BluetoothConnectionManager {
@@ -41,9 +43,9 @@ public class BluetoothConnectionManager {
     private final static int SCAN_PERIOD = 20000;
 
 
-    ArrayList<BluetoothDevice> scannedDevices = new ArrayList<BluetoothDevice>();
+    //ArrayList<BluetoothDevice> scannedDevices = new ArrayList<BluetoothDevice>();
     List<String> scannedDevNames = new ArrayList<>();
-
+    Map<String, BluetoothDevice> scannedDevices = new HashMap<String, BluetoothDevice>();
 
     public BluetoothConnectionManager(BluetoothConnectionManagerListener listener, Context context){
         this.listener = listener;
@@ -60,7 +62,8 @@ public class BluetoothConnectionManager {
 
     public void startBleScan() {
         Log.d(LOG_TAG,"within startBLEScan");
-        scannedDevices = new ArrayList<BluetoothDevice>();
+        //scannedDevices = new ArrayList<BluetoothDevice>();
+        scannedDevices = new HashMap<String,BluetoothDevice>();
         scannedDevNames = new ArrayList<String>();
         // scanning a true significa "scansione in corso"
         scanning = true;
@@ -118,15 +121,12 @@ public class BluetoothConnectionManager {
                 Log.d("BluetoothDev FOUND","scanName: " + device.getName());
                 Log.d("BluetoothDev FOUND","scanAddr: " + device.getAddress());
                 // replace if exists already, add otherwise
-                scannedDevices.add(device);
-                scannedDevNames.add(device.getName()+ " : " + device.getAddress());
-                if(listener != null) {
+                scannedDevices.put(device.getAddress(),device);
+                scannedDevNames.add(device.getName() + " - address:" + device.getAddress());
+                if (listener != null) {
                     listener.onNewDeviceFound(device);
                 }
-                //adapter.notifyDataSetChanged();
-                //adapter.add(device.getName()+ " : " + device.getAddress());
 
-                //mScanResArrayAdapter.notifyDataSetChanged();
             }
 
         }

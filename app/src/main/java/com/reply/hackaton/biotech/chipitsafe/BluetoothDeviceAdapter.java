@@ -7,13 +7,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class BluetoothDeviceAdapter extends RecyclerView.Adapter<DeviceViewHolder>{
 
-    List<BluetoothDevice> items;
+    //List<BluetoothDevice> items;
+    Map<String,BluetoothDevice> items;
 
-    public BluetoothDeviceAdapter(List<BluetoothDevice> items) {
+    public BluetoothDeviceAdapter( Map<String,BluetoothDevice> items) {
         this.items = items;
     }
 
@@ -27,8 +30,18 @@ public class BluetoothDeviceAdapter extends RecyclerView.Adapter<DeviceViewHolde
 
     @Override
     public void onBindViewHolder(DeviceViewHolder holder, int position) {
-        BluetoothDevice item = items.get(position);
-        holder.txtName.setText(item.getAddress()+" - "+item.getName());
+        int i = 0;
+        for(BluetoothDevice item : items.values()){
+            if(i == position) {
+                holder.txtName.setText(item.getAddress() + " - " + item.getName());
+                return;
+            }
+            i++;
+        }
+
+        //BluetoothDevice item = items.get(position);
+
+
     }
 
     @Override
@@ -41,7 +54,7 @@ public class BluetoothDeviceAdapter extends RecyclerView.Adapter<DeviceViewHolde
     }
 
     void addElement(BluetoothDevice dev){
-        this.items.add(dev);
+        this.items.put(dev.getAddress(),dev);
         update();
     }
 
