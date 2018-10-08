@@ -62,8 +62,8 @@ public class HeartRateManager implements MdsNotificationListener{
                     Log.d(LOG_TAG, "onConnectionComplete:devSerial" + serial);
                     heartRateDevice = deviceAttemptingToConnectTo;
                     hearRateDeviceSerial = serial;
-                    //subscribeToHeartECGNotifications();
-                    getDeviceInfo();
+                    subscribeToHeartECGNotifications();
+                    //getDeviceInfo();
                     /*
                     for (MyScanResult sr : mScanResArrayList) {
                         if (sr.macAddress.equalsIgnoreCase(macAddress)) {
@@ -202,11 +202,12 @@ The MDS library exposes the REST api on the Movesense devices via the following 
     NOTE: After the application is done with the notifications it should call the unsubscribe()
     methods in the MdsSubscription object that was returned from the call to subscribe().
     */
+    MdsSubscription subscription;
     public void subscribeToHeartECGNotifications(){
         Log.d("subscribeToHeartECGNot", "doing..");
-        String uri = SCHEME_PREFIX + hearRateDeviceSerial + "/Meas/ECG";
-        String uriToSubscribeTo = "/Meas/ECG";
-        MdsSubscription subscription =
+        //String uri = SCHEME_PREFIX + hearRateDeviceSerial + "/Meas/ECG";
+        String uriToSubscribeTo = "Meas/ECG/125";//Meas/Acc/13
+        subscription =
                 mMds.subscribe("suunto://MDS/EventListener",
                         "{\"Uri\": \"" + hearRateDeviceSerial + "/" + uriToSubscribeTo + "\"}",
                         this); // MdsNotificationListener callback class
@@ -224,7 +225,7 @@ The MDS library exposes the REST api on the Movesense devices via the following 
 
     @Override
     public void onNotification(String s) {
-        Log.e("NOTIFICATION", s);
+        Log.e("ECGNOT", s);
 
     }
 
