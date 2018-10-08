@@ -11,13 +11,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
+
 public class BluetoothDeviceAdapter extends RecyclerView.Adapter<DeviceViewHolder>{
+
+
+    private final OnBLEDeviceClickListener listener;
+
+    public interface OnBLEDeviceClickListener {
+        void onItemClick(BluetoothDevice dev);
+    }
 
     //List<BluetoothDevice> items;
     Map<String,BluetoothDevice> items;
 
-    public BluetoothDeviceAdapter( Map<String,BluetoothDevice> items) {
+    public BluetoothDeviceAdapter( Map<String,BluetoothDevice> items, OnBLEDeviceClickListener listener)  {
         this.items = items;
+        this.listener = listener;
     }
 
     @Override
@@ -34,15 +44,14 @@ public class BluetoothDeviceAdapter extends RecyclerView.Adapter<DeviceViewHolde
         for(BluetoothDevice item : items.values()){
             if(i == position) {
                 holder.txtName.setText(item.getAddress() + " - " + item.getName());
+                holder.bind(item, listener);
                 return;
             }
             i++;
         }
 
-        //BluetoothDevice item = items.get(position);
-
-
     }
+
 
     @Override
     public int getItemCount() {
@@ -65,6 +74,17 @@ class DeviceViewHolder extends RecyclerView.ViewHolder {
     public DeviceViewHolder(View itemView) {
         super(itemView);
         txtName = (TextView) itemView.findViewById(R.id.txt_name);
+    }
+
+
+    public void bind(final BluetoothDevice item, final BluetoothDeviceAdapter.OnBLEDeviceClickListener listener) {
+
+        itemView.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View v) {
+                if(listener!=null)
+                    listener.onItemClick(item);
+            }
+        });
     }
 }
 

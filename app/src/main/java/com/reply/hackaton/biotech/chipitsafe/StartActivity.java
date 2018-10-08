@@ -21,6 +21,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -34,7 +35,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class StartActivity extends AppCompatActivity implements BluetoothConnectionManager.BluetoothConnectionManagerListener {
+public class StartActivity extends AppCompatActivity
+        implements BluetoothConnectionManager.BluetoothConnectionManagerListener, BluetoothDeviceAdapter.OnBLEDeviceClickListener {
 
 
     StartActivity startActivityContext;
@@ -47,7 +49,7 @@ public class StartActivity extends AppCompatActivity implements BluetoothConnect
 //    SimpleCursorAdapter mAdapter;
 //    ArrayAdapter arrayAdapter;
 
-    ListView listView;
+    RecyclerView recyclerView;
     private BluetoothDeviceAdapter bluetoothDevAdapter;
 
     @Override
@@ -56,6 +58,10 @@ public class StartActivity extends AppCompatActivity implements BluetoothConnect
         setContentView(R.layout.activity_start);
         startActivityContext = this;
 
+        recyclerView = (RecyclerView) findViewById(R.id.listViewDemo);
+        LinearLayoutManager llm = new LinearLayoutManager(getApplicationContext());
+        llm.setOrientation(LinearLayoutManager.VERTICAL);
+        recyclerView.setLayoutManager(llm);
 
         Button scanButton = (Button) findViewById(R.id.scanButton);
         scanButton.setOnClickListener(new View.OnClickListener() {
@@ -64,19 +70,17 @@ public class StartActivity extends AppCompatActivity implements BluetoothConnect
             public void onClick(View v) {
                 Log.d("BluetoothConnection", "onclick");
                 bluetoothConnManager.startBleScan();
-
-                RecyclerView recyclerView = (RecyclerView) findViewById(R.id.listViewDemo);
-                LinearLayoutManager llm = new LinearLayoutManager(getApplicationContext());
-                llm.setOrientation(LinearLayoutManager.VERTICAL);
-                recyclerView.setLayoutManager(llm);
-                //String [] array = {"Antonio","Giovanni","Michele","Giuseppe", "Leonardo", "Alessandro"};
-                //arrayAdapter = new ArrayAdapter<String>(startActivityContext, R.layout.row, R.id.textViewList, bluetoothConnManager.scannedDevNames);
-                bluetoothDevAdapter = new BluetoothDeviceAdapter( bluetoothConnManager.scannedDevices);
-
-                //(startActivityContext, R.layout.row, R.id.textViewList, bluetoothConnManager.scannedDevNames);
+                bluetoothDevAdapter = new BluetoothDeviceAdapter( bluetoothConnManager.scannedDevices, startActivityContext);
                 recyclerView.setAdapter(bluetoothDevAdapter);
             }
         });
+
+
+
+        if (Build.VERSION.SDK_INT >= 23) {
+            // Marshmallow+ Permission APIs
+            askPermissions();
+        }
     }
 
 
@@ -193,7 +197,7 @@ public class StartActivity extends AppCompatActivity implements BluetoothConnect
 
 
     @TargetApi(Build.VERSION_CODES.M)
-    private void fuckMarshMallow() {
+    private void askPermissions() {
         List<String> permissionsNeeded = new ArrayList<String>();
 
         final List<String> permissionsList = new ArrayList<String>();
@@ -253,10 +257,15 @@ public class StartActivity extends AppCompatActivity implements BluetoothConnect
     @Override
     public void onNewDeviceFound(BluetoothDevice bluetoothDevice) {
         if(bluetoothDevAdapter == null)
-            bluetoothDevAdapter = new BluetoothDeviceAdapter(bluetoothConnManager.scannedDevices);
+            bluetoothDevAdapter = new BluetoothDeviceAdapter(bluetoothConnManager.scannedDevices, this);
 
         bluetoothDevAdapter.addElement(bluetoothDevice);
 
 
+    }
+
+    @Override
+    public void onItemClick(BluetoothDevice dev) {
+        Toast.makeText(this, dev.getName(), Toast.LENGTH_SHORT).show();
     }
 }
