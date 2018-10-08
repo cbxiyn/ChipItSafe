@@ -6,13 +6,16 @@
 // });
 // The Cloud Functions for Firebase SDK to create Cloud Functions and setup triggers.
 const functions = require("firebase-functions");
+const admin = require("firebase-admin");
 
 //Application Name for email
 const APP_NAME = 'Chip-It-Safe: ECG First Aid';
 // The Firebase Admin SDK to access the Firebase Realtime Database.
-const admin = require("firebase-admin");
+
+
 admin.initializeApp();
 
+var db = admin.firestore();
 //https://firebase.google.com/docs/reference/functions/functions.auth.UserRecord
 
 
