@@ -22,7 +22,9 @@ exports.createUserConfig = functions.auth.user().onCreate(user => {
     email: user.email,
     displayName: user.displayName,
     phoneNumber: user.phoneNumber,
-    emailVerified: user.emailVerified
+    emailVerified: user.emailVerified,
+    //TODO: Implement the datatype below
+    applicationType: "Wearer"
   };
   // [END eventAttributes]
   return createUserConfig(data);
