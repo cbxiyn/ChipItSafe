@@ -22,7 +22,7 @@ class MainActivity : AppCompatActivity() {
        // setSupportActionBar(toolbar)
 
         toolbar = supportActionBar!!
-        val bottomNavigation: BottomNavigationView = findViewById(R.id.navigationView)
+        //val bottomNavigation: BottomNavigationView = findViewById(R.id.navigationView)
 
 
     }
