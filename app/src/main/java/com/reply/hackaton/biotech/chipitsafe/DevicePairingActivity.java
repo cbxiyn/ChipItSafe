@@ -8,7 +8,6 @@ import android.bluetooth.BluetoothDevice;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -24,11 +23,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class StartActivity extends AppCompatActivity
+public class DevicePairingActivity extends AppCompatActivity
         implements BluetoothConnectionManager.BluetoothConnectionManagerListener, BluetoothDeviceAdapter.OnBLEDeviceClickListener {
 
 
-    StartActivity startActivityContext;
+    DevicePairingActivity startActivityContext;
     private final static int REQUEST_ENABLE_BT = 1;
     private final static int REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS = 2;
 
@@ -46,7 +45,7 @@ public class StartActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
         startActivityContext = this;
-        heartManager = new HeartRateManager(this);
+        heartManager = HeartRateManager.instanceOfHeartRateManager(this);
         heartManager.initMds();
         recyclerView = (RecyclerView) findViewById(R.id.listViewDemo);
         LinearLayoutManager llm = new LinearLayoutManager(getApplicationContext());
@@ -126,7 +125,7 @@ public class StartActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
 
-        bluetoothConnManager = new BluetoothConnectionManager(this, this);
+        bluetoothConnManager = BluetoothConnectionManager.instanceOfBluetoothConnectionManager(this, this);
 
         // Ensures Bluetooth is available on the device and it is enabled. If not,
         // displays a dialog requesting user permission to enable Bluetooth.
@@ -135,16 +134,6 @@ public class StartActivity extends AppCompatActivity
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
         }
     }
-
-
-
-    /*
-    @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-        // Do something when a list item is clicked
-    }
-    */
-
 
 
     @Override
@@ -167,13 +156,13 @@ public class StartActivity extends AppCompatActivity
                     // All Permissions Granted
 
                     // Permission Denied
-                    Toast.makeText(StartActivity.this, "All Permission GRANTED !! Thank You :)", Toast.LENGTH_SHORT)
+                    Toast.makeText(DevicePairingActivity.this, "All Permission GRANTED !! Thank You :)", Toast.LENGTH_SHORT)
                             .show();
 
 
                 } else {
                     // Permission Denied
-                    Toast.makeText(StartActivity.this, "One or More Permissions are DENIED Exiting App :(", Toast.LENGTH_SHORT)
+                    Toast.makeText(DevicePairingActivity.this, "One or More Permissions are DENIED Exiting App :(", Toast.LENGTH_SHORT)
                             .show();
 
                     finish();
@@ -219,12 +208,12 @@ public class StartActivity extends AppCompatActivity
             return;
         }
 
-        Toast.makeText(StartActivity.this, "No new Permission Required- Launching App .You are Awesome!!", Toast.LENGTH_SHORT)
+        Toast.makeText(DevicePairingActivity.this, "No new Permission Required- Launching App .You are Awesome!!", Toast.LENGTH_SHORT)
                 .show();
     }
 
     private void showMessageOKCancel(String message, DialogInterface.OnClickListener okListener) {
-        new AlertDialog.Builder(StartActivity.this)
+        new AlertDialog.Builder(DevicePairingActivity.this)
                 .setMessage(message)
                 .setPositiveButton("OK", okListener)
                 .setNegativeButton("Cancel", null)
@@ -256,17 +245,10 @@ public class StartActivity extends AppCompatActivity
 
     @Override
     public void onItemClick(BluetoothDevice dev) {
-        //bluetoothConnManager.stopBleScan();
+
         Toast.makeText(this, "attempting to connect to "+ dev.getName(), Toast.LENGTH_SHORT).show();
 
         final BluetoothDevice device = dev;
-        //AsyncTask.execute(new Runnable() {
-            //@Override
-            //public void run() {
-                //TODO your background code
-                heartManager.connectToDevice(device);
-            //}
-        //});
-
+        heartManager.connectToDevice(device);
     }
 }

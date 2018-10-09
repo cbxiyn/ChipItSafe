@@ -1,17 +1,13 @@
 package com.reply.hackaton.biotech.chipitsafe;
 
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.le.ScanSettings;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
-
-import com.movesense.mds.*;
 
 
 public class HeartRateActivity extends AppCompatActivity {
@@ -39,7 +35,7 @@ public class HeartRateActivity extends AppCompatActivity {
 
 
         //bluetoothConnManager = new BluetoothConnectionManager(this);
-        heartManager = new HeartRateManager(this);
+        heartManager = HeartRateManager.instanceOfHeartRateManager(this);
         heartManager.initMds();
         /*
         // Init Scan UI

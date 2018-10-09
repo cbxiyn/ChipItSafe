@@ -23,8 +23,17 @@ public class HeartRateManager implements MdsNotificationListener{
     private BluetoothDevice heartRateDevice;
     private String hearRateDeviceSerial;
 
-    public HeartRateManager(Context c){
+
+    private static HeartRateManager heartRateManager = null;
+
+    private HeartRateManager(Context c){
         currentContext = c;
+    }
+
+    public static HeartRateManager instanceOfHeartRateManager(Context c) {
+        if(heartRateManager == null) heartRateManager = new HeartRateManager(c);
+
+        return heartRateManager;
     }
 
     public void initMds() {
