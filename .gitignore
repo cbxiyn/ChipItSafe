@@ -8,3 +8,5 @@
 /build
 /captures
 .externalNativeBuild
+/cloud_functions/functions/node_modules
+/cloud_functions/node_modules
