@@ -60,6 +60,8 @@ public class HeartRateManager implements MdsNotificationListener{
 
     private BluetoothDevice deviceAttemptingToConnectTo=null;
 
+    public boolean isConnectedToDevice = false;
+
     public void connectToDevice(MdsConnectionListener listener){
         if(deviceAttemptingToConnectTo == null)
             Log.e(LOG_TAG, "null deviceAttemptingToConnectTo reference");
@@ -102,40 +104,11 @@ The MDS library exposes the REST api on the Movesense devices via the following 
 
     private final String SCHEME_PREFIX = "suunto://";
 
-    public void getDeviceInfo(){
+    public void getDeviceInfo(MdsResponseListener listener){
         //String uri = SCHEME_PREFIX + device.connectedSerial + "/Info";
         String uri = SCHEME_PREFIX + hearRateDeviceSerial + "/Info";
         //final Context ctx = currentContext;
-        mMds.get(uri, null, new MdsResponseListener() {
-            /**
-             * Called when Mds operation has been succesfully finished
-             *
-             * @param data Response in String format
-             */
-            @Override
-            public void onSuccess(String data) {
-                Log.i(LOG_TAG, "Device " + hearRateDeviceSerial+ " /info request succesful: " + data);
-                // Display info in alert dialog
-                /*
-                AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
-                builder.setTitle("Device info:")
-                        .setMessage(s)
-                        .show();
-                */
-                // The onSuccess() gets the result code and the returned data as a JSON string.
-
-            }
-
-            /**
-             * Called when Mds operation failed for any reason
-             *
-             * @param e Object containing the error
-             */
-            @Override
-            public void onError(MdsException e) {
-                Log.e(LOG_TAG, "Device " + hearRateDeviceSerial + " /info returned error: " + e);
-            }
-        });
+        mMds.get(uri, null, listener);
     }
 
 
