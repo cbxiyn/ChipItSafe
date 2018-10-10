@@ -25,6 +25,8 @@ import com.movesense.mds.MdsException;
 public class StartActivity extends AppCompatActivity
         implements MdsConnectionListener {
 
+    // UI
+
     private String LOG_TAG = "StartActivity";
     private HeartRateManager heartManager;
     BluetoothDevice selectedDevice = null;
@@ -35,6 +37,7 @@ public class StartActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
+
         BottomNavigationView bottomNavigationView = (BottomNavigationView)
                 findViewById(R.id.navigationView);
 
@@ -66,8 +69,8 @@ public class StartActivity extends AppCompatActivity
         //Used to select an item programmatically
         //bottomNavigationView.getMenu().getItem(2).setChecked(true);
 
-        heartManager = HeartRateManager.instanceOfHeartRateManager(this);
-        heartManager.initMds();
+        heartManager = HeartRateManager.instanceOfHeartRateManager();
+        heartManager.initMds(this);
 
 
     }

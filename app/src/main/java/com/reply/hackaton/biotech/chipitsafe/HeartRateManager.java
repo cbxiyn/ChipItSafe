@@ -41,17 +41,18 @@ public class HeartRateManager implements MdsNotificationListener{
 
     private static HeartRateManager heartRateManager = null;
 
-    private HeartRateManager(Context c){
-        currentContext = c;
+    private HeartRateManager(){
+
     }
 
-    public static HeartRateManager instanceOfHeartRateManager(Context c) {
-        if(heartRateManager == null) heartRateManager = new HeartRateManager(c);
+    public static HeartRateManager instanceOfHeartRateManager() {
+        if(heartRateManager == null) heartRateManager = new HeartRateManager();
 
         return heartRateManager;
     }
 
-    public void initMds() {
+    public void initMds(Context c) {
+        currentContext = c;
         mMds = Mds.builder().build(currentContext);
 
     }
