@@ -27,6 +27,13 @@ public class HeartRateManager implements MdsNotificationListener{
         heartRateDevice = deviceAttemptingToConnectTo;
     }
 
+    public void setHeartRateDeviceAttemptingToConnectTo(BluetoothDevice dev){
+        deviceAttemptingToConnectTo = dev;
+    }
+
+    public BluetoothDevice getDeviceAttemptingToConnectTo() {
+        return deviceAttemptingToConnectTo;
+    }
 
     public void setHeartRateDeviceSerial(String serialNr){
         hearRateDeviceSerial = serialNr;
@@ -52,14 +59,14 @@ public class HeartRateManager implements MdsNotificationListener{
 
     private BluetoothDevice deviceAttemptingToConnectTo=null;
 
-    public void connectToDevice(BluetoothDevice device, MdsConnectionListener listener){
+    public void connectToDevice(MdsConnectionListener listener){
+        if(deviceAttemptingToConnectTo == null)
+            Log.e(LOG_TAG, "null deviceAttemptingToConnectTo reference");
         /*if (!device.isConnected()) { */
             //RxBleDevice bleDevice = getBleClient().getBleDevice(device.macAddress);
-            Log.i(LOG_TAG, "Connecting to BLE device: " +  device.getAddress() /*bleDevice.getMacAddress()*/);
+            Log.i(LOG_TAG, "Connecting to BLE device: " +  deviceAttemptingToConnectTo.getAddress() /*bleDevice.getMacAddress()*/);
 
-            deviceAttemptingToConnectTo = device;
-
-            mMds.connect(  device.getAddress(), listener);
+            mMds.connect(  deviceAttemptingToConnectTo.getAddress(), listener);
         /*
         }
         else

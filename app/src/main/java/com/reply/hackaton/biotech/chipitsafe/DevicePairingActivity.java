@@ -29,8 +29,8 @@ import java.util.Map;
 
 public class DevicePairingActivity extends AppCompatActivity
         implements BluetoothConnectionManager.BluetoothConnectionManagerListener,
-        BluetoothDeviceAdapter.OnBLEDeviceClickListener,
-        MdsConnectionListener {
+        BluetoothDeviceAdapter.OnBLEDeviceClickListener
+         {
 
     private String LOG_TAG = "DevicePairingActivity";
 
@@ -39,12 +39,11 @@ public class DevicePairingActivity extends AppCompatActivity
     private final static int REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS = 2;
 
     private BluetoothConnectionManager bluetoothConnManager;
-    private HeartRateManager heartManager;
-    // This is the Adapter being used to display the list's data
-//    SimpleCursorAdapter mAdapter;
-//    ArrayAdapter arrayAdapter;
+
 
     RecyclerView recyclerView;
+    // This is the Adapter being used to display the list's data
+    // SimpleCursorAdapter mAdapter;
     private BluetoothDeviceAdapter bluetoothDevAdapter;
 
     @Override
@@ -52,8 +51,7 @@ public class DevicePairingActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
         startActivityContext = this;
-        heartManager = HeartRateManager.instanceOfHeartRateManager(this);
-        heartManager.initMds();
+
         recyclerView = (RecyclerView) findViewById(R.id.listViewDemo);
         LinearLayoutManager llm = new LinearLayoutManager(getApplicationContext());
         llm.setOrientation(LinearLayoutManager.VERTICAL);
@@ -253,71 +251,11 @@ public class DevicePairingActivity extends AppCompatActivity
     @Override
     public void onItemClick(BluetoothDevice dev) {
 
-        Toast.makeText(this, "attempting to connect to "+ dev.getName(), Toast.LENGTH_SHORT).show();
-
-        final BluetoothDevice device = dev;
-        heartManager.connectToDevice(device, this);
-    }
-
-
-
-
-    // MDS CONNECTION LISTENER METHODS
-    /**
-     * Called when Mds / Whiteboard link-layer connection (BLE) has been succesfully established
-     *
-     */
-    @Override
-    public void onConnect(String s) {
-        Log.d(LOG_TAG, "onConnect:" + s);
-
-    }
-
-    /**
-     * Called when the full Mds / Whiteboard connection has been succesfully established
-     *
-     */
-    @Override
-    public void onConnectionComplete(String macAddress, String serial) {
-        Log.d(LOG_TAG, "onConnectionComplete:devSerial" + serial);
-
-        heartManager.confirmHeartRateDevice();
-        heartManager.setHeartRateDeviceSerial(serial);
-        //val editText = findViewById<EditText>(R.id.editText)
-        //val message = editText.text.toString()
-        //val intent = Intent(this, StartActivity).apply {
-            //putExtra(EXTRA_MESSAGE, message)
-        //}
+        HeartRateManager.instanceOfHeartRateManager(null).setHeartRateDeviceAttemptingToConnectTo(dev);
         Intent myIntent = new Intent(this, StartActivity.class);
         startActivity(myIntent);
-                    /*
-                    for (MyScanResult sr : mScanResArrayList) {
-                        if (sr.macAddress.equalsIgnoreCase(macAddress)) {
-                            sr.markConnected(serial);
-                            break;
-                        }
-                    }
-                    */
-    }
-
-    /**
-     * Called when Mds connect() call fails with error
-     *
-     */
-    @Override
-    public void onError(MdsException e) {
-        Log.e(LOG_TAG, "onError:" + e);
-
-        //showConnectionError(e);
-    }
-
-    /**
-     * Called when Mds connection disconnects (e.g. device out of range)
-     *
-     */
-    @Override
-    public void onDisconnect(String bleAddress) {
-        Log.d(LOG_TAG, "onDisconnect: " + bleAddress);
 
     }
+
+
 }
