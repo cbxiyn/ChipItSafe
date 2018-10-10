@@ -1,9 +1,11 @@
 package com.reply.hackaton.biotech.chipitsafe;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,10 +19,17 @@ import android.view.ViewGroup;
  * Use the {@link HealtStateFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
+import android.nfc.NfcAdapter;
+import android.widget.Toast;
+
+import java.util.zip.Inflater;
+
+
 public class HealtStateFragment extends Fragment {
 
-
-    HeartRateManager heartRateManager;
+    static private String TAG = "HealtStateFragment";
+    private HeartRateManager heartRateManager;
+    private NfcAdapter mNfcAdapter;
 
     public HealtStateFragment() {
         // Required empty public constructor
@@ -37,14 +46,35 @@ public class HealtStateFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mNfcAdapter = NfcAdapter.getDefaultAdapter(getActivity());
 
+        if (mNfcAdapter == null) {
+            // Stop here, we definitely need NFC
+            Toast.makeText(getActivity(), "This device doesn't support NFC.", Toast.LENGTH_LONG).show();
+            return;
+
+        }
+
+        if (!mNfcAdapter.isEnabled()) {
+            Log.d(TAG,"NFC is disabled")
+        } else {
+            Log.d(TAG,"NFC is enabled")
+        }
+
+        //handleIntent(getIntent());
+
+    }
+
+    private void handleIntent(Intent intent) {
+        // TODO: handle Intent
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_healt_state, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_healt_state, container, false);
+        return rootView;
     }
 
     @Override

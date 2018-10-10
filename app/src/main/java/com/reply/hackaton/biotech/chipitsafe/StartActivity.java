@@ -18,8 +18,8 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.ActionBar;
 import android.widget.Toast;
 
-import com.movesense.mds.MdsConnectionListener;
-import com.movesense.mds.MdsException;
+import com.movesense.mds.*;
+
 
 
 public class StartActivity extends AppCompatActivity
