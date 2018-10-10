@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 public class HealtStateFragment extends Fragment {
 
 
+    HeartRateManager heartRateManager;
 
     public HealtStateFragment() {
         // Required empty public constructor
@@ -45,6 +46,14 @@ public class HealtStateFragment extends Fragment {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_healt_state, container, false);
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+    }
+
+    private void getDeviceInfo(){}
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
