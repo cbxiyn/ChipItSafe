@@ -13,6 +13,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.reply.hackaton.biotech.chipitsafe.Firebase.MessagingService;
 
 public class EmailPasswordActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
@@ -20,7 +21,7 @@ public class EmailPasswordActivity extends AppCompatActivity {
     TextView emailText;
     TextView passwordText;
     private static final String TAG = EmailPasswordActivity.class.getName();
-
+    MessagingService messagingService;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,6 +30,8 @@ public class EmailPasswordActivity extends AppCompatActivity {
 
         emailText = findViewById(R.id.emailView);
         passwordText = findViewById(R.id.passwordView);
+        messagingService = new MessagingService(EmailPasswordActivity.this);
+        emailText.setText(messagingService.FID);
     }
 
     @Override
