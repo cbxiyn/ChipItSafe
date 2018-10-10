@@ -8,6 +8,7 @@ import android.bluetooth.BluetoothDevice;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -18,26 +19,31 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.movesense.mds.MdsConnectionListener;
+import com.movesense.mds.MdsException;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class DevicePairingActivity extends AppCompatActivity
-        implements BluetoothConnectionManager.BluetoothConnectionManagerListener, BluetoothDeviceAdapter.OnBLEDeviceClickListener {
+        implements BluetoothConnectionManager.BluetoothConnectionManagerListener,
+        BluetoothDeviceAdapter.OnBLEDeviceClickListener
+         {
 
+    private String LOG_TAG = "DevicePairingActivity";
 
     DevicePairingActivity startActivityContext;
     private final static int REQUEST_ENABLE_BT = 1;
     private final static int REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS = 2;
 
     private BluetoothConnectionManager bluetoothConnManager;
-    private HeartRateManager heartManager;
-    // This is the Adapter being used to display the list's data
-//    SimpleCursorAdapter mAdapter;
-//    ArrayAdapter arrayAdapter;
+
 
     RecyclerView recyclerView;
+    // This is the Adapter being used to display the list's data
+    // SimpleCursorAdapter mAdapter;
     private BluetoothDeviceAdapter bluetoothDevAdapter;
 
     @Override
@@ -45,8 +51,7 @@ public class DevicePairingActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
         startActivityContext = this;
-        heartManager = HeartRateManager.instanceOfHeartRateManager(this);
-        heartManager.initMds();
+
         recyclerView = (RecyclerView) findViewById(R.id.listViewDemo);
         LinearLayoutManager llm = new LinearLayoutManager(getApplicationContext());
         llm.setOrientation(LinearLayoutManager.VERTICAL);
@@ -246,9 +251,11 @@ public class DevicePairingActivity extends AppCompatActivity
     @Override
     public void onItemClick(BluetoothDevice dev) {
 
-        Toast.makeText(this, "attempting to connect to "+ dev.getName(), Toast.LENGTH_SHORT).show();
+        HeartRateManager.instanceOfHeartRateManager().setHeartRateDeviceAttemptingToConnectTo(dev);
+        Intent myIntent = new Intent(this, StartActivity.class);
+        startActivity(myIntent);
 
-        final BluetoothDevice device = dev;
-        heartManager.connectToDevice(device);
     }
+
+
 }
