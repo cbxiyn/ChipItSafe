@@ -13,7 +13,12 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.reply.hackaton.biotech.chipitsafe.Firebase.FirebaseServlet;
 import com.reply.hackaton.biotech.chipitsafe.Firebase.MessagingService;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 
 public class EmailPasswordActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
@@ -22,23 +27,27 @@ public class EmailPasswordActivity extends AppCompatActivity {
     TextView passwordText;
     private static final String TAG = EmailPasswordActivity.class.getName();
     MessagingService messagingService;
+
+    FirebaseUser currentUser;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_email_password2);
+
         mAuth = FirebaseAuth.getInstance();
 
         emailText = findViewById(R.id.emailView);
         passwordText = findViewById(R.id.passwordView);
+
         messagingService = new MessagingService(EmailPasswordActivity.this);
-        emailText.setText(messagingService.FID);
+
     }
 
     @Override
     public void onStart() {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = mAuth.getCurrentUser();
+        currentUser = mAuth.getCurrentUser();
         updateUI(currentUser);
     }
 
@@ -99,10 +108,11 @@ public class EmailPasswordActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithEmail:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
+
                             Toast.makeText(EmailPasswordActivity.this, "Logged in successfully.",
                                     Toast.LENGTH_SHORT).show();
-                            //TODO: Get user UID and load user configuration
+                            currentUser = mAuth.getCurrentUser();
+                            //TODO: https://us-central1-chipitsafe.cloudfunctions.net/updateUserAppToken POST UserAppToken
 
                         } else {
                             // If sign in fails, display a message to the user.
@@ -115,6 +125,20 @@ public class EmailPasswordActivity extends AppCompatActivity {
                         // ...
                     }
                 });
+        JSONObject data = null;
+        String dataString = "";
+        dataString += String.format( "{'uid': '%s','userAppToken': '%s'}",currentUser.getUid(),messagingService.FID);
+
+        try {
+
+            data =  new JSONObject(dataString);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Log.e(TAG,e.getMessage());
+        }
+
+        FirebaseServlet firebaseServlet = new FirebaseServlet();
+        firebaseServlet.updateUserAppToken(data,EmailPasswordActivity.this);
     }
 
     public void updateUI(FirebaseUser user) {
