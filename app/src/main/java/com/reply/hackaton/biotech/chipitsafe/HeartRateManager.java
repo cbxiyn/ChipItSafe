@@ -23,6 +23,14 @@ public class HeartRateManager implements MdsNotificationListener{
     private BluetoothDevice heartRateDevice;
     private String hearRateDeviceSerial;
 
+    public void confirmHeartRateDevice(){
+        heartRateDevice = deviceAttemptingToConnectTo;
+    }
+
+
+    public void setHeartRateDeviceSerial(String serialNr){
+        hearRateDeviceSerial = serialNr;
+    }
 
     private static HeartRateManager heartRateManager = null;
 
@@ -38,79 +46,20 @@ public class HeartRateManager implements MdsNotificationListener{
 
     public void initMds() {
         mMds = Mds.builder().build(currentContext);
+
     }
 
 
-    public void connectToDevice(BluetoothDevice device){
+    private BluetoothDevice deviceAttemptingToConnectTo=null;
+
+    public void connectToDevice(BluetoothDevice device, MdsConnectionListener listener){
         /*if (!device.isConnected()) { */
             //RxBleDevice bleDevice = getBleClient().getBleDevice(device.macAddress);
             Log.i(LOG_TAG, "Connecting to BLE device: " +  device.getAddress() /*bleDevice.getMacAddress()*/);
 
-            final BluetoothDevice deviceAttemptingToConnectTo = device;
+            deviceAttemptingToConnectTo = device;
 
-            mMds.connect(  device.getAddress() /*bleDevice.getMacAddress()*/,
-                    new MdsConnectionListener() {
-
-
-                /**
-                * Called when Mds / Whiteboard link-layer connection (BLE) has been succesfully established
-                *
-                */
-                @Override
-                public void onConnect(String s) {
-                    Log.d(LOG_TAG, "onConnect:" + s);
-
-                }
-
-                /**
-                * Called when the full Mds / Whiteboard connection has been succesfully established
-                *
-                */
-                @Override
-                public void onConnectionComplete(String macAddress, String serial) {
-                    Log.d(LOG_TAG, "onConnectionComplete:devSerial" + serial);
-                    heartRateDevice = deviceAttemptingToConnectTo;
-                    hearRateDeviceSerial = serial;
-                    subscribeToHeartECGNotifications();
-                    //getDeviceInfo();
-                    /*
-                    for (MyScanResult sr : mScanResArrayList) {
-                        if (sr.macAddress.equalsIgnoreCase(macAddress)) {
-                            sr.markConnected(serial);
-                            break;
-                        }
-                    }
-                    */
-                    //mScanResArrayAdapter.notifyDataSetChanged();
-                }
-
-                /**
-                * Called when Mds connect() call fails with error
-                *
-                */
-                @Override
-                public void onError(MdsException e) {
-                    Log.e(LOG_TAG, "onError:" + e);
-
-                    //showConnectionError(e);
-                }
-
-                /**
-                * Called when Mds connection disconnects (e.g. device out of range)
-                *
-                */
-                @Override
-                public void onDisconnect(String bleAddress) {
-                    Log.d(LOG_TAG, "onDisconnect: " + bleAddress);
-                    /*
-                    for (MyScanResult sr : mScanResArrayList) {
-                        if (bleAddress.equals(sr.macAddress))
-                            sr.markDisconnected();
-                    }
-                    */
-                    //mScanResArrayAdapter.notifyDataSetChanged();
-                }
-            });
+            mMds.connect(  device.getAddress(), listener);
         /*
         }
         else

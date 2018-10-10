@@ -8,6 +8,7 @@ import android.bluetooth.BluetoothDevice;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -18,14 +19,20 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.movesense.mds.MdsConnectionListener;
+import com.movesense.mds.MdsException;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class DevicePairingActivity extends AppCompatActivity
-        implements BluetoothConnectionManager.BluetoothConnectionManagerListener, BluetoothDeviceAdapter.OnBLEDeviceClickListener {
+        implements BluetoothConnectionManager.BluetoothConnectionManagerListener,
+        BluetoothDeviceAdapter.OnBLEDeviceClickListener,
+        MdsConnectionListener {
 
+    private String LOG_TAG = "DevicePairingActivity";
 
     DevicePairingActivity startActivityContext;
     private final static int REQUEST_ENABLE_BT = 1;
@@ -249,6 +256,68 @@ public class DevicePairingActivity extends AppCompatActivity
         Toast.makeText(this, "attempting to connect to "+ dev.getName(), Toast.LENGTH_SHORT).show();
 
         final BluetoothDevice device = dev;
-        heartManager.connectToDevice(device);
+        heartManager.connectToDevice(device, this);
+    }
+
+
+
+
+    // MDS CONNECTION LISTENER METHODS
+    /**
+     * Called when Mds / Whiteboard link-layer connection (BLE) has been succesfully established
+     *
+     */
+    @Override
+    public void onConnect(String s) {
+        Log.d(LOG_TAG, "onConnect:" + s);
+
+    }
+
+    /**
+     * Called when the full Mds / Whiteboard connection has been succesfully established
+     *
+     */
+    @Override
+    public void onConnectionComplete(String macAddress, String serial) {
+        Log.d(LOG_TAG, "onConnectionComplete:devSerial" + serial);
+
+        heartManager.confirmHeartRateDevice();
+        heartManager.setHeartRateDeviceSerial(serial);
+        //val editText = findViewById<EditText>(R.id.editText)
+        //val message = editText.text.toString()
+        //val intent = Intent(this, StartActivity).apply {
+            //putExtra(EXTRA_MESSAGE, message)
+        //}
+        Intent myIntent = new Intent(this, StartActivity.class);
+        startActivity(myIntent);
+                    /*
+                    for (MyScanResult sr : mScanResArrayList) {
+                        if (sr.macAddress.equalsIgnoreCase(macAddress)) {
+                            sr.markConnected(serial);
+                            break;
+                        }
+                    }
+                    */
+    }
+
+    /**
+     * Called when Mds connect() call fails with error
+     *
+     */
+    @Override
+    public void onError(MdsException e) {
+        Log.e(LOG_TAG, "onError:" + e);
+
+        //showConnectionError(e);
+    }
+
+    /**
+     * Called when Mds connection disconnects (e.g. device out of range)
+     *
+     */
+    @Override
+    public void onDisconnect(String bleAddress) {
+        Log.d(LOG_TAG, "onDisconnect: " + bleAddress);
+
     }
 }

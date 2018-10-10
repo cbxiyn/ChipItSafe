@@ -17,6 +17,8 @@ import android.support.v7.app.ActionBar;
 
 public class StartActivity extends AppCompatActivity {
 
+    private HeartRateManager heartRateManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,5 +55,7 @@ public class StartActivity extends AppCompatActivity {
 
         //Used to select an item programmatically
         //bottomNavigationView.getMenu().getItem(2).setChecked(true);
+
+        heartRateManager = HeartRateManager.instanceOfHeartRateManager(this);
     }
 }
