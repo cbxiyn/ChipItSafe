@@ -14,7 +14,8 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
-
+/** This class will contain the methods that interact with the Firebase database
+ */
 public class FirebaseDatabaseHelper {
     private static final String TAG = "Firestore Database";
     private static FirebaseFirestore db = FirebaseFirestore.getInstance();

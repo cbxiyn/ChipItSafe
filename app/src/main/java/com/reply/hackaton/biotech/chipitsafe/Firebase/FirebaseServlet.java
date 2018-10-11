@@ -14,7 +14,8 @@ import com.android.volley.toolbox.Volley;
 
 import org.json.JSONObject;
 
-
+/** This class will contain methods that can use HTTP request cloud functions.
+ */
 public class FirebaseServlet {
     private static final String TAG = "HTTPRequest";
     private String projectUrl = "https://us-central1-chipitsafe.cloudfunctions.net/";

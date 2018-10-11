@@ -8,7 +8,9 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
-
+/** This class is used for HTTP Requests. It creates a RequestQueue that requests can be added
+ * to which android volley will execute in first-in last-out order.
+ */
 public class RequestSingleton {
     private static RequestSingleton mInstance;
     private RequestQueue mRequestQueue;

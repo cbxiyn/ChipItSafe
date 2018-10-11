@@ -11,7 +11,8 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
-
+/** This class is for sending and receiving messages via the Firebase Cloud Messaging service
+ */
 
 public class MessagingService extends FirebaseMessagingService {
     private static final String TAG = "MessagingService";
