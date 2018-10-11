@@ -134,8 +134,8 @@ public class StartActivity extends AppCompatActivity
         heartManager.isConnectedToDevice = true;
 
 
-        HealtStateFragment fragment = (HealtStateFragment) getSupportFragmentManager.findFragmentById(R.id.your_fragment);
-        fragment.receive(sharedUrl);
+        //HealtStateFragment fragment = (HealtStateFragment) getSupportFragmentManager.findFragmentById(R.id.your_fragment);
+        //fragment.receive(sharedUrl);
         if(selectedFragment instanceof HealtStateFragment){
             ((HealtStateFragment)selectedFragment).startDisplayingContents();
         }
