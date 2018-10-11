@@ -30,7 +30,7 @@ import org.json.JSONObject;
 public class HealtStateFragment extends Fragment implements MdsResponseListener {
 
 
-    private String LOG_TAG = "HealtStateFragment";
+    public static String TAG = "HealtStateFragment";
     HeartRateManager heartRateManager;
     private TextView deviceNameTV;
 
@@ -95,7 +95,7 @@ public class HealtStateFragment extends Fragment implements MdsResponseListener 
      */
     @Override
     public void onSuccess(String data) {
-        Log.i(LOG_TAG, "Device /info request successful: " + data);
+        Log.i(TAG, "Device /info request successful: " + data);
         // Display info in alert dialog
 
         // The onSuccess() gets the result code and the returned data as a JSON string.
@@ -117,7 +117,7 @@ public class HealtStateFragment extends Fragment implements MdsResponseListener 
      */
     @Override
     public void onError(MdsException e) {
-        Log.e(LOG_TAG, "Device /info returned error: " + e);
+        Log.e(TAG, "Device /info returned error: " + e);
     }
 
     /**

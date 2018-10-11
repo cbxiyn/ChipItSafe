@@ -21,6 +21,7 @@ public class EmergencyFragment extends Fragment {
 
 
     private OnFragmentInteractionListener mListener;
+    public static String TAG = "EmergencyFragment";
 
     public EmergencyFragment() {
         // Required empty public constructor

@@ -26,6 +26,8 @@ import android.widget.Toast;
 import com.movesense.mds.MdsConnectionListener;
 import com.movesense.mds.MdsException;
 
+import java.util.HashMap;
+
 
 public class StartActivity extends AppCompatActivity
         implements MdsConnectionListener {
@@ -38,7 +40,7 @@ public class StartActivity extends AppCompatActivity
     private String LOG_TAG = "StartActivity";
     private HeartRateManager heartManager;
     BluetoothDevice selectedDevice = null;
-
+    HashMap<String,Fragment> fragmentHashMap = new HashMap<String,Fragment>();
     Fragment selectedFragment = null;
 
     @Override
@@ -68,10 +70,20 @@ public class StartActivity extends AppCompatActivity
 
                         switch (item.getItemId()) {
                             case R.id.navigation_healt_state:
-                                selectedFragment = HealtStateFragment.newInstance();
+                                Fragment f = fragmentHashMap.get(HealtStateFragment.TAG);
+                                if(f == null){
+                                    f = HealtStateFragment.newInstance();
+                                    fragmentHashMap.put(HealtStateFragment.TAG,f);
+                                }
+                                selectedFragment = f;
                                 break;
                             case R.id.navigation_emergency:
-                                selectedFragment = EmergencyFragment.newInstance();
+                                Fragment fr = fragmentHashMap.get(EmergencyFragment.TAG);
+                                if(fr == null){
+                                    fr = EmergencyFragment.newInstance();
+                                    fragmentHashMap.put(EmergencyFragment.TAG,fr);
+                                }
+                                selectedFragment = fr;
                                 break;
                         }
                         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
