@@ -56,9 +56,9 @@ public class HealtStateFragment extends Fragment {
         }
 
         if (!mNfcAdapter.isEnabled()) {
-            Log.d(TAG,"NFC is disabled")
+            Log.d(TAG,"NFC is disabled");
         } else {
-            Log.d(TAG,"NFC is enabled")
+            Log.d(TAG,"NFC is enabled");
         }
 
         //handleIntent(getIntent());
