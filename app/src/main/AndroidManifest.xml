@@ -40,4 +40,5 @@
             android:resource="@color/colorAccent" />
     </application>
 
+
 </manifest>

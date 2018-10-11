@@ -13,6 +13,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.reply.hackaton.biotech.chipitsafe.Firebase.Firebase;
+import com.reply.hackaton.biotech.chipitsafe.Firebase.FirebaseDatabaseHelper;
 import com.reply.hackaton.biotech.chipitsafe.Firebase.FirebaseServlet;
 import com.reply.hackaton.biotech.chipitsafe.Firebase.MessagingService;
 
@@ -21,33 +23,33 @@ import org.json.JSONObject;
 
 
 public class EmailPasswordActivity extends AppCompatActivity {
-    private FirebaseAuth mAuth;
 
     TextView emailText;
     TextView passwordText;
     private static final String TAG = EmailPasswordActivity.class.getName();
+
     MessagingService messagingService;
+    Firebase firebase;
 
     FirebaseUser currentUser;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_email_password2);
 
-        mAuth = FirebaseAuth.getInstance();
-
         emailText = findViewById(R.id.emailView);
         passwordText = findViewById(R.id.passwordView);
 
         messagingService = new MessagingService(EmailPasswordActivity.this);
-
+        firebase = new Firebase();
     }
 
     @Override
     public void onStart() {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
-        currentUser = mAuth.getCurrentUser();
+        currentUser = firebase.currentUser;
         updateUI(currentUser);
     }
 
@@ -58,87 +60,30 @@ public class EmailPasswordActivity extends AppCompatActivity {
         //TODO: Unit tests
 
         //TODO: Data validation on views. Password Min 6 characters/Email must include @ symbol etc.
-        if(!email.contains("@"))
-        {
+        if (!email.contains("@")) {
             Toast.makeText(EmailPasswordActivity.this, "Enter a valid email",
                     Toast.LENGTH_SHORT).show();
             return;
         }
-        if(password.length()<6)
-        {
+        if (password.length() < 6) {
             Toast.makeText(EmailPasswordActivity.this, "Enter a password longer than 6 characters",
                     Toast.LENGTH_SHORT).show();
             return;
         }
-        mAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Registration successful.
-                            Log.d(TAG, "createUserWithEmail:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            Toast.makeText(EmailPasswordActivity.this, "User registered successfully.",
-                                    Toast.LENGTH_SHORT).show();
+        firebase.emailPasswordRegister(email, password, EmailPasswordActivity.this);
 
-                            //TODO: Execute cloud function that creates user configuration on real-time database
-
-                            return;
-                        } else {
-                            // If registration  fails, attempt to continue and try to login.
-                            Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                            Toast.makeText(EmailPasswordActivity.this, task.getException().getMessage(),
-                                    Toast.LENGTH_SHORT).show();
-                        }
-
-                        // ...
-                    }
-                });
     }
-    public void loginButton_onClick(View view)
-    {
+
+    public void loginButton_onClick(View view) {
 
         String email = emailText.getText().toString();
         String password = passwordText.getText().toString();
 
-        mAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "signInWithEmail:success");
 
-                            Toast.makeText(EmailPasswordActivity.this, "Logged in successfully.",
-                                    Toast.LENGTH_SHORT).show();
-                            currentUser = mAuth.getCurrentUser();
-                            //TODO: https://us-central1-chipitsafe.cloudfunctions.net/updateUserAppToken POST UserAppToken
+        firebase.emailPasswordLogin(email, password, EmailPasswordActivity.this);
+        firebase.updateCurrentUser();
+        firebase.updateUserAppToken(messagingService.FID, EmailPasswordActivity.this);
 
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Log.w(TAG, "signInWithEmail:failure", task.getException());
-                            Toast.makeText(EmailPasswordActivity.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
-                            updateUI(null);
-                        }
-
-                        // ...
-                    }
-                });
-        JSONObject data = null;
-        String dataString = "";
-        dataString += String.format( "{'uid': '%s','userAppToken': '%s'}",currentUser.getUid(),messagingService.FID);
-
-        try {
-
-            data =  new JSONObject(dataString);
-        } catch (JSONException e) {
-            e.printStackTrace();
-            Log.e(TAG,e.getMessage());
-        }
-
-        FirebaseServlet firebaseServlet = new FirebaseServlet();
-        firebaseServlet.updateUserAppToken(data,EmailPasswordActivity.this);
     }
 
     public void updateUI(FirebaseUser user) {

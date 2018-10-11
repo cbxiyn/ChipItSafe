@@ -1,17 +1,8 @@
 package com.reply.hackaton.biotech.chipitsafe.Firebase;
 
 
-
 import android.app.Activity;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
-import android.media.RingtoneManager;
-import android.net.Uri;
-import android.os.Build;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -20,43 +11,53 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
-import com.reply.hackaton.biotech.chipitsafe.MainActivity;
-import com.reply.hackaton.biotech.chipitsafe.R;
 
 
 public class MessagingService extends FirebaseMessagingService {
     private static final String TAG = "MessagingService";
+
     Context context;
 
     public String FID;
-    public MessagingService()
-    {
+
+    public MessagingService() {
 
     }
-    public MessagingService(final Context context)
-    {
+
+    public MessagingService(final Context context) {
         this.context = context;
 
-        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener((Activity) context,  new OnSuccessListener<InstanceIdResult>() {
+        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener((Activity) context, new OnSuccessListener<InstanceIdResult>() {
             @Override
             public void onSuccess(InstanceIdResult instanceIdResult) {
                 FID = instanceIdResult.getToken();
                 Log.d(TAG, "Token: " + FID);
 
+
             }
         });
     }
+
     @Override
     public void onNewToken(String token) {
         Log.d(TAG, "Refreshed token: " + token);
 
         sendRegistrationToServer(token);
     }
-    //TODO: Send new token to FireBase RT-DBS
-    public void sendRegistrationToServer(String token)
-    {
 
+    //TODO: Send new token to FireBase RT-DBS
+    public void sendRegistrationToServer(String token) {
+        FirebaseServlet firebaseServlet = new FirebaseServlet();
+        //firebaseServlet.updateUserAppToken();
     }
+
+    /**
+     * This method overrides firebase's default implementation of onMessageReceived. This method handles
+     * incoming data/notification payloads (JSONObject)
+     *
+     * @param remoteMessage An message sent to this device. Containing either a notification payload
+     *                      or a data payload.
+     */
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
 
@@ -69,9 +70,11 @@ public class MessagingService extends FirebaseMessagingService {
 
             if (/* Check if data needs to be processed by long running job */ true) {
                 // For long-running tasks (10 seconds or more) use Firebase Job Dispatcher.
+                //TODO: Handle data when first aid request is requested.
                 //scheduleJob();
             } else {
                 // Handle message within 10 seconds
+                //TODO: Handle data when first aid request is requested.
                 //handleNow();
             }
 
@@ -83,10 +86,6 @@ public class MessagingService extends FirebaseMessagingService {
 
         }
 
-    }
-
-    public static void showToastMethod(Context context) {
-        Toast.makeText(context, "mymessage ", Toast.LENGTH_SHORT).show();
     }
 
 }

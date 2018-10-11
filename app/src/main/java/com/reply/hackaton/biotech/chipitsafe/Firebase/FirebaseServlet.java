@@ -1,6 +1,7 @@
 package com.reply.hackaton.biotech.chipitsafe.Firebase;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -16,17 +17,23 @@ import org.json.JSONObject;
 
 public class FirebaseServlet {
     private static final String TAG = "HTTPRequest";
+    private String projectUrl = "https://us-central1-chipitsafe.cloudfunctions.net/";
 
-    public FirebaseServlet()
-    {
+    public FirebaseServlet() {
 
     }
-    public void updateUserAppToken(JSONObject data,Context context)
-    {
-        RequestQueue queue = Volley.newRequestQueue(context);
-        String url ="https://us-central1-chipitsafe.cloudfunctions.net/updateUserAppToken";
 
-        JsonObjectRequest jsonobj = new JsonObjectRequest(Request.Method.POST, url,data,
+    /**
+     * This method sends a POST request to the "updateUserAppToken" Firebase cloud function with a
+     * Firebase Application ID.
+     *
+     * @param data    An JSONObject containing a uid and userAppToken field
+     * @param context The activity that is calling this function
+     */
+    public void updateUserAppToken(JSONObject data, Context context) {
+        String cloudFunction = "updateUserAppToken";
+
+        JsonObjectRequest jsonobj = new JsonObjectRequest(Request.Method.POST, projectUrl + cloudFunction, data,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -40,6 +47,6 @@ public class FirebaseServlet {
                     }
                 }
         );
-        queue.add(jsonobj);
+        RequestSingleton.getInstance(context).addToRequestQueue(jsonobj);
     }
 }
