@@ -56,14 +56,17 @@ public class HealtStateFragment extends Fragment implements MdsResponseListener 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_healt_state, container, false);
+        //For Mario..catch here the view references
+        View v =  inflater.inflate(R.layout.fragment_healt_state, container, false);
+        deviceNameTV = (TextView) v.findViewById(R.id.deviceName);
+        return v;
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        deviceNameTV = (TextView) getView().findViewById(R.id.deviceName);
+        //I've never used this override fucntion
+        //deviceNameTV = (TextView) getView().findViewById(R.id.deviceName);
     }
 
     @Override
