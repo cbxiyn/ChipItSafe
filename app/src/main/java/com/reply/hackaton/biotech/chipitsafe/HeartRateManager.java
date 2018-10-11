@@ -13,6 +13,12 @@ import com.movesense.mds.MdsSubscription;
 
 public class HeartRateManager implements MdsNotificationListener{
 
+    /*
+    MOVESENSE APIs
+    https://bitbucket.org/suunto/movesense-device-lib
+     */
+
+
     private String LOG_TAG = "HeartRateManager";
 
     private Context currentContext;
@@ -141,12 +147,17 @@ The MDS library exposes the REST api on the Movesense devices via the following 
     NOTE: After the application is done with the notifications it should call the unsubscribe()
     methods in the MdsSubscription object that was returned from the call to subscribe().
     */
-    MdsSubscription subscription;
-    public void subscribeToHeartECGNotifications(){
+    MdsSubscription ECGsubscription;
+    public void subscribeToECGNotifications(){
         Log.d("subscribeToHeartECGNot", "doing..");
         //String uri = SCHEME_PREFIX + hearRateDeviceSerial + "/Meas/ECG";
+        /*
+        Apparently ECG, like Magn and Acc but unlike HR, needs to have the sample rate included in the path
+        in order to return data. I fixed the issue by changing the API path from Meas/ECG to Meas/ECG/125,
+        125 being the default sample rate that the android app uses.
+         */
         String uriToSubscribeTo = "Meas/ECG/125";//Meas/Acc/13
-        subscription =
+        ECGsubscription =
                 mMds.subscribe("suunto://MDS/EventListener",
                         "{\"Uri\": \"" + hearRateDeviceSerial + "/" + uriToSubscribeTo + "\"}",
                         this); // MdsNotificationListener callback class
@@ -170,6 +181,23 @@ The MDS library exposes the REST api on the Movesense devices via the following 
 
     @Override
     public void onError(MdsException e) {
+
+    }
+
+
+
+
+    MdsSubscription HRsubscription;
+    public void subscribeToHeartRateNotifications(){
+        Log.d("subscribeToHeartRateNot", "doing..");
+        String uriToSubscribeTo = "Meas/HR/125";//Meas/Acc/13
+        ECGsubscription =
+                mMds.subscribe("suunto://MDS/EventListener",
+                        "{\"Uri\": \"" + hearRateDeviceSerial + "/" + uriToSubscribeTo + "\"}",
+                        this); // MdsNotificationListener callback class
+
+
+
 
     }
 }
