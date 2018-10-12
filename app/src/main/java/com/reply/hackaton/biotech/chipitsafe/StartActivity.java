@@ -20,6 +20,11 @@ import android.widget.Toast;
 
 import com.movesense.mds.*;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+import static java.lang.System.in;
 
 
 public class StartActivity extends AppCompatActivity
@@ -134,4 +139,33 @@ public class StartActivity extends AppCompatActivity
         super.onNewIntent(intent);
         //HealtStateFragment.newInstance().handleIntent(intent);
     }
+
+    private Boolean isIrregularHeartBeat(List<Integer> list){
+        int max = Collections.max(list);
+        int distance;
+        int prevDistance = -1;
+        int firstMaxPosition = -1;
+
+
+        for(int i=0; i<list.size(); i++){
+            if (list.get(i) == max) {
+                if (firstMaxPosition == -1){
+                    firstMaxPosition = i;
+                } else {
+                    distance = i - firstMaxPosition;
+                    firstMaxPosition = -1;
+                    if(prevDistance == -1){
+                        prevDistance = distance;
+                    } else if (prevDistance != distance ){
+                        return false;
+                    }
+                }
+
+            }
+
+        }
+
+        return true;
+    }
+
 }
