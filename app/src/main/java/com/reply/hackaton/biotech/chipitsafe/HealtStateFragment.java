@@ -27,6 +27,7 @@ import com.movesense.mds.MdsException;
 import com.movesense.mds.MdsNotificationListener;
 import com.movesense.mds.MdsResponseListener;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -225,7 +226,35 @@ public class HealtStateFragment extends Fragment implements MdsResponseListener,
     @Override
     public void onNotification(String s) {
         Log.e("BPS", s);
+        try {
+
+            JSONObject hrData = new JSONObject(s);
+            int average = hrData.getInt("average");
+            parametersTV.setText("Average: "+average+"\n");
+            // Retrieve number array from JSON object.
+            JSONArray array = hrData.optJSONArray("rrData");
+
+            // Deal with the case of a non-array value.
+            if (array == null) {
+                /*...*/
+            }
+
+            // Create an int array to accomodate the numbers.
+            int[] hrSamples = new int[array.length()];
+
+            // Extract numbers from JSON array.
+            for (int i = 0; i < array.length(); ++i) {
+                hrSamples[i] = array.optInt(i);
+                parametersTV.setText(parametersTV.getText().toString() + hrSamples[i] + "-");
+            }
+
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         parametersTV.setText(s);
+
 
     }
 
