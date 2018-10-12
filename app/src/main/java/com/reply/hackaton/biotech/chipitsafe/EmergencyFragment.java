@@ -8,6 +8,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.reply.hackaton.biothech.chipitsafe.tools.GeoLocalizer;
+import com.reply.hackaton.biothech.chipitsafe.tools.SimulationConstants;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -45,6 +48,11 @@ public class EmergencyFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_emergency, container, false);
     }
 
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
 
     @Override
     public void onAttach(Context context) {
