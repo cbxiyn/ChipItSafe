@@ -86,6 +86,14 @@ public class StartActivity extends AppCompatActivity
                                 }
                                 selectedFragment = fr;
                                 break;
+                            case R.id.navigation_nfc:
+                                Fragment fra = fragmentHashMap.get(NFCFragment.TAG);
+                                if(fra == null){
+                                    fra = NFCFragment.newInstance();
+                                    fragmentHashMap.put(NFCFragment.TAG,fra);
+                                }
+                                selectedFragment = fra;
+                                break;
                         }
                         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                         transaction.replace(R.id.container, selectedFragment);
@@ -111,7 +119,7 @@ public class StartActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        if(!heartManager.isConnectedToDevice){
+        if(heartManager.isConnectedToDevice){
 
             BluetoothDevice dev = heartManager.getDeviceAttemptingToConnectTo();
             Toast.makeText(this, "attempting to connect to "+ dev.getName(), Toast.LENGTH_SHORT).show();
