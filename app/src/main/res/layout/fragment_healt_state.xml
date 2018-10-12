@@ -41,5 +41,11 @@
         android:layout_marginBottom="80dp"
         android:layout_gravity="center"/>
 
-
+    <FrameLayout
+        android:id="@+id/heartLayout"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="200dp"
+        android:layout_marginLeft="100dp"></FrameLayout>
 </FrameLayout>

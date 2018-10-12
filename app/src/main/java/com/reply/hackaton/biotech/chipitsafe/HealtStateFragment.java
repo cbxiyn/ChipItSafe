@@ -15,10 +15,13 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,6 +31,7 @@ import com.google.android.gms.maps.MapFragment;
 import com.movesense.mds.MdsException;
 import com.movesense.mds.MdsNotificationListener;
 import com.movesense.mds.MdsResponseListener;
+import com.reply.hackaton.biotech.chipitsafe.graphics.MyHeartShape;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -47,6 +51,7 @@ public class HealtStateFragment extends Fragment implements MdsResponseListener,
     private TextView deviceNameTV;
     private ProgressBar progressBar;
     private TextView parametersTV;
+    private MyHeartShape heartCustomView;
 
     public HealtStateFragment() {
         // Required empty public constructor
@@ -63,6 +68,7 @@ public class HealtStateFragment extends Fragment implements MdsResponseListener,
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         heartRateManager = HeartRateManager.instanceOfHeartRateManager();
         mNfcAdapter = NfcAdapter.getDefaultAdapter(getActivity());
 
@@ -119,6 +125,14 @@ public class HealtStateFragment extends Fragment implements MdsResponseListener,
         deviceNameTV = (TextView) v.findViewById(R.id.deviceName);
         parametersTV = (TextView) v.findViewById(R.id.hearthParamsTV);
         progressBar = (ProgressBar) v.findViewById(R.id.progressBar);
+        heartCustomView = new MyHeartShape(getActivity());
+        heartCustomView.setLayoutParams(
+                new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT,
+                        FrameLayout.LayoutParams.WRAP_CONTENT));
+        FrameLayout innerHeartFrameLayout = (FrameLayout) v.findViewById(R.id.heartLayout);
+        innerHeartFrameLayout.addView(heartCustomView);
+
+        //
         // Inflate the layout for this fragment
         return v;
     }
@@ -230,7 +244,7 @@ public class HealtStateFragment extends Fragment implements MdsResponseListener,
         Log.e("BPS", s);
         try {
 
-            JSONObject hrData = new JSONObject(s);
+            JSONObject hrData = new JSONObject(s).getJSONObject("Body");
             int average = hrData.getInt("average");
             parametersTV.setText("Average: "+average+"\n");
             // Retrieve number array from JSON object.
