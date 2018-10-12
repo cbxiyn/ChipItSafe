@@ -4,7 +4,8 @@
     android:id="@+id/fragment_nfc_linearLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="30dp"
+    android:layout_marginBottom="60dp"
+    android:layout_marginTop="60dp"
     android:orientation="vertical"
     tools:context=".NFCFragment">
 
@@ -14,58 +15,65 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:layout_gravity="center"
+        android:layout_marginLeft="@dimen/fab_margin"
         android:gravity="center_vertical"
-        android:text="Nome" />
+        android:text="- - -" />
     <TextView
         android:id="@+id/nfc_content_lastname"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
+        android:layout_marginLeft="@dimen/fab_margin"
         android:gravity="center_vertical"
-        android:text="Lastname" />
+        android:text="- - -" />
     <TextView
         android:id="@+id/nfc_content_fiscalCode"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
+        android:layout_marginLeft="@dimen/fab_margin"
         android:gravity="center_vertical"
-        android:text="FiscalCode" />
+        android:text="- - -" />
     <TextView
         android:id="@+id/nfc_content_blood"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
+        android:layout_marginLeft="@dimen/fab_margin"
         android:gravity="center_vertical"
-        android:text="FiscalCode" />
+        android:text="- - -" />
     <TextView
         android:id="@+id/nfc_content_birthDate"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
+        android:layout_marginLeft="@dimen/fab_margin"
         android:gravity="center_vertical"
-        android:text="FiscalCode" />
+        android:text="- - -" />
     <TextView
         android:id="@+id/nfc_content_allergies"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
+        android:layout_marginLeft="@dimen/fab_margin"
         android:gravity="center_vertical"
-        android:text="FiscalCode" />
+        android:text="- - -" />
     <TextView
         android:id="@+id/nfc_content_deseas"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
+        android:layout_marginLeft="@dimen/fab_margin"
         android:gravity="center_vertical"
-        android:text="FiscalCode" />
+        android:text="- - -" />
     <TextView
         android:id="@+id/nfc_content_threapy"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
+        android:layout_marginLeft="@dimen/fab_margin"
         android:gravity="center_vertical"
-        android:text="FiscalCode" />
+        android:text="- - -" />
 
 
 </LinearLayout>

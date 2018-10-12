@@ -18,8 +18,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,7 +36,7 @@ public class NFCFragment extends Fragment {
 
     public static final String TAG = "NFCFragment";
     public static final String MIME_TEXT_PLAIN = "text/plain";
-    public TextView nfcContent;
+    public LinearLayout linearLayout;
 
     public NFCFragment() {
         // Required empty public constructor
@@ -54,7 +59,7 @@ public class NFCFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_nfc, container, false);
-        nfcContent = (TextView)v.findViewById(R.id.nfc_content);
+        linearLayout = (LinearLayout) v.findViewById(R.id.fragment_nfc_linearLayout);
         return v;
     }
 
@@ -78,7 +83,7 @@ public class NFCFragment extends Fragment {
             if (MIME_TEXT_PLAIN.equals(type)) {
 
                 Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
-                new NdefReaderTask(nfcContent).execute(tag);
+                new NdefReaderTask(linearLayout).execute(tag);
 
             } else {
                 Log.d(TAG, "Wrong mime type: " + type);
@@ -92,7 +97,7 @@ public class NFCFragment extends Fragment {
 
             for (String tech : techList) {
                 if (searchedTech.equals(tech)) {
-                    new NdefReaderTask(nfcContent).execute(tag);
+                    new NdefReaderTask(linearLayout).execute(tag);
                     break;
                 }
             }
@@ -130,9 +135,10 @@ public class NFCFragment extends Fragment {
 class NdefReaderTask extends AsyncTask<Tag, Void, String> {
 
     private static final String TAG = "NdefReaderTask";
-    private TextView view;
-    public NdefReaderTask(TextView v){
-        view = v;
+    private LinearLayout view;
+
+    public NdefReaderTask(LinearLayout l){
+        view = l;
     }
 
     @Override
@@ -190,7 +196,44 @@ class NdefReaderTask extends AsyncTask<Tag, Void, String> {
     @Override
     protected void onPostExecute(String result) {
         if (result != null) {
-            view.setText("Read content: " + result);
+            Log.d(TAG,"NFC result:"+result);
+            try {
+
+                JSONObject obj = new JSONObject(result);
+                populateUI(obj);
+
+            } catch (Throwable t) {
+                Log.e("My App", "Could not parse malformed JSON: \"" + result + "\"");
+            }
         }
+    }
+
+
+    private void populateUI(JSONObject jsonObject){
+
+        TextView nameTextView = (TextView)view.findViewById(R.id.nfc_content_name);
+        TextView lastnameTextView = (TextView)view.findViewById(R.id.nfc_content_lastname);
+        TextView fcodeTextView = (TextView)view.findViewById(R.id.nfc_content_fiscalCode);
+        TextView bloodTextView = (TextView)view.findViewById(R.id.nfc_content_blood);
+        TextView birthDateTextView = (TextView)view.findViewById(R.id.nfc_content_birthDate);
+        TextView allergiesTextView = (TextView)view.findViewById(R.id.nfc_content_allergies);
+        TextView deseasesTextView = (TextView)view.findViewById(R.id.nfc_content_deseas);
+        TextView therapyTextView = (TextView)view.findViewById(R.id.nfc_content_threapy);
+
+        try {
+            nameTextView.setText(jsonObject.getString("Name"));
+            lastnameTextView.setText(jsonObject.getString("Lastname"));
+            fcodeTextView.setText(jsonObject.getString("FiscalCode"));
+            bloodTextView.setText(jsonObject.getString("BloodGroup"));
+            birthDateTextView.setText(jsonObject.getString("BithDate"));
+            allergiesTextView.setText(jsonObject.getString("Allergies"));
+            deseasesTextView.setText(jsonObject.getString("Relevent_deseases"));
+            therapyTextView.setText(jsonObject.getString("Therapy"));
+
+        } catch (JSONException e) {
+            Log.e(TAG, "PopulateUI"+e.getMessage());
+        }
+
+
     }
 }
