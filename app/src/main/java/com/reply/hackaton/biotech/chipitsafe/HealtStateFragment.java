@@ -1,6 +1,5 @@
 package com.reply.hackaton.biotech.chipitsafe;
 
-import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,12 +8,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.movesense.mds.MdsException;
+import com.movesense.mds.MdsNotificationListener;
 import com.movesense.mds.MdsResponseListener;
 
 import org.json.JSONException;
@@ -29,13 +28,14 @@ import org.json.JSONObject;
  * Use the {@link HealtStateFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class HealtStateFragment extends Fragment implements MdsResponseListener {
+public class HealtStateFragment extends Fragment implements MdsResponseListener, MdsNotificationListener {
 
 
     public static String TAG = "HealtStateFragment";
     HeartRateManager heartRateManager;
     private TextView deviceNameTV;
     private ProgressBar progressBar;
+    private TextView parametersTV;
 
     public HealtStateFragment() {
         // Required empty public constructor
@@ -60,6 +60,7 @@ public class HealtStateFragment extends Fragment implements MdsResponseListener 
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_healt_state, container, false);
         deviceNameTV = (TextView) v.findViewById(R.id.deviceName);
+        parametersTV = (TextView) v.findViewById(R.id.hearthParamsTV);
         progressBar = (ProgressBar) v.findViewById(R.id.progressBar);
         // Inflate the layout for this fragment
         return v;
@@ -92,7 +93,7 @@ public class HealtStateFragment extends Fragment implements MdsResponseListener 
     public void updateDeviceInfo(){
 
         heartRateManager.getDeviceInfo(this);
-
+        heartRateManager.subscribeToHeartRateNotifications(this);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -144,5 +145,16 @@ public class HealtStateFragment extends Fragment implements MdsResponseListener 
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+
+
+
+    // MDS SUBSCRIPTIONS
+    @Override
+    public void onNotification(String s) {
+        Log.e("BPS", s);
+        parametersTV.setText(s);
+
     }
 }

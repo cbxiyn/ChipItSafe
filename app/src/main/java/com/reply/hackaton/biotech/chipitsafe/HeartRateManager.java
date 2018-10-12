@@ -148,7 +148,7 @@ The MDS library exposes the REST api on the Movesense devices via the following 
     methods in the MdsSubscription object that was returned from the call to subscribe().
     */
     MdsSubscription ECGsubscription;
-    public void subscribeToECGNotifications(){
+    public void subscribeToECGNotifications(MdsNotificationListener listener){
         Log.d("subscribeToHeartECGNot", "doing..");
         //String uri = SCHEME_PREFIX + hearRateDeviceSerial + "/Meas/ECG";
         /*
@@ -160,7 +160,7 @@ The MDS library exposes the REST api on the Movesense devices via the following 
         ECGsubscription =
                 mMds.subscribe("suunto://MDS/EventListener",
                         "{\"Uri\": \"" + hearRateDeviceSerial + "/" + uriToSubscribeTo + "\"}",
-                        this); // MdsNotificationListener callback class
+                        listener); // MdsNotificationListener callback class
 
 
 
@@ -188,16 +188,21 @@ The MDS library exposes the REST api on the Movesense devices via the following 
 
 
     MdsSubscription HRsubscription;
-    public void subscribeToHeartRateNotifications(){
+    public void subscribeToHeartRateNotifications(MdsNotificationListener listener){
         Log.d("subscribeToHeartRateNot", "doing..");
-        String uriToSubscribeTo = "Meas/HR/125";//Meas/Acc/13
+        String uriToSubscribeTo = "Meas/HR";//Meas/Acc/13
         ECGsubscription =
                 mMds.subscribe("suunto://MDS/EventListener",
                         "{\"Uri\": \"" + hearRateDeviceSerial + "/" + uriToSubscribeTo + "\"}",
-                        this); // MdsNotificationListener callback class
+                        listener); // MdsNotificationListener callback class
 
 
 
 
+    }
+
+    public void unsubscribeAll(){
+        if(HRsubscription!=null)HRsubscription.unsubscribe();
+        if(ECGsubscription!=null)ECGsubscription.unsubscribe();
     }
 }

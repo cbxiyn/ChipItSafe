@@ -118,6 +118,12 @@ public class StartActivity extends AppCompatActivity
         }
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        heartManager.unsubscribeAll();
+    }
+
     // MDS CONNECTION LISTENER METHODS
     /**
      * Called when Mds / Whiteboard link-layer connection (BLE) has been succesfully established
@@ -144,12 +150,7 @@ public class StartActivity extends AppCompatActivity
         heartManager.setHeartRateDeviceSerial(serial);
         heartManager.isConnectedToDevice = true;
 
-
-        //HealtStateFragment fragment = (HealtStateFragment) getSupportFragmentManager.findFragmentById(R.id.your_fragment);
-        //fragment.receive(sharedUrl);
-        Log.e("COLUSSI", "OUT");
         if(selectedFragment instanceof HealtStateFragment){
-            Log.e("COLUSSI", "IN");
             ((HealtStateFragment)selectedFragment).startDisplayingContents();
             ((HealtStateFragment)selectedFragment).getProgressBar().setVisibility(View.GONE); // to hide
         }
