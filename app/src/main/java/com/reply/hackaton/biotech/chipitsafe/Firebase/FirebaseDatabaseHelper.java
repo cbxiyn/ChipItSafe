@@ -8,6 +8,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.*;
 
 
 import org.json.JSONObject;
@@ -34,7 +35,6 @@ public class FirebaseDatabaseHelper {
      */
     public JSONObject getRescuers(String uid) {
         DocumentReference docRef = db.collection("rescuerConfig").document(uid);
-        HashMap<String, Object> returnData = new HashMap<>();
         // asynchronously retrieve the document
         docRef.get()
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -53,5 +53,22 @@ public class FirebaseDatabaseHelper {
 
         return json;
     }
+    public void createFirstAidDocument(String uid,int bps)
+    {
+        Map<String, Object> docData = new HashMap<>();
+        docData.put("BPS", bps);
+        DocumentReference docRef = db.collection("firstAid").document(uid);
+        Log.d(TAG,docData.toString());
+        docRef.set(docData);
+
+    }
+    public void deleteFirstAidDocument(String uid)
+    {
+        DocumentReference docRef = db.collection("firstAid").document(uid);
+        Log.d(TAG,"Deleting first aid document for user id:" + uid);
+        docRef.delete();
+
+    }
+
 }
 
