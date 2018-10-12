@@ -13,6 +13,12 @@ import com.movesense.mds.MdsSubscription;
 
 public class HeartRateManager implements MdsNotificationListener{
 
+    /*
+    MOVESENSE APIs
+    https://bitbucket.org/suunto/movesense-device-lib
+     */
+
+
     private String LOG_TAG = "HeartRateManager";
 
     private Context currentContext;
@@ -60,6 +66,8 @@ public class HeartRateManager implements MdsNotificationListener{
 
     private BluetoothDevice deviceAttemptingToConnectTo=null;
 
+    public boolean isConnectedToDevice = false;
+
     public void connectToDevice(MdsConnectionListener listener){
         if(deviceAttemptingToConnectTo == null)
             Log.e(LOG_TAG, "null deviceAttemptingToConnectTo reference");
@@ -102,40 +110,11 @@ The MDS library exposes the REST api on the Movesense devices via the following 
 
     private final String SCHEME_PREFIX = "suunto://";
 
-    public void getDeviceInfo(){
+    public void getDeviceInfo(MdsResponseListener listener){
         //String uri = SCHEME_PREFIX + device.connectedSerial + "/Info";
         String uri = SCHEME_PREFIX + hearRateDeviceSerial + "/Info";
         //final Context ctx = currentContext;
-        mMds.get(uri, null, new MdsResponseListener() {
-            /**
-             * Called when Mds operation has been succesfully finished
-             *
-             * @param data Response in String format
-             */
-            @Override
-            public void onSuccess(String data) {
-                Log.i(LOG_TAG, "Device " + hearRateDeviceSerial+ " /info request succesful: " + data);
-                // Display info in alert dialog
-                /*
-                AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
-                builder.setTitle("Device info:")
-                        .setMessage(s)
-                        .show();
-                */
-                // The onSuccess() gets the result code and the returned data as a JSON string.
-
-            }
-
-            /**
-             * Called when Mds operation failed for any reason
-             *
-             * @param e Object containing the error
-             */
-            @Override
-            public void onError(MdsException e) {
-                Log.e(LOG_TAG, "Device " + hearRateDeviceSerial + " /info returned error: " + e);
-            }
-        });
+        mMds.get(uri, null, listener);
     }
 
 
@@ -168,15 +147,20 @@ The MDS library exposes the REST api on the Movesense devices via the following 
     NOTE: After the application is done with the notifications it should call the unsubscribe()
     methods in the MdsSubscription object that was returned from the call to subscribe().
     */
-    MdsSubscription subscription;
-    public void subscribeToHeartECGNotifications(){
+    MdsSubscription ECGsubscription;
+    public void subscribeToECGNotifications(MdsNotificationListener listener){
         Log.d("subscribeToHeartECGNot", "doing..");
         //String uri = SCHEME_PREFIX + hearRateDeviceSerial + "/Meas/ECG";
+        /*
+        Apparently ECG, like Magn and Acc but unlike HR, needs to have the sample rate included in the path
+        in order to return data. I fixed the issue by changing the API path from Meas/ECG to Meas/ECG/125,
+        125 being the default sample rate that the android app uses.
+         */
         String uriToSubscribeTo = "Meas/ECG/125";//Meas/Acc/13
-        subscription =
+        ECGsubscription =
                 mMds.subscribe("suunto://MDS/EventListener",
                         "{\"Uri\": \"" + hearRateDeviceSerial + "/" + uriToSubscribeTo + "\"}",
-                        this); // MdsNotificationListener callback class
+                        listener); // MdsNotificationListener callback class
 
 
 
@@ -198,5 +182,27 @@ The MDS library exposes the REST api on the Movesense devices via the following 
     @Override
     public void onError(MdsException e) {
 
+    }
+
+
+
+
+    MdsSubscription HRsubscription;
+    public void subscribeToHeartRateNotifications(MdsNotificationListener listener){
+        Log.d("subscribeToHeartRateNot", "doing..");
+        String uriToSubscribeTo = "Meas/HR";//Meas/Acc/13
+        ECGsubscription =
+                mMds.subscribe("suunto://MDS/EventListener",
+                        "{\"Uri\": \"" + hearRateDeviceSerial + "/" + uriToSubscribeTo + "\"}",
+                        listener); // MdsNotificationListener callback class
+
+
+
+
+    }
+
+    public void unsubscribeAll(){
+        if(HRsubscription!=null)HRsubscription.unsubscribe();
+        if(ECGsubscription!=null)ECGsubscription.unsubscribe();
     }
 }

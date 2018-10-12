@@ -250,7 +250,7 @@ public class DevicePairingActivity extends AppCompatActivity
 
     @Override
     public void onItemClick(BluetoothDevice dev) {
-
+        //bluetoothConnManager.stopBleScan();
         HeartRateManager.instanceOfHeartRateManager().setHeartRateDeviceAttemptingToConnectTo(dev);
         Intent myIntent = new Intent(this, StartActivity.class);
         startActivity(myIntent);

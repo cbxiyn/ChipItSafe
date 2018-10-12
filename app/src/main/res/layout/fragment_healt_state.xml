@@ -3,16 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".HealtStateFragment">
-
-    <ProgressBar
-        android:id="@+id/progressBar"
-        style="?android:attr/progressBarStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="-150dp"
-        android:layout_gravity="center"
-        />
+    tools:context=".HealtStateFragment"
+    >
 
     <TextView
         android:id="@+id/deviceName"
@@ -41,7 +33,13 @@
         android:layout_marginBottom="-110dp"
         android:text="Show NFC and Bluetooth Device Params" />
 
-
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="80dp"
+        android:layout_gravity="center"/>
 
 
 </FrameLayout>
