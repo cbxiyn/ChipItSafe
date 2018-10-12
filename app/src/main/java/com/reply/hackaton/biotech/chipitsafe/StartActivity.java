@@ -1,7 +1,12 @@
 package com.reply.hackaton.biotech.chipitsafe;
 
+import android.app.Activity;
+import android.app.PendingIntent;
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.nfc.NfcAdapter;
+import android.nfc.Tag;
 import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -34,8 +39,6 @@ import java.util.List;
 public class StartActivity extends AppCompatActivity
         implements MdsConnectionListener {
 
-
-
     // UI
 
     private static final String TAG = "StartActivity";
@@ -43,6 +46,10 @@ public class StartActivity extends AppCompatActivity
     BluetoothDevice selectedDevice = null;
     HashMap<String,Fragment> fragmentHashMap = new HashMap<String,Fragment>();
     Fragment selectedFragment = null;
+    public static final String MIME_TEXT_PLAIN = "text/plain";
+    private NfcAdapter mNfcAdapter;
+    private PendingIntent pendingIntent;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,19 +113,19 @@ public class StartActivity extends AppCompatActivity
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.container, selectedFragment);
         transaction.commit();
-
-        //Used to select an item programmatically
-        //bottomNavigationView.getMenu().getItem(2).setChecked(true);
+        
 
         heartManager = HeartRateManager.instanceOfHeartRateManager();
         heartManager.initMds(this);
 
+        setNFCSettings();
 
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        mNfcAdapter.enableForegroundDispatch(this, pendingIntent, null, null);
         if(heartManager.isConnectedToDevice){
 
             BluetoothDevice dev = heartManager.getDeviceAttemptingToConnectTo();
@@ -130,6 +137,7 @@ public class StartActivity extends AppCompatActivity
 
     @Override
     protected void onStop() {
+        mNfcAdapter.disableForegroundDispatch(this);
         super.onStop();
         heartManager.unsubscribeAll();
     }
@@ -165,14 +173,6 @@ public class StartActivity extends AppCompatActivity
             ((HealtStateFragment)selectedFragment).getProgressBar().setVisibility(View.GONE); // to hide
         }
 
-                    /*
-                    for (MyScanResult sr : mScanResArrayList) {
-                        if (sr.macAddress.equalsIgnoreCase(macAddress)) {
-                            sr.markConnected(serial);
-                            break;
-                        }
-                    }
-                    */
     }
 
     /**
@@ -199,9 +199,33 @@ public class StartActivity extends AppCompatActivity
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        Log.d(TAG, "Catch new intent");
+        Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
 
-        //HealtStateFragment.newInstance().handleIntent(intent);
+        Log.d(TAG, "Catch new intent:"+intent+" tag: "+tag);
+        if(selectedFragment instanceof NFCFragment){
+            ((NFCFragment) selectedFragment).handleIntent(intent);
+        }
+    }
+
+    private void setNFCSettings(){
+
+        mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
+        pendingIntent = PendingIntent.getActivity(
+                this, 0, new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
+        if (mNfcAdapter == null) {
+            // Stop here, we definitely need NFC
+            Toast.makeText(this, "This device doesn't support NFC.", Toast.LENGTH_LONG).show();
+            return;
+
+        }
+
+        if (!mNfcAdapter.isEnabled()) {
+            Log.d(TAG,"NFC is disabled");
+        } else {
+            Log.d(TAG,"NFC is enabled");
+        }
+
+
     }
 
     private Boolean isIrregularHeartBeat(List<Integer> list){
