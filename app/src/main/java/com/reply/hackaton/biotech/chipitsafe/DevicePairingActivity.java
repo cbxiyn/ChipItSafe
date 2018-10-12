@@ -69,62 +69,20 @@ public class DevicePairingActivity extends AppCompatActivity
             }
         });
 
-
+        Button skipButton = (Button) findViewById(R.id.skipButton);
+        skipButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(DevicePairingActivity.this,StartActivity.class);
+                startActivity(intent);
+            }
+        });
 
         if (Build.VERSION.SDK_INT >= 23) {
             // Marshmallow+ Permission APIs
             askPermissions();
         }
     }
-
-
-    /*
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_start);
-
-        startActivityContext = this;
-        //heartManager = new HeartRateManager(this);
-        //heartManager.initMds();
-
-        // Create a progress bar to display while the list loads
-        ProgressBar progressBar = new ProgressBar(this);
-        progressBar.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT, Gravity.CENTER));
-        progressBar.setIndeterminate(true);
-        listView = (ListView) findViewById(R.id.listViewDemo);
-        listView.setEmptyView(progressBar);
-
-        // Must add the progress bar to the root of the layout
-        ViewGroup root = (ViewGroup) findViewById(android.R.id.content);
-        root.addView(progressBar);
-
-        Button clickButton = (Button) findViewById(R.id.scanButton);
-        clickButton.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                Log.d("BluetoothConnection", "onclick");
-                bluetoothConnManager.startBleScan();
-                String [] array = {"Antonio","Giovanni","Michele","Giuseppe", "Leonardo", "Alessandro"};
-                //arrayAdapter = new ArrayAdapter<String>( startActivityContext, android.R.layout.simple_list_item_1, bluetoothConnManager.scannedDevNames);
-                arrayAdapter = new ArrayAdapter<String>(startActivityContext, R.layout.row, R.id.textViewList, array);
-                listView.setAdapter(mAdapter);
-
-                bluetoothConnManager.setAdapterForNewDeviceNotification(arrayAdapter);
-            }
-        });
-
-        if (Build.VERSION.SDK_INT >= 23) {
-            // Marshmallow+ Permission APIs
-            fuckMarshMallow();
-        }
-
-    }
-    */
-
-
 
     @Override
     protected void onResume() {

@@ -6,23 +6,40 @@
 
 
     <Button
-        android:id="@+id/scanButton"
+        android:id="@+id/skipButton"
         android:layout_gravity="center"
         android:layout_width="320dp"
-        android:layout_height="40dp"
+        android:layout_weight="1"
+        android:layout_height="0dp"
         android:layout_marginBottom="16dp"
         android:layout_marginEnd="20dp"
         android:layout_marginStart="20dp"
-        android:background="@android:color/holo_red_light"
-        android:textColor="@android:color/white"
+        android:background="@android:color/white"
+        android:textColor="@android:color/darker_gray"
         android:textAlignment="center"
-        android:textSize="25dp"
-        android:text="@string/scan_button_text" />
+        android:textSize="15dp"
+        android:text="@string/skip_scan_button_text" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/listViewDemo"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="15"
         android:orientation="vertical"/>
+
+    <Button
+        android:id="@+id/scanButton"
+        android:layout_gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        android:layout_marginBottom="0dp"
+        android:layout_marginEnd="0dp"
+        android:layout_marginStart="0dp"
+        android:background="@color/colorPrimary"
+        android:textColor="@android:color/white"
+        android:textAlignment="center"
+        android:textSize="25dp"
+        android:text="@string/scan_button_text" />
 
 </LinearLayout>

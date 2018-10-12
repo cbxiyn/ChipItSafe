@@ -191,6 +191,8 @@ public class StartActivity extends AppCompatActivity
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+        Log.d(TAG, "Catch new intent");
+
         //HealtStateFragment.newInstance().handleIntent(intent);
     }
 
