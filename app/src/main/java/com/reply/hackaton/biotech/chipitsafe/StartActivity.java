@@ -23,10 +23,12 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.movesense.mds.MdsConnectionListener;
-import com.movesense.mds.MdsException;
+import com.movesense.mds.*;
 
 import java.util.HashMap;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 
 public class StartActivity extends AppCompatActivity
@@ -36,7 +38,7 @@ public class StartActivity extends AppCompatActivity
 
     // UI
 
-    private String LOG_TAG = "StartActivity";
+    private static final String TAG = "StartActivity";
     private HeartRateManager heartManager;
     BluetoothDevice selectedDevice = null;
     HashMap<String,Fragment> fragmentHashMap = new HashMap<String,Fragment>();
@@ -131,7 +133,7 @@ public class StartActivity extends AppCompatActivity
      */
     @Override
     public void onConnect(String s) {
-        Log.d(LOG_TAG, "onConnect:" + s);
+        Log.d(TAG, "onConnect:" + s);
 
     }
 
@@ -141,7 +143,7 @@ public class StartActivity extends AppCompatActivity
      */
     @Override
     public void onConnectionComplete(String macAddress, String serial) {
-        Log.d(LOG_TAG, "onConnectionComplete:devSerial" + serial);
+        Log.d(TAG, "onConnectionComplete:devSerial" + serial);
 
 
 
@@ -171,7 +173,7 @@ public class StartActivity extends AppCompatActivity
      */
     @Override
     public void onError(MdsException e) {
-        Log.e(LOG_TAG, "onError:" + e);
+        Log.e(TAG, "onError:" + e);
 
         //showConnectionError(e);
     }
@@ -182,7 +184,42 @@ public class StartActivity extends AppCompatActivity
      */
     @Override
     public void onDisconnect(String bleAddress) {
-        Log.d(LOG_TAG, "onDisconnect: " + bleAddress);
+        Log.d(TAG, "onDisconnect: " + bleAddress);
 
     }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        //HealtStateFragment.newInstance().handleIntent(intent);
+    }
+
+    private Boolean isIrregularHeartBeat(List<Integer> list){
+        int max = Collections.max(list);
+        int distance;
+        int prevDistance = -1;
+        int firstMaxPosition = -1;
+
+
+        for(int i=0; i<list.size(); i++){
+            if (list.get(i) == max) {
+                if (firstMaxPosition == -1){
+                    firstMaxPosition = i;
+                } else {
+                    distance = i - firstMaxPosition;
+                    firstMaxPosition = -1;
+                    if(prevDistance == -1){
+                        prevDistance = distance;
+                    } else if (prevDistance != distance ){
+                        return false;
+                    }
+                }
+
+            }
+
+        }
+
+        return true;
+    }
+
 }
