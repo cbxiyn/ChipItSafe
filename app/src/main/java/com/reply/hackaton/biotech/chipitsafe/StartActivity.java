@@ -106,15 +106,6 @@ public class StartActivity extends AppCompatActivity
         heartManager.confirmHeartRateDevice();
         heartManager.setHeartRateDeviceSerial(serial);
 
-
-                    /*
-                    for (MyScanResult sr : mScanResArrayList) {
-                        if (sr.macAddress.equalsIgnoreCase(macAddress)) {
-                            sr.markConnected(serial);
-                            break;
-                        }
-                    }
-                    */
     }
 
     /**
@@ -136,5 +127,11 @@ public class StartActivity extends AppCompatActivity
     public void onDisconnect(String bleAddress) {
         Log.d(LOG_TAG, "onDisconnect: " + bleAddress);
 
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        //HealtStateFragment.newInstance().handleIntent(intent);
     }
 }
