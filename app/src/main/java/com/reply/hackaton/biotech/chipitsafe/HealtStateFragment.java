@@ -23,6 +23,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
 import com.movesense.mds.MdsException;
 import com.movesense.mds.MdsNotificationListener;
 import com.movesense.mds.MdsResponseListener;
@@ -216,7 +218,7 @@ public class HealtStateFragment extends Fragment implements MdsResponseListener,
             throw new RuntimeException("Check your mime type.");
         }
 
-        adapter.enableForegroundDispatch(activity, pendingIntent, filters, techList);
+        //adapter.enableForegroundDispatch(activity, pendingIntent, filters, techList);
     }
 
 
@@ -253,14 +255,13 @@ public class HealtStateFragment extends Fragment implements MdsResponseListener,
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        parametersTV.setText(s);
 
 
     }
 
 
     public static void stopForegroundDispatch(final Activity activity, NfcAdapter adapter) {
-        adapter.disableForegroundDispatch(activity);
+        //adapter.disableForegroundDispatch(activity);
     }
 
 }

@@ -1,8 +1,7 @@
-package com.reply.hackaton.biothech.chipitsafe.geo;
+package com.reply.hackaton.biothech.chipitsafe.tools;
 
 import android.content.Context;
 import android.content.Intent;
-import android.location.Location;
 import android.net.Uri;
 
 public class GeoLocalizer {
