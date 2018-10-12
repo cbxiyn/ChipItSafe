@@ -18,8 +18,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 
@@ -28,6 +31,7 @@ public class NFCFragment extends Fragment {
 
     public static final String TAG = "NFCFragment";
     public static final String MIME_TEXT_PLAIN = "text/plain";
+    public TextView nfcContent;
 
     public NFCFragment() {
         // Required empty public constructor
@@ -49,7 +53,9 @@ public class NFCFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_nfc, container, false);
+        View v = inflater.inflate(R.layout.fragment_nfc, container, false);
+        nfcContent = (TextView)v.findViewById(R.id.nfc_content);
+        return v;
     }
 
     @Override
@@ -67,12 +73,12 @@ public class NFCFragment extends Fragment {
 
         Log.d(TAG,"handleIntent: "+action);
         if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(action)) {
-
+            //Vanessa enters here
             String type = intent.getType();
             if (MIME_TEXT_PLAIN.equals(type)) {
 
                 Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
-                new NdefReaderTask().execute(tag);
+                new NdefReaderTask(nfcContent).execute(tag);
 
             } else {
                 Log.d(TAG, "Wrong mime type: " + type);
@@ -86,13 +92,36 @@ public class NFCFragment extends Fragment {
 
             for (String tech : techList) {
                 if (searchedTech.equals(tech)) {
-                    new NdefReaderTask().execute(tag);
+                    new NdefReaderTask(nfcContent).execute(tag);
                     break;
                 }
             }
         }
     }
 
+    public String loadJSONFromAsset(Context context) {
+        String json = null;
+        try {
+            InputStream is = context.getAssets().open("file_name.json");
+
+            int size = is.available();
+
+            byte[] buffer = new byte[size];
+
+            is.read(buffer);
+
+            is.close();
+
+            json = new String(buffer, "UTF-8");
+
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return null;
+        }
+        return json;
+
+    }
 
 
 
@@ -101,6 +130,11 @@ public class NFCFragment extends Fragment {
 class NdefReaderTask extends AsyncTask<Tag, Void, String> {
 
     private static final String TAG = "NdefReaderTask";
+    private TextView view;
+    public NdefReaderTask(TextView v){
+        view = v;
+    }
+
     @Override
     protected String doInBackground(Tag... params) {
         Tag tag = params[0];
@@ -156,7 +190,7 @@ class NdefReaderTask extends AsyncTask<Tag, Void, String> {
     @Override
     protected void onPostExecute(String result) {
         if (result != null) {
-            //mTextView.setText("Read content: " + result);
+            view.setText("Read content: " + result);
         }
     }
 }
