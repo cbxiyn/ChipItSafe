@@ -9,6 +9,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,6 +35,7 @@ public class HealtStateFragment extends Fragment implements MdsResponseListener 
     public static String TAG = "HealtStateFragment";
     HeartRateManager heartRateManager;
     private TextView deviceNameTV;
+    private ProgressBar progressBar;
 
     public HealtStateFragment() {
         // Required empty public constructor
@@ -55,18 +58,18 @@ public class HealtStateFragment extends Fragment implements MdsResponseListener 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        //For Mario..catch here the view references
-        View v =  inflater.inflate(R.layout.fragment_healt_state, container, false);
+        View v = inflater.inflate(R.layout.fragment_healt_state, container, false);
         deviceNameTV = (TextView) v.findViewById(R.id.deviceName);
+        progressBar = (ProgressBar) v.findViewById(R.id.progressBar);
+        // Inflate the layout for this fragment
         return v;
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        //I've never used this override fucntion
-        //deviceNameTV = (TextView) getView().findViewById(R.id.deviceName);
+
+
     }
 
     @Override
@@ -75,6 +78,11 @@ public class HealtStateFragment extends Fragment implements MdsResponseListener 
 
     }
 
+
+    public ProgressBar getProgressBar(){
+        progressBar.setVisibility(View.VISIBLE); //to show
+        return progressBar;
+    }
 
     public void startDisplayingContents(){
         Toast.makeText(getActivity(), "LOADING CONTENTS.....", Toast.LENGTH_SHORT).show();
@@ -103,9 +111,9 @@ public class HealtStateFragment extends Fragment implements MdsResponseListener 
 
         // The onSuccess() gets the result code and the returned data as a JSON string.
         try {
-            Log.e("DEVICEINFO", "devname is");
+            Log.e("DEVICEINFO", data);
             JSONObject jObj = new JSONObject(data);
-            String devName = jObj.getJSONObject("DeviceInfo").getString("Name");
+            String devName = jObj.getJSONObject("Content").getString("productName");
             Log.e("DEVICEINFO", devName);
             deviceNameTV.setText(devName);
         } catch (JSONException e) {

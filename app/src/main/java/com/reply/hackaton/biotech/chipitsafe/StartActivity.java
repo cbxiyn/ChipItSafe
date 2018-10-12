@@ -35,7 +35,6 @@ public class StartActivity extends AppCompatActivity
 
 
     // UI
-    private ProgressBar progressBar;
 
     private String LOG_TAG = "StartActivity";
     private HeartRateManager heartManager;
@@ -47,21 +46,21 @@ public class StartActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //progressBar = (ProgressBar) findViewById(R.id.progressBar);
-        // Create a progress bar to display while the list loads
-        progressBar = new ProgressBar(this);
-        progressBar.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT, Gravity.CENTER));
-        progressBar.setIndeterminate(true);
 
         // Must add the progress bar to the root of the layout
         ViewGroup root = (ViewGroup) findViewById(android.R.id.content);
-        root.addView(progressBar);
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
 
         BottomNavigationView bottomNavigationView = (BottomNavigationView)
                 findViewById(R.id.navigationView);
+
+        Fragment f = fragmentHashMap.get(HealtStateFragment.TAG);
+        if(f == null){
+            f = HealtStateFragment.newInstance();
+            fragmentHashMap.put(HealtStateFragment.TAG,f);
+        }
+        selectedFragment = f;
 
         bottomNavigationView.setOnNavigationItemSelectedListener
                 (new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -95,7 +94,7 @@ public class StartActivity extends AppCompatActivity
 
         //Manually displaying the first fragment - one time only
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.container, HealtStateFragment.newInstance());
+        transaction.replace(R.id.container, selectedFragment);
         transaction.commit();
 
         //Used to select an item programmatically
@@ -114,7 +113,7 @@ public class StartActivity extends AppCompatActivity
 
             BluetoothDevice dev = heartManager.getDeviceAttemptingToConnectTo();
             Toast.makeText(this, "attempting to connect to "+ dev.getName(), Toast.LENGTH_SHORT).show();
-            progressBar.setVisibility(View.VISIBLE); //to show
+
             heartManager.connectToDevice(this);
         }
     }
@@ -139,7 +138,7 @@ public class StartActivity extends AppCompatActivity
         Log.d(LOG_TAG, "onConnectionComplete:devSerial" + serial);
 
 
-        progressBar.setVisibility(View.GONE); // to hide
+
         Toast.makeText(this, "CONNECTED!", Toast.LENGTH_SHORT).show();
         heartManager.confirmHeartRateDevice();
         heartManager.setHeartRateDeviceSerial(serial);
@@ -148,8 +147,11 @@ public class StartActivity extends AppCompatActivity
 
         //HealtStateFragment fragment = (HealtStateFragment) getSupportFragmentManager.findFragmentById(R.id.your_fragment);
         //fragment.receive(sharedUrl);
+        Log.e("COLUSSI", "OUT");
         if(selectedFragment instanceof HealtStateFragment){
+            Log.e("COLUSSI", "IN");
             ((HealtStateFragment)selectedFragment).startDisplayingContents();
+            ((HealtStateFragment)selectedFragment).getProgressBar().setVisibility(View.GONE); // to hide
         }
 
                     /*
