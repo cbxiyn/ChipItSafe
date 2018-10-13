@@ -79,7 +79,7 @@ public class MessagingService extends FirebaseMessagingService {
         super.onCreate();
         mBuilder = new NotificationCompat.Builder(this, ApplicationState.NOTIFICATION_CHANNEL_ID)
                 .setSmallIcon(R.drawable.googleg_standard_color_18)
-                .setContentTitle("Hey Doctor!")
+                //.setContentTitle("Hey Doctor!")
                 .setContentText("I am in danger!")
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
@@ -87,9 +87,11 @@ public class MessagingService extends FirebaseMessagingService {
         Intent notifyIntent;
         if(ApplicationState.state == ApplicationState.UserState.rescuer) {
             notifyIntent = new Intent(this, CasualRescuerDashboard.class);
+            mBuilder.setContentTitle("Please Rescue Me!");
         } else /*if(ApplicationState.state == ApplicationState.UserState.doctor)*/{
             // TODO: link to doctor section
             notifyIntent = new Intent(this, DoctorDashboard.class);
+            mBuilder.setContentTitle("DOCTOR HELP ME!");
         }
         // Set the Activity to start in a new, empty task
         notifyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
