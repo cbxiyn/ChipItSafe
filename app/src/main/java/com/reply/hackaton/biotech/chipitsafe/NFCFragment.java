@@ -31,16 +31,17 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 
-
-public class NFCFragment extends Fragment {
+interface OnNFCCompleted{
+    void onNFCCompleted(String result);
+}
+public class NFCFragment extends Fragment implements OnNFCCompleted {
 
     public static final String TAG = "NFCFragment";
     public static final String MIME_TEXT_PLAIN = "text/plain";
     public LinearLayout linearLayout;
+    private Intent pendingIntent = null;
 
-    public NFCFragment() {
-        // Required empty public constructor
-    }
+    public NFCFragment() {}
 
     public static NFCFragment newInstance() {
         NFCFragment fragment = new NFCFragment();;
@@ -50,16 +51,19 @@ public class NFCFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        Log.d(TAG,"OnCreateView");
         View v = inflater.inflate(R.layout.fragment_nfc, container, false);
         linearLayout = (LinearLayout) v.findViewById(R.id.fragment_nfc_linearLayout);
+        if (pendingIntent != null){
+            handleIntent(pendingIntent);
+            pendingIntent = null;
+        }
         return v;
     }
 
@@ -83,7 +87,11 @@ public class NFCFragment extends Fragment {
             if (MIME_TEXT_PLAIN.equals(type)) {
 
                 Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
-                new NdefReaderTask(linearLayout).execute(tag);
+                if(linearLayout!=null) {
+                    new NdefReaderTask(this).execute(tag);
+                } else {
+                    pendingIntent = intent;
+                }
 
             } else {
                 Log.d(TAG, "Wrong mime type: " + type);
@@ -97,37 +105,53 @@ public class NFCFragment extends Fragment {
 
             for (String tech : techList) {
                 if (searchedTech.equals(tech)) {
-                    new NdefReaderTask(linearLayout).execute(tag);
+                    new NdefReaderTask(this).execute(tag);
                     break;
                 }
             }
         }
     }
 
-    public String loadJSONFromAsset(Context context) {
-        String json = null;
+    @Override
+    public void onNFCCompleted(String result) {
+        Log.d(TAG,"NFC result:"+result);
         try {
-            InputStream is = context.getAssets().open("file_name.json");
 
-            int size = is.available();
+            JSONObject obj = new JSONObject(result);
+            populateUI(obj);
 
-            byte[] buffer = new byte[size];
-
-            is.read(buffer);
-
-            is.close();
-
-            json = new String(buffer, "UTF-8");
-
-
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            return null;
+        } catch (Throwable t) {
+            Log.e(TAG, "Could not parse malformed JSON: \"" + result + "\"");
         }
-        return json;
-
     }
 
+    private void populateUI(JSONObject jsonObject){
+
+        TextView nameTextView = (TextView)linearLayout.findViewById(R.id.nfc_content_name);
+        TextView lastnameTextView = (TextView)linearLayout.findViewById(R.id.nfc_content_lastname);
+        TextView fcodeTextView = (TextView)linearLayout.findViewById(R.id.nfc_content_fiscalCode);
+        TextView bloodTextView = (TextView)linearLayout.findViewById(R.id.nfc_content_blood);
+        TextView birthDateTextView = (TextView)linearLayout.findViewById(R.id.nfc_content_birthDate);
+        TextView allergiesTextView = (TextView)linearLayout.findViewById(R.id.nfc_content_allergies);
+        TextView deseasesTextView = (TextView)linearLayout.findViewById(R.id.nfc_content_deseas);
+        TextView therapyTextView = (TextView)linearLayout.findViewById(R.id.nfc_content_threapy);
+
+        try {
+            nameTextView.setText(jsonObject.getString("Name"));
+            lastnameTextView.setText(jsonObject.getString("Lastname"));
+            fcodeTextView.setText(jsonObject.getString("FiscalCode"));
+            bloodTextView.setText(jsonObject.getString("BloodGroup"));
+            birthDateTextView.setText(jsonObject.getString("BithDate"));
+            allergiesTextView.setText(jsonObject.getString("Allergies"));
+            deseasesTextView.setText(jsonObject.getString("Relevent_deseases"));
+            therapyTextView.setText(jsonObject.getString("Therapy"));
+
+        } catch (JSONException e) {
+            Log.e(TAG, "PopulateUI"+e.getMessage());
+        }
+
+
+    }
 
 
 }
@@ -135,10 +159,10 @@ public class NFCFragment extends Fragment {
 class NdefReaderTask extends AsyncTask<Tag, Void, String> {
 
     private static final String TAG = "NdefReaderTask";
-    private LinearLayout view;
+    private OnNFCCompleted listener;
 
-    public NdefReaderTask(LinearLayout l){
-        view = l;
+    public NdefReaderTask(OnNFCCompleted l){
+        listener = l;
     }
 
     @Override
@@ -170,12 +194,6 @@ class NdefReaderTask extends AsyncTask<Tag, Void, String> {
     private String readText(NdefRecord record) throws UnsupportedEncodingException {
         /*
          * See NFC forum specification for "Text Record Type Definition" at 3.2.1
-         *
-         * http://www.nfc-forum.org/specs/
-         *
-         * bit_7 defines encoding
-         * bit_6 reserved for future use, must be 0
-         * bit_5..0 length of IANA language code
          */
 
         byte[] payload = record.getPayload();
@@ -186,54 +204,14 @@ class NdefReaderTask extends AsyncTask<Tag, Void, String> {
         // Get the Language Code
         int languageCodeLength = payload[0] & 0063;
 
-        // String languageCode = new String(payload, 1, languageCodeLength, "US-ASCII");
-        // e.g. "en"
-
-        // Get the Text
         return new String(payload, languageCodeLength + 1, payload.length - languageCodeLength - 1, textEncoding);
     }
 
     @Override
     protected void onPostExecute(String result) {
         if (result != null) {
-            Log.d(TAG,"NFC result:"+result);
-            try {
-
-                JSONObject obj = new JSONObject(result);
-                populateUI(obj);
-
-            } catch (Throwable t) {
-                Log.e("My App", "Could not parse malformed JSON: \"" + result + "\"");
-            }
+            listener.onNFCCompleted(result);
         }
     }
 
-
-    private void populateUI(JSONObject jsonObject){
-
-        TextView nameTextView = (TextView)view.findViewById(R.id.nfc_content_name);
-        TextView lastnameTextView = (TextView)view.findViewById(R.id.nfc_content_lastname);
-        TextView fcodeTextView = (TextView)view.findViewById(R.id.nfc_content_fiscalCode);
-        TextView bloodTextView = (TextView)view.findViewById(R.id.nfc_content_blood);
-        TextView birthDateTextView = (TextView)view.findViewById(R.id.nfc_content_birthDate);
-        TextView allergiesTextView = (TextView)view.findViewById(R.id.nfc_content_allergies);
-        TextView deseasesTextView = (TextView)view.findViewById(R.id.nfc_content_deseas);
-        TextView therapyTextView = (TextView)view.findViewById(R.id.nfc_content_threapy);
-
-        try {
-            nameTextView.setText(jsonObject.getString("Name"));
-            lastnameTextView.setText(jsonObject.getString("Lastname"));
-            fcodeTextView.setText(jsonObject.getString("FiscalCode"));
-            bloodTextView.setText(jsonObject.getString("BloodGroup"));
-            birthDateTextView.setText(jsonObject.getString("BithDate"));
-            allergiesTextView.setText(jsonObject.getString("Allergies"));
-            deseasesTextView.setText(jsonObject.getString("Relevent_deseases"));
-            therapyTextView.setText(jsonObject.getString("Therapy"));
-
-        } catch (JSONException e) {
-            Log.e(TAG, "PopulateUI"+e.getMessage());
-        }
-
-
-    }
 }
