@@ -119,7 +119,6 @@ public class Firebase {
 
         firebaseServlet.updateUserAppToken(data, context);
     }
-
     /**
      * This method updates the current user variable with the user that is currently signed in
      */

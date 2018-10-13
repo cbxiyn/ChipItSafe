@@ -1,20 +1,34 @@
 package com.reply.hackaton.biotech.chipitsafe.Firebase;
 
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.os.AsyncTask;
+import android.provider.SyncStateContract;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.squareup.okhttp.MediaType;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.RequestBody;
+import com.squareup.okhttp.Response;
+
+import org.json.JSONObject;
+
 /** This class is for sending and receiving messages via the Firebase Cloud Messaging service
  */
 
 public class MessagingService extends FirebaseMessagingService {
+    public static class Consants{
+        public static final String LEGACY_SERVER_KEY = "AIzaSyCYm_q-C09DnXQrreTakfFOds1EaMo7gy0";
+    }
     private static final String TAG = "MessagingService";
 
     Context context;
@@ -22,7 +36,6 @@ public class MessagingService extends FirebaseMessagingService {
     public String FID;
 
     public MessagingService() {
-
     }
 
     public MessagingService(final Context context) {
@@ -88,5 +101,36 @@ public class MessagingService extends FirebaseMessagingService {
         }
 
     }
+    public static final MediaType JSON
+            = MediaType.parse("application/json; charset=utf-8");
 
+    @SuppressLint("StaticFieldLeak")
+    public void sendNotification(final String regToken) {
+        new AsyncTask<Void,Void,Void>(){
+            @Override
+            protected Void doInBackground(Void... params) {
+                try {
+                    OkHttpClient client = new OkHttpClient();
+                    JSONObject json=new JSONObject();
+                    JSONObject dataJson=new JSONObject();
+                    dataJson.put("body","Hi this is sent from device to device");
+                    dataJson.put("title","dummy title");
+                    json.put("notification",dataJson);
+                    json.put("to",regToken);
+                    RequestBody body = RequestBody.create(JSON,json.toString());
+                    Request request = new Request.Builder()
+                            .header("Authorization","key="+Consants.LEGACY_SERVER_KEY)
+                            .url("https://fcm.googleapis.com/fcm/send")
+                            .post(body)
+                            .build();
+                    Response response = client.newCall(request).execute();
+                    String finalResponse = response.body().string();
+                }catch (Exception e){
+                    //Log.d(TAG,e+"");
+                }
+                return null;
+            }
+        }.execute();
+
+    }
 }

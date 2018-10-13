@@ -1,7 +1,18 @@
 package com.reply.hackaton.biotech.chipitsafe.Firebase;
 
+import android.content.Context;
+import android.util.Log;
+
+import com.reply.hackaton.biotech.chipitsafe.EmailPasswordActivity;
+
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Map;
+
 public class FirstAidRequest {
     FirebaseDatabaseHelper firebaseDatabaseHelper =  new FirebaseDatabaseHelper();
+    private static final String TAG = FirstAidRequest.class.getName();
     /**
      * This method calls the createFirstAidDocument method in the Firebase Database class
      * it checks if the UID is null before calling the method.
@@ -24,11 +35,16 @@ public class FirstAidRequest {
     {
         if(uid != null)
         {
+
             firebaseDatabaseHelper.deleteFirstAidDocument(uid);
         }
 
     }
-    public void sendNotificationToRescuers(String uid){
+    public void sendNotificationToRescuers(String uid,Context context){
+
+
+        //Map<String,Object> rescuerUIDs = firebaseDatabaseHelper.getRescuersMap(uid);
+        Log.w(TAG,"rescuer ids: ");
 
     }
 }
