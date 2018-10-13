@@ -98,6 +98,8 @@ public class MessagingService extends FirebaseMessagingService {
             notifyIntent = new Intent(this, DoctorDashboard.class);
             mBuilder.setContentTitle("DOCTOR HELP ME!");
         }
+        notifyIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
 
         /*
         // Set the Activity to start in a new, empty task
@@ -113,8 +115,9 @@ public class MessagingService extends FirebaseMessagingService {
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
         stackBuilder.addNextIntentWithParentStack(resultIntent);
         // Get the PendingIntent containing the entire back stack
-        PendingIntent notifyPendingIntent =
+        //PendingIntent notifyPendingIntent =
                 stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent notifyPendingIntent = PendingIntent.getActivity(this, 0, notifyIntent, PendingIntent.FLAG_ONE_SHOT);
 
         mBuilder.setContentIntent(notifyPendingIntent);
     }
