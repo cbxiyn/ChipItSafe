@@ -140,7 +140,7 @@ public class MessagingService extends FirebaseMessagingService {
             = MediaType.parse("application/json; charset=utf-8");
 
     @SuppressLint("StaticFieldLeak")
-    public void sendNotification(final String regToken) {
+    public static void sendNotification(final String regToken) {
         new AsyncTask<Void,Void,Void>(){
             @Override
             protected Void doInBackground(Void... params) {
