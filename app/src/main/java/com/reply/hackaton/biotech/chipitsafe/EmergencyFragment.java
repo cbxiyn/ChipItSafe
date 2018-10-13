@@ -3,6 +3,7 @@ package com.reply.hackaton.biotech.chipitsafe;
 import android.app.NotificationChannel;
 import android.content.Context;
 import android.net.Uri;
+import android.opengl.Visibility;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NotificationCompat;
@@ -10,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.reply.hackaton.biotech.chipitsafe.Firebase.FirstAidRequest;
@@ -64,7 +66,6 @@ public class EmergencyFragment extends Fragment {
                 //emergencyButton.setAlpha(0);
             }
         });
-
 
         return v;
     }
