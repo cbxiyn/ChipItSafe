@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.reply.hackaton.biotech.chipitsafe.Firebase.FirstAidRequest;
+import com.reply.hackaton.biotech.chipitsafe.Firebase.MessagingService;
 import com.reply.hackaton.biothech.chipitsafe.tools.GeoLocalizer;
 import com.reply.hackaton.biothech.chipitsafe.tools.SimulationConstants;
 
@@ -58,8 +59,8 @@ public class EmergencyFragment extends Fragment {
         emergencyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FirstAidRequest.instanceOf().sendNotificationToRescuers(SimulationConstants.DOCTOR_TOKEN_ID, getActivity());
-
+                //FirstAidRequest.instanceOf().sendNotificationToRescuers(SimulationConstants.DOCTOR_TOKEN_ID, getActivity());
+                MessagingService.instanceOf(getActivity());
                 //emergencyButton.setAlpha(0);
             }
         });
