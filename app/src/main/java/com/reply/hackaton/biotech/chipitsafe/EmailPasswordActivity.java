@@ -22,8 +22,6 @@ import com.reply.hackaton.biotech.chipitsafe.Firebase.FirstAidRequest;
 import com.reply.hackaton.biotech.chipitsafe.Firebase.MessagingService;
 import com.reply.hackaton.biothech.chipitsafe.tools.ApplicationState;
 
-import org.json.JSONObject;
-
 
 public class EmailPasswordActivity extends AppCompatActivity implements OnCompleteListener<AuthResult> {
 

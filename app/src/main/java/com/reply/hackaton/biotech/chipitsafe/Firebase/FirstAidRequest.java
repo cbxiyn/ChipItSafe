@@ -1,18 +1,15 @@
 package com.reply.hackaton.biotech.chipitsafe.Firebase;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.reply.hackaton.biotech.chipitsafe.EmailPasswordActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -67,7 +64,14 @@ public class FirstAidRequest implements OnCompleteListener<DocumentSnapshot>{
 
         for(String rescuer: returnedRescuers.keySet())
         {
-            messagingService.sendNotificationWithData(rescuer,constructFirstAidNotification(uid));
+
+            RescuerUIDtoRescuerAppToken rescuerUIDtoRescuerAppToken = new RescuerUIDtoRescuerAppToken();
+            String rescuerAppID = rescuerUIDtoRescuerAppToken.getUserAppToken(rescuer);
+            if(rescuerAppID != null)
+            {
+                messagingService.sendNotificationWithData(rescuerAppID,constructFirstAidNotification(uid));
+            }
+
         }
 
 
@@ -91,7 +95,6 @@ public class FirstAidRequest implements OnCompleteListener<DocumentSnapshot>{
 
         } else {
             Log.e(TAG,task.getException().toString());
-
         }
     }
     }

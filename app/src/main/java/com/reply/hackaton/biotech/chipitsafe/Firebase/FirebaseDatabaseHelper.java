@@ -40,7 +40,7 @@ public class FirebaseDatabaseHelper {
     public void getUserAppToken(String uid, OnCompleteListener<DocumentSnapshot> listener) {
         DocumentReference docRef = db.collection("users").document(uid);
         // asynchronously retrieve the document
-        docRef.get() //String value = document.getString("username");
+        docRef.get()
                 .addOnCompleteListener(listener);
     }
     public void createFirstAidDocument(String uid,int bps)
