@@ -6,10 +6,13 @@
     tools:context=".EmergencyFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+
+    <Button
+        android:id="@+id/startEmergencySimulationButton"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:text="DON'T PRESS ME"
         android:layout_gravity="center"
-        android:text="Emergency chat" />
+        />
 
 </FrameLayout>

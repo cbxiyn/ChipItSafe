@@ -59,8 +59,9 @@ public class DevicePairingActivity extends AppCompatActivity
 
         /* For debugging emailpassword activity
          */
-        Intent intent = new Intent(DevicePairingActivity.this,EmailPasswordActivity.class);
-        startActivity(intent);
+        //?????????????????????????
+    //    Intent intent = new Intent(DevicePairingActivity.this,EmailPasswordActivity.class);
+    //    startActivity(intent);
 
         Button scanButton = (Button) findViewById(R.id.scanButton);
         scanButton.setOnClickListener(new View.OnClickListener() {

@@ -146,7 +146,10 @@ public class StartActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        mNfcAdapter.enableForegroundDispatch(this, pendingIntent, null, null);
+        if(mNfcAdapter!=null && pendingIntent !=null){
+            mNfcAdapter.enableForegroundDispatch(this, pendingIntent, null, null);
+        }
+
         if(heartManager.isConnectedToDevice){
 
             BluetoothDevice dev = heartManager.getDeviceAttemptingToConnectTo();
@@ -159,8 +162,10 @@ public class StartActivity extends AppCompatActivity
     @Override
     protected void onStop() {
         super.onStop();
-        mNfcAdapter.disableForegroundDispatch(this);
-        heartManager.unsubscribeAll();
+        if(mNfcAdapter!=null && pendingIntent !=null) {
+            mNfcAdapter.disableForegroundDispatch(this);
+        }
+
     }
 
     // MDS CONNECTION LISTENER METHODS

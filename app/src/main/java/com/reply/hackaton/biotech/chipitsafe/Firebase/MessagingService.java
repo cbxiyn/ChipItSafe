@@ -3,13 +3,18 @@ package com.reply.hackaton.biotech.chipitsafe.Firebase;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.NotificationChannel;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.provider.SyncStateContract;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.reply.hackaton.biotech.chipitsafe.R;
+import com.reply.hackaton.biothech.chipitsafe.tools.ApplicationState;
 import com.squareup.okhttp.MediaType;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
@@ -28,6 +33,9 @@ import java.util.Map;
  */
 
 public class MessagingService extends FirebaseMessagingService {
+    private NotificationCompat.Builder mBuilder;
+    //private static MessagingService messagingService;
+
     public static class Consants{
         public static final String LEGACY_SERVER_KEY = "AIzaSyCYm_q-C09DnXQrreTakfFOds1EaMo7gy0";
     }
@@ -37,7 +45,9 @@ public class MessagingService extends FirebaseMessagingService {
 
     public String FID;
 
+
     public MessagingService() {
+
     }
 
     public MessagingService(final Context context) {
@@ -54,6 +64,24 @@ public class MessagingService extends FirebaseMessagingService {
         });
     }
 
+    /*
+    public static MessagingService instanceOf(final Context context){
+        if(messagingService == null) messagingService = new MessagingService(context);
+
+        return messagingService;
+    }
+    */
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        mBuilder = new NotificationCompat.Builder(this, ApplicationState.NOTIFICATION_CHANNEL_ID)
+                .setSmallIcon(R.drawable.googleg_standard_color_18)
+                .setContentTitle("Hey Doctor!")
+                .setContentText("I am in danger!")
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+    }
+
     @Override
     public void onNewToken(String token) {
         Log.d(TAG, "Refreshed token: " + token);
@@ -67,6 +95,8 @@ public class MessagingService extends FirebaseMessagingService {
         //firebaseServlet.updateUserAppToken();
     }
 
+
+    int notifID = 1;
     /**
      * This method overrides firebase's default implementation of onMessageReceived. This method handles
      * incoming data/notification payloads (JSONObject)
@@ -79,6 +109,11 @@ public class MessagingService extends FirebaseMessagingService {
 
         // TODO: Handle FCM messages here.
         Log.d(TAG, "From: " + remoteMessage.getFrom());
+
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+
+        // notificationId is a unique int for each notification that you must define
+        notificationManager.notify(notifID++, mBuilder.build());
 
         // Check if message contains a data payload.
         if (remoteMessage.getData().size() > 0) {
@@ -127,7 +162,7 @@ public class MessagingService extends FirebaseMessagingService {
      *                 FirebaseDatabaseHelper class to get the ID
      */
     @SuppressLint("StaticFieldLeak")
-    public void sendNotification(final String regToken) {
+    public static void sendNotification(final String regToken) {
         new AsyncTask<Void,Void,Void>(){
             @Override
             protected Void doInBackground(Void... params) {

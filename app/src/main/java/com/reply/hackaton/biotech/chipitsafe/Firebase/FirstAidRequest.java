@@ -12,8 +12,16 @@ import java.util.ArrayList;
 import java.util.Map;
 
 public class FirstAidRequest {
+    private static FirstAidRequest firstAidRequest;
     FirebaseDatabaseHelper firebaseDatabaseHelper =  new FirebaseDatabaseHelper();
     private static final String TAG = FirstAidRequest.class.getName();
+
+
+    public FirstAidRequest(){
+
+    }
+
+
     /**
      * This method calls the createFirstAidDocument method in the Firebase Database class
      * it checks if the UID is null before calling the method.

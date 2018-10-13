@@ -45,31 +45,10 @@ public class Firebase {
      *
      * @param email    Valid email address
      * @param password Password over 6 characters in length
-     * @param context  The activity that is calling this function
      */
-    public void emailPasswordRegister(String email, String password, final Context context) {
+    public void emailPasswordRegister(String email, String password, OnCompleteListener<AuthResult> listener) {
         mAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Registration successful, User can now log in.
-                            Log.d(TAG, "createUserWithEmail:success");
-                            currentUser = mAuth.getCurrentUser();
-                            Toast.makeText(context, "User registered successfully.",
-                                    Toast.LENGTH_SHORT).show();
-
-                            return;
-                        } else {
-                            // If registration  fails, display message to user
-                            Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                            Toast.makeText(context, task.getException().getMessage(),
-                                    Toast.LENGTH_SHORT).show();
-                        }
-
-                        // ...
-                    }
-                });
+                .addOnCompleteListener(listener);
     }
 
     /**

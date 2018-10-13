@@ -1,22 +1,31 @@
 package com.reply.hackaton.biotech.chipitsafe;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseUser;
 import com.reply.hackaton.biotech.chipitsafe.Firebase.Firebase;
 import com.reply.hackaton.biotech.chipitsafe.Firebase.FirebaseDatabaseHelper;
 import com.reply.hackaton.biotech.chipitsafe.Firebase.FirstAidRequest;
 import com.reply.hackaton.biotech.chipitsafe.Firebase.MessagingService;
+import com.reply.hackaton.biothech.chipitsafe.tools.ApplicationState;
 
 import org.json.JSONObject;
 
 
-public class EmailPasswordActivity extends AppCompatActivity {
+public class EmailPasswordActivity extends AppCompatActivity implements OnCompleteListener<AuthResult> {
 
     TextView emailText;
     TextView passwordText;
@@ -38,6 +47,28 @@ public class EmailPasswordActivity extends AppCompatActivity {
 
         messagingService = new MessagingService(EmailPasswordActivity.this);
         firebase = new Firebase();
+
+        createNotificationChannel();
+
+
+
+    }
+
+
+    private void createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = getString(R.string.channel_name);
+            String description = getString(R.string.channel_description);
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel channel = new NotificationChannel(ApplicationState.NOTIFICATION_CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
     }
 
     @Override
@@ -73,16 +104,16 @@ public class EmailPasswordActivity extends AppCompatActivity {
 
         String email = emailText.getText().toString();
         String password = passwordText.getText().toString();
-
+		
 
         firebase.emailPasswordLogin(email, password, EmailPasswordActivity.this);
-        firebase.updateCurrentUser();
+        //firebase.updateCurrentUser();
 
-        firebase.updateUserAppToken(messagingService.FID, EmailPasswordActivity.this);
+       // firebase.updateUserAppToken(messagingService.FID, EmailPasswordActivity.this);
         FirstAidRequest firstAidRequest =  new FirstAidRequest();
 
 
-        messagingService.sendNotificationWithData("cwm3Q-QSZfE:APA91bGepBsy40v5n2x79yDR-jI_Nk1hqzzOihi_y7pYJZ7o27Dw-LHL5AmHciABB93h2fuyRr6_4d8M0VPFU8WHorUW4Ehk3TK9i_EdW_osGjmK1fvnm2bLG4xb7mAtKMoyLicBCW6W",firstAidRequest.constructFirstAidNotification(firebase.currentUser.getUid()));
+       // messagingService.sendNotificationWithData("cwm3Q-QSZfE:APA91bGepBsy40v5n2x79yDR-jI_Nk1hqzzOihi_y7pYJZ7o27Dw-LHL5AmHciABB93h2fuyRr6_4d8M0VPFU8WHorUW4Ehk3TK9i_EdW_osGjmK1fvnm2bLG4xb7mAtKMoyLicBCW6W",firstAidRequest.constructFirstAidNotification(firebase.currentUser.getUid()));
     }
 
     public void updateUI(FirebaseUser user) {
@@ -90,4 +121,24 @@ public class EmailPasswordActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public void onComplete(@NonNull Task<AuthResult> task) {
+        if (task.isSuccessful()) {
+            // Sign in success
+            Log.d(TAG, "signInWithEmail:success");
+
+            Toast.makeText(this, "Logged in successfully.",
+                    Toast.LENGTH_SHORT).show();
+            firebase.updateCurrentUser();
+            firebase.updateUserAppToken(messagingService.FID,this);
+            Intent intent = new Intent(EmailPasswordActivity.this,DevicePairingActivity.class);
+            startActivity(intent);
+        } else {
+            // If sign in fails, display a message to the user.
+            Log.w(TAG, "signInWithEmail:failure", task.getException());
+            Toast.makeText(this, "Authentication failed.",
+                    Toast.LENGTH_SHORT).show();
+
+        }
+    }
 }
