@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.reply.hackaton.biotech.chipitsafe.EmailPasswordActivity;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -46,5 +47,17 @@ public class FirstAidRequest {
         //Map<String,Object> rescuerUIDs = firebaseDatabaseHelper.getRescuersMap(uid);
         Log.w(TAG,"rescuer ids: ");
 
+    }
+    public JSONObject constructFirstAidNotification(String uid)
+    {
+        JSONObject testData = new JSONObject();
+        try {
+            testData.put("UID",uid);
+            testData.put("FirstAid",true);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return testData;
     }
 }

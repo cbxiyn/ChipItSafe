@@ -22,6 +22,8 @@ import com.squareup.okhttp.Response;
 
 import org.json.JSONObject;
 
+import java.util.Map;
+
 /** This class is for sending and receiving messages via the Firebase Cloud Messaging service
  */
 
@@ -85,10 +87,25 @@ public class MessagingService extends FirebaseMessagingService {
             if (/* Check if data needs to be processed by long running job */ true) {
                 // For long-running tasks (10 seconds or more) use Firebase Job Dispatcher.
                 //TODO: Handle data when first aid request is requested.
-                //scheduleJob();
+                Map<String,String> data = remoteMessage.getData();
+                Log.d(TAG,data.toString());
+                if(data.containsValue("true"))
+                {
+                    Log.d(TAG,data.get("UID") + " Needs help!");
+
+                }
+
             } else {
                 // Handle message within 10 seconds
                 //TODO: Handle data when first aid request is requested.
+                Map<String,String> data = remoteMessage.getData();
+
+                if(data.get("FirstAid:") == "true")
+                {
+                    Log.d(TAG,data.get("UID") + " Needs help!");
+
+                    //Start first aid scenario on rescuer app.
+                }
                 //handleNow();
             }
 
@@ -103,7 +120,12 @@ public class MessagingService extends FirebaseMessagingService {
     }
     public static final MediaType JSON
             = MediaType.parse("application/json; charset=utf-8");
-
+    /**
+     * This method sends a notification to a target device using the target's application token
+     *
+     * @param regToken The target device's application token. Use the getRescuerId method in
+     *                 FirebaseDatabaseHelper class to get the ID
+     */
     @SuppressLint("StaticFieldLeak")
     public void sendNotification(final String regToken) {
         new AsyncTask<Void,Void,Void>(){
@@ -113,9 +135,41 @@ public class MessagingService extends FirebaseMessagingService {
                     OkHttpClient client = new OkHttpClient();
                     JSONObject json=new JSONObject();
                     JSONObject dataJson=new JSONObject();
+                    //Body and title fields are required for a valid message
                     dataJson.put("body","Hi this is sent from device to device");
                     dataJson.put("title","dummy title");
                     json.put("notification",dataJson);
+                    json.put("to",regToken);
+                    RequestBody body = RequestBody.create(JSON,json.toString());
+                    Request request = new Request.Builder()
+                            .header("Authorization","key="+Consants.LEGACY_SERVER_KEY)
+                            .url("https://fcm.googleapis.com/fcm/send")
+                            .post(body)
+                            .build();
+                    Response response = client.newCall(request).execute();
+                    String finalResponse = response.body().string();
+                }catch (Exception e){
+                    //Log.d(TAG,e+"");
+                }
+                return null;
+            }
+        }.execute();
+
+    }
+    public void sendNotificationWithData(final String regToken,final JSONObject data) {
+        new AsyncTask<Void,Void,Void>(){
+            @Override
+            protected Void doInBackground(Void... params) {
+                try {
+                    OkHttpClient client = new OkHttpClient();
+                    JSONObject json=new JSONObject();
+                    JSONObject NotificationDataJson=new JSONObject();
+                    JSONObject DataJSON = data;
+                    //Body and title fields are required for a valid message
+                    NotificationDataJson.put("body","First Aid Requested");
+                    NotificationDataJson.put("title","Alert: First Aid Requested");
+                    json.put("data",DataJSON);
+                    json.put("notification",NotificationDataJson);
                     json.put("to",regToken);
                     RequestBody body = RequestBody.create(JSON,json.toString());
                     Request request = new Request.Builder()
