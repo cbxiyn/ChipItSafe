@@ -15,6 +15,6 @@ public class SimulationConstants {
 
     // designeted rescuer / doctor
     public static String DOCTOR_EMAIL = "doctor@email.it";
-    public static String DOCTOR_TOKEN_ID = "foZcZgOAG0A:APA91bG6Bkkx90LhkLeD2QJngMhD5TvRiO2Mfss76S4_C4niOj02sxrPDPksoUIJo3xo5G-28PtTXZQfopeqdyK4QWs4IeAF69MksurJbaxVznhNQFZCEEeZ1qc0CLPsHW8Hy0cYKcgS";
+    public static String DOCTOR_TOKEN_ID = "cvdRAgoBWkc:APA91bGhkzGkvnCxKlrmtYCMEFpLBVjVXArHmUuEc-T-8bd-ePzosx8U2NgPyWZMiHlWBM1FcTgnwaZOX2iMZocFNfjRhK1uFg64mv2wZ0R7EUN52a4udWuhMMkS_dnotQQYf37em2_Z";
 
 }
