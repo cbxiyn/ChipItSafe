@@ -40,6 +40,10 @@ public class EmailPasswordActivity extends AppCompatActivity implements OnComple
 
         messagingService = new MessagingService(EmailPasswordActivity.this);
         firebase = new Firebase();
+        if(firebase.isLogged()){
+            Intent intent = new Intent(EmailPasswordActivity.this,DevicePairingActivity.class);
+            startActivity(intent);
+        }
     }
 
     @Override
