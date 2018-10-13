@@ -1,9 +1,11 @@
 package com.reply.hackaton.biotech.chipitsafe;
 
+import android.app.NotificationChannel;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.NotificationCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,11 +50,7 @@ public class EmergencyFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setSmallIcon(R.drawable.notification_icon)
-                .setContentTitle(textTitle)
-                .setContentText(textContent)
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
 
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_emergency, container, false);
@@ -65,6 +63,8 @@ public class EmergencyFragment extends Fragment {
                 //emergencyButton.setAlpha(0);
             }
         });
+
+
         return v;
     }
 
