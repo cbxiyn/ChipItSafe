@@ -1,7 +1,12 @@
 package com.reply.hackaton.biotech.chipitsafe;
 
+import android.app.Activity;
+import android.app.PendingIntent;
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.nfc.NfcAdapter;
+import android.nfc.Tag;
 import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -34,8 +39,6 @@ import java.util.List;
 public class StartActivity extends AppCompatActivity
         implements MdsConnectionListener {
 
-
-
     // UI
 
     private static final String TAG = "StartActivity";
@@ -43,26 +46,50 @@ public class StartActivity extends AppCompatActivity
     BluetoothDevice selectedDevice = null;
     HashMap<String,Fragment> fragmentHashMap = new HashMap<String,Fragment>();
     Fragment selectedFragment = null;
+    public static final String MIME_TEXT_PLAIN = "text/plain";
+    private NfcAdapter mNfcAdapter;
+    private PendingIntent pendingIntent;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Log.d(TAG, "OnCreate");
 
         // Must add the progress bar to the root of the layout
         ViewGroup root = (ViewGroup) findViewById(android.R.id.content);
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
-
         BottomNavigationView bottomNavigationView = (BottomNavigationView)
                 findViewById(R.id.navigationView);
+        setNFCSettings();
+        heartManager = HeartRateManager.instanceOfHeartRateManager();
+        heartManager.initMds(this);
 
-        Fragment f = fragmentHashMap.get(HealtStateFragment.TAG);
-        if(f == null){
-            f = HealtStateFragment.newInstance();
-            fragmentHashMap.put(HealtStateFragment.TAG,f);
+        Intent intent = getIntent();
+        if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(intent.getAction())){
+            Log.d(TAG, "ACTION_NDEF_DISCOVERED");
+            selectNFCFragment();
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.container, selectedFragment);
+            transaction.commit();
+            ((NFCFragment) selectedFragment).handleIntent(intent);
+
+        }  else {
+
+            Fragment f = fragmentHashMap.get(HealtStateFragment.TAG);
+            if (f == null) {
+                f = HealtStateFragment.newInstance();
+                fragmentHashMap.put(HealtStateFragment.TAG, f);
+            }
+            selectedFragment = f;
         }
-        selectedFragment = f;
+        //Manually displaying the first fragment - one time only
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.container, selectedFragment);
+        transaction.commit();
+
 
         bottomNavigationView.setOnNavigationItemSelectedListener
                 (new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -71,20 +98,13 @@ public class StartActivity extends AppCompatActivity
 
                         switch (item.getItemId()) {
                             case R.id.navigation_healt_state:
-                                Fragment f = fragmentHashMap.get(HealtStateFragment.TAG);
-                                if(f == null){
-                                    f = HealtStateFragment.newInstance();
-                                    fragmentHashMap.put(HealtStateFragment.TAG,f);
-                                }
-                                selectedFragment = f;
+                                selectHealtSateSection();
                                 break;
                             case R.id.navigation_emergency:
-                                Fragment fr = fragmentHashMap.get(EmergencyFragment.TAG);
-                                if(fr == null){
-                                    fr = EmergencyFragment.newInstance();
-                                    fragmentHashMap.put(EmergencyFragment.TAG,fr);
-                                }
-                                selectedFragment = fr;
+                                selectEmergencyFragment();
+                                break;
+                            case R.id.navigation_nfc:
+                                selectNFCFragment();
                                 break;
                         }
                         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -93,25 +113,41 @@ public class StartActivity extends AppCompatActivity
                         return true;
                     }
                 });
-
-        //Manually displaying the first fragment - one time only
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.container, selectedFragment);
-        transaction.commit();
-
-        //Used to select an item programmatically
-        //bottomNavigationView.getMenu().getItem(2).setChecked(true);
-
-        heartManager = HeartRateManager.instanceOfHeartRateManager();
-        heartManager.initMds(this);
-
-
     }
+
+    private void selectHealtSateSection(){
+        Fragment f = fragmentHashMap.get(HealtStateFragment.TAG);
+        if(f == null){
+            f = HealtStateFragment.newInstance();
+            fragmentHashMap.put(HealtStateFragment.TAG,f);
+        }
+        selectedFragment = f;
+    }
+
+    private void selectNFCFragment(){
+        Fragment fra = fragmentHashMap.get(NFCFragment.TAG);
+        if(fra == null){
+            fra = NFCFragment.newInstance();
+            fragmentHashMap.put(NFCFragment.TAG,fra);
+        }
+        selectedFragment = fra;
+    }
+
+    private void selectEmergencyFragment(){
+        Fragment fr = fragmentHashMap.get(EmergencyFragment.TAG);
+        if(fr == null){
+            fr = EmergencyFragment.newInstance();
+            fragmentHashMap.put(EmergencyFragment.TAG,fr);
+        }
+        selectedFragment = fr;
+    }
+
 
     @Override
     protected void onResume() {
         super.onResume();
-        if(!heartManager.isConnectedToDevice){
+        mNfcAdapter.enableForegroundDispatch(this, pendingIntent, null, null);
+        if(heartManager.isConnectedToDevice){
 
             BluetoothDevice dev = heartManager.getDeviceAttemptingToConnectTo();
             Toast.makeText(this, "attempting to connect to "+ dev.getName(), Toast.LENGTH_SHORT).show();
@@ -123,6 +159,7 @@ public class StartActivity extends AppCompatActivity
     @Override
     protected void onStop() {
         super.onStop();
+        mNfcAdapter.disableForegroundDispatch(this);
         heartManager.unsubscribeAll();
     }
 
@@ -157,14 +194,6 @@ public class StartActivity extends AppCompatActivity
             ((HealtStateFragment)selectedFragment).getProgressBar().setVisibility(View.GONE); // to hide
         }
 
-                    /*
-                    for (MyScanResult sr : mScanResArrayList) {
-                        if (sr.macAddress.equalsIgnoreCase(macAddress)) {
-                            sr.markConnected(serial);
-                            break;
-                        }
-                    }
-                    */
     }
 
     /**
@@ -191,9 +220,39 @@ public class StartActivity extends AppCompatActivity
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        Log.d(TAG, "Catch new intent");
+        Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
+        Log.d(TAG, "Catch new intent:"+intent+" tag: "+tag);
+        if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(intent.getAction())){
+            if(!(selectedFragment instanceof NFCFragment)){
+                selectNFCFragment();
+            }
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.container, selectedFragment);
+            transaction.commit();
+            ((NFCFragment) selectedFragment).handleIntent(intent);
+        }
 
-        //HealtStateFragment.newInstance().handleIntent(intent);
+    }
+
+    private void setNFCSettings(){
+
+        mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
+        pendingIntent = PendingIntent.getActivity(
+                this, 0, new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
+        if (mNfcAdapter == null) {
+            // Stop here, we definitely need NFC
+            Toast.makeText(this, "This device doesn't support NFC.", Toast.LENGTH_LONG).show();
+            return;
+
+        }
+
+        if (!mNfcAdapter.isEnabled()) {
+            Log.d(TAG,"NFC is disabled");
+        } else {
+            Log.d(TAG,"NFC is enabled");
+        }
+
+
     }
 
     private Boolean isIrregularHeartBeat(List<Integer> list){
