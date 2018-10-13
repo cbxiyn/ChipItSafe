@@ -139,7 +139,7 @@ public class MessagingService extends FirebaseMessagingService {
                 {
                     Log.d(TAG,data.get("UID") + " Needs help!");
 
-                    //Start first aid scenario on rescuer app.
+
                 }
                 //handleNow();
             }

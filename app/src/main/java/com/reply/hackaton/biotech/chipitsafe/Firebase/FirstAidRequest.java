@@ -52,27 +52,17 @@ public class FirstAidRequest implements OnCompleteListener<DocumentSnapshot>{
         }
 
     }
-    Map<String,Object> returnedRescuers = new HashMap<>();
 
+    static Map<String,Object> returnedRescuers = new HashMap<>();
+    static String uid = "";
     public void sendNotificationToRescuers(String uid){
 
         if(uid != null)
         {
+            this.uid = uid;
             firebaseDatabaseHelper.getRescuers(uid,this);
         }
 
-
-        for(String rescuer: returnedRescuers.keySet())
-        {
-
-            RescuerUIDtoRescuerAppToken rescuerUIDtoRescuerAppToken = new RescuerUIDtoRescuerAppToken();
-            String rescuerAppID = rescuerUIDtoRescuerAppToken.getUserAppToken(rescuer);
-            if(rescuerAppID != null)
-            {
-                messagingService.sendNotificationWithData(rescuerAppID,constructFirstAidNotification(uid));
-            }
-
-        }
 
 
     }
@@ -92,7 +82,17 @@ public class FirstAidRequest implements OnCompleteListener<DocumentSnapshot>{
     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
         if (task.isSuccessful()) {
             returnedRescuers.putAll(task.getResult().getData());
+            for(String rescuer: returnedRescuers.keySet())
+            {
 
+                RescuerUIDtoRescuerAppToken rescuerUIDtoRescuerAppToken = new RescuerUIDtoRescuerAppToken();
+                String rescuerAppID = rescuerUIDtoRescuerAppToken.getUserAppToken(rescuer);
+                if(rescuerAppID != null)
+                {
+                    messagingService.sendNotificationWithData(rescuerAppID,constructFirstAidNotification(uid));
+                }
+
+            }
         } else {
             Log.e(TAG,task.getException().toString());
         }
