@@ -28,4 +28,25 @@
     <string name="channel_name">dangerToDoctor</string>
     <string name="channel_description">danger to doctor channel decr</string>
 
+    <!-- Emergency question -->
+    <string name="emergency_questions_first_time">Is the first time it happens?</string>
+    <string name="emergency_questions_chest">Do you feel chest pain or a sense of oppression?</string>
+    <string name="emergency_questions_faint">Do you feel faint?</string>
+    <string name="emergency_questions_medicine">Do you usually take medicine for this problem?</string>
+    <string name="emergency_questions_alone">Are you alone?</string>
+    <string name="emergency_questions_sweating">Are you sweating?</string>
+    <string name="emergency_questions_breath">Is your breath missing?</string>
+
+
+
+    <string-array name="emergency_questions">
+        <item>@string/emergency_questions_first_time</item>
+        <item>@string/emergency_questions_chest</item>
+        <item>@string/emergency_questions_faint</item>
+        <item>@string/emergency_questions_medicine</item>
+        <item>@string/emergency_questions_alone</item>
+        <item>@string/emergency_questions_sweating</item>
+        <item>@string/emergency_questions_breath</item>
+    </string-array>
+
 </resources>
