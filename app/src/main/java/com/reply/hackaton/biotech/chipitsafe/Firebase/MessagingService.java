@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.reply.hackaton.biotech.chipitsafe.R;
 import com.reply.hackaton.biotech.chipitsafe.casualrescuer.CasualRescuerDashboard;
+import com.reply.hackaton.biotech.chipitsafe.doctor.DoctorDashboard;
 import com.reply.hackaton.biothech.chipitsafe.tools.ApplicationState;
 import com.squareup.okhttp.MediaType;
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -88,7 +89,7 @@ public class MessagingService extends FirebaseMessagingService {
             notifyIntent = new Intent(this, CasualRescuerDashboard.class);
         } else /*if(ApplicationState.state == ApplicationState.UserState.doctor)*/{
             // TODO: link to doctor section
-            notifyIntent = new Intent(this, CasualRescuerDashboard.class);
+            notifyIntent = new Intent(this, DoctorDashboard.class);
         }
         // Set the Activity to start in a new, empty task
         notifyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
