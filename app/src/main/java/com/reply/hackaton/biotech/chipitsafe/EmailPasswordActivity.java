@@ -42,7 +42,7 @@ public class EmailPasswordActivity extends AppCompatActivity implements OnComple
         emailText = findViewById(R.id.emailView);
         passwordText = findViewById(R.id.passwordView);
 
-        messagingService = MessagingService.instanceOf(this);//new MessagingService(EmailPasswordActivity.this);
+        messagingService = new MessagingService(EmailPasswordActivity.this);
         firebase = new Firebase();
 
         createNotificationChannel();
