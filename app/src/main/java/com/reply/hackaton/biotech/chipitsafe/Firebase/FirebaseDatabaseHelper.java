@@ -37,55 +37,17 @@ public class FirebaseDatabaseHelper {
      *
      * @param uid The user's Firebase UID
      */
-    private static Map<String, Object> returnedRescuers = new HashMap<>();
-    public Map<String,Object> getRescuers(String uid) {
+    public void getRescuers(String uid, OnCompleteListener<DocumentSnapshot> listener) {
         DocumentReference docRef = db.collection("rescuerConfig").document(uid);
         // asynchronously retrieve the document
         docRef.get()
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()) {
-
-                            Log.d(TAG, " " + task.getResult().getData());
-                            returnedRescuers.putAll(task.getResult().getData());
-
-                        } else {
-                            Log.w(TAG, "Error getting documents.", task.getException());
-                        }
-                    }
-                });
-
-        return returnedRescuers;
+                .addOnCompleteListener(listener);
     }
-    public ArrayList<String> parseRescuerMap(Map<String, Object> rescuers){
-        ArrayList<String> rescuerAppIds = new ArrayList<>();
-        for(Map.Entry<String,Object> rescuer: rescuers.entrySet())
-        {
-            String key = (String) rescuer.getKey();
-            rescuerAppIds.add(key);
-
-        }
-        return rescuerAppIds;
-    }
-    /*public JSONObject getRescuers(String uid) {
-        DocumentReference docRef = db.collection("rescuerConfig").document(uid);
-        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                Map<String, Object> forms = documentSnapshot.getData();
-                for (Map.Entry<String, Object> form: forms.entrySet()) {
-                    String key = (String) form.getKey();
-                    Map<String, Object> values = (Map<String, Object>)form.getValue();
-                    String name = (String) values.get("formName");
-
-                }
-            }
-        })
-    }*/
-    public void copyData(Map<String, Object> tmp)
-    {
-        returnedRescuers.putAll(tmp);
+    public void getUserAppToken(String uid, OnCompleteListener<DocumentSnapshot> listener) {
+        DocumentReference docRef = db.collection("users").document(uid);
+        // asynchronously retrieve the document
+        docRef.get() //String value = document.getString("username");
+                .addOnCompleteListener(listener);
     }
     public void createFirstAidDocument(String uid,int bps)
     {

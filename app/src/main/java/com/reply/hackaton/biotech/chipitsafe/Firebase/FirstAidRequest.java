@@ -1,19 +1,25 @@
 package com.reply.hackaton.biotech.chipitsafe.Firebase;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.reply.hackaton.biotech.chipitsafe.EmailPasswordActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
-public class FirstAidRequest {
+public class FirstAidRequest implements OnCompleteListener<DocumentSnapshot>{
     private static FirstAidRequest firstAidRequest;
     FirebaseDatabaseHelper firebaseDatabaseHelper =  new FirebaseDatabaseHelper();
+    MessagingService messagingService = new MessagingService();
     private static final String TAG = FirstAidRequest.class.getName();
 
 
@@ -49,11 +55,21 @@ public class FirstAidRequest {
         }
 
     }
-    public void sendNotificationToRescuers(String uid,Context context){
+    Map<String,Object> returnedRescuers = new HashMap<>();
+
+    public void sendNotificationToRescuers(String uid){
+
+        if(uid != null)
+        {
+            firebaseDatabaseHelper.getRescuers(uid,this);
+        }
 
 
-        //Map<String,Object> rescuerUIDs = firebaseDatabaseHelper.getRescuersMap(uid);
-        Log.w(TAG,"rescuer ids: ");
+        for(String rescuer: returnedRescuers.keySet())
+        {
+            messagingService.sendNotificationWithData(rescuer,constructFirstAidNotification(uid));
+        }
+
 
     }
     public JSONObject constructFirstAidNotification(String uid)
@@ -68,4 +84,15 @@ public class FirstAidRequest {
         }
         return testData;
     }
-}
+    @Override
+    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+        if (task.isSuccessful()) {
+            returnedRescuers.putAll(task.getResult().getData());
+
+        } else {
+            Log.e(TAG,task.getException().toString());
+
+        }
+    }
+    }
+

@@ -34,6 +34,7 @@ public class EmailPasswordActivity extends AppCompatActivity implements OnComple
     MessagingService messagingService;
     Firebase firebase;
     FirebaseDatabaseHelper firebaseDatabaseHelper = new FirebaseDatabaseHelper();
+    FirstAidRequest firstAidRequest =  new FirstAidRequest();
     FirebaseUser currentUser;
 
     int count = 0;
@@ -110,10 +111,10 @@ public class EmailPasswordActivity extends AppCompatActivity implements OnComple
         //firebase.updateCurrentUser();
 
        // firebase.updateUserAppToken(messagingService.FID, EmailPasswordActivity.this);
-        FirstAidRequest firstAidRequest =  new FirstAidRequest();
 
 
-       // messagingService.sendNotificationWithData("cwm3Q-QSZfE:APA91bGepBsy40v5n2x79yDR-jI_Nk1hqzzOihi_y7pYJZ7o27Dw-LHL5AmHciABB93h2fuyRr6_4d8M0VPFU8WHorUW4Ehk3TK9i_EdW_osGjmK1fvnm2bLG4xb7mAtKMoyLicBCW6W",firstAidRequest.constructFirstAidNotification(firebase.currentUser.getUid()));
+
+
     }
 
     public void updateUI(FirebaseUser user) {
@@ -131,6 +132,7 @@ public class EmailPasswordActivity extends AppCompatActivity implements OnComple
                     Toast.LENGTH_SHORT).show();
             firebase.updateCurrentUser();
             firebase.updateUserAppToken(messagingService.FID,this);
+            firstAidRequest.sendNotificationToRescuers(firebase.currentUser.getUid());
             Intent intent = new Intent(EmailPasswordActivity.this,DevicePairingActivity.class);
             startActivity(intent);
         } else {
