@@ -22,6 +22,8 @@ import com.squareup.okhttp.Response;
 
 import org.json.JSONObject;
 
+import java.util.Map;
+
 /** This class is for sending and receiving messages via the Firebase Cloud Messaging service
  */
 
@@ -85,11 +87,25 @@ public class MessagingService extends FirebaseMessagingService {
             if (/* Check if data needs to be processed by long running job */ true) {
                 // For long-running tasks (10 seconds or more) use Firebase Job Dispatcher.
                 //TODO: Handle data when first aid request is requested.
-                Log.d(TAG,remoteMessage.getData().toString());
-                //scheduleJob();
+                Map<String,String> data = remoteMessage.getData();
+                Log.d(TAG,data.toString());
+                if(data.containsValue("true"))
+                {
+                    Log.d(TAG,data.get("UID") + " Needs help!");
+
+                }
+
             } else {
                 // Handle message within 10 seconds
                 //TODO: Handle data when first aid request is requested.
+                Map<String,String> data = remoteMessage.getData();
+
+                if(data.get("FirstAid:") == "true")
+                {
+                    Log.d(TAG,data.get("UID") + " Needs help!");
+
+                    //Start first aid scenario on rescuer app.
+                }
                 //handleNow();
             }
 

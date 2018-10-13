@@ -53,7 +53,7 @@ public class FirstAidRequest {
         JSONObject testData = new JSONObject();
         try {
             testData.put("UID",uid);
-            testData.put("FirstAid:",true);
+            testData.put("FirstAid",true);
 
         } catch (JSONException e) {
             e.printStackTrace();
