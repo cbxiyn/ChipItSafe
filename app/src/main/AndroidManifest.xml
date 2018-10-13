@@ -33,11 +33,7 @@
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".StartActivity"
@@ -59,7 +55,13 @@
             android:parentActivityName=".StartActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".casualrescuer.CasualRescuerDashboard"></activity>
-        <activity android:name="com.reply.hackaton.biotech.chipitsafe.EmailPasswordActivity"></activity>
+        <activity android:name="com.reply.hackaton.biotech.chipitsafe.EmailPasswordActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <service android:name="com.reply.hackaton.biotech.chipitsafe.Firebase.MessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

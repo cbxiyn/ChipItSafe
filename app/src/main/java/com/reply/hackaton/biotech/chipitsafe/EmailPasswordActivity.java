@@ -1,20 +1,24 @@
 package com.reply.hackaton.biotech.chipitsafe;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseUser;
 import com.reply.hackaton.biotech.chipitsafe.Firebase.Firebase;
 import com.reply.hackaton.biotech.chipitsafe.Firebase.FirebaseDatabaseHelper;
-import com.reply.hackaton.biotech.chipitsafe.Firebase.FirstAidRequest;
 import com.reply.hackaton.biotech.chipitsafe.Firebase.MessagingService;
 
 
-public class EmailPasswordActivity extends AppCompatActivity {
+public class EmailPasswordActivity extends AppCompatActivity implements OnCompleteListener<AuthResult> {
 
     TextView emailText;
     TextView passwordText;
@@ -73,10 +77,8 @@ public class EmailPasswordActivity extends AppCompatActivity {
         String password = passwordText.getText().toString();
 
 
-        firebase.emailPasswordLogin(email, password, EmailPasswordActivity.this);
-        firebase.updateCurrentUser();
+        firebase.emailPasswordLogin(email, password,  this);
 
-        firebase.updateUserAppToken(messagingService.FID, EmailPasswordActivity.this);
     }
 
     public void updateUI(FirebaseUser user) {
@@ -84,4 +86,24 @@ public class EmailPasswordActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public void onComplete(@NonNull Task<AuthResult> task) {
+        if (task.isSuccessful()) {
+            // Sign in success
+            Log.d(TAG, "signInWithEmail:success");
+
+            Toast.makeText(this, "Logged in successfully.",
+                    Toast.LENGTH_SHORT).show();
+            firebase.updateCurrentUser();
+            firebase.updateUserAppToken(messagingService.FID,this);
+            Intent intent = new Intent(EmailPasswordActivity.this,DevicePairingActivity.class);
+            startActivity(intent);
+        } else {
+            // If sign in fails, display a message to the user.
+            Log.w(TAG, "signInWithEmail:failure", task.getException());
+            Toast.makeText(this, "Authentication failed.",
+                    Toast.LENGTH_SHORT).show();
+
+        }
+    }
 }

@@ -30,37 +30,14 @@ public class Firebase {
 
     /**
      * This method logs a user into Firebase using their Email/Password
-     *
-     * @param email    Valid email address
+     *  @param email    Valid email address
      * @param password Password over 6 characters in length
-     * @param context  The activity that is calling this function
+     * @param listener
      */
-    public void emailPasswordLogin(String email, String password, final Context context) {
+    public void emailPasswordLogin(String email, String password, OnCompleteListener<AuthResult> listener) {
 
         mAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success
-                            Log.d(TAG, "signInWithEmail:success");
-
-                            Toast.makeText(context, "Logged in successfully.",
-                                    Toast.LENGTH_SHORT).show();
-                            currentUser = mAuth.getCurrentUser();
-
-
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Log.w(TAG, "signInWithEmail:failure", task.getException());
-                            Toast.makeText(context, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
-
-                        }
-
-
-                    }
-                });
+                .addOnCompleteListener(listener);
     }
 
     /**
