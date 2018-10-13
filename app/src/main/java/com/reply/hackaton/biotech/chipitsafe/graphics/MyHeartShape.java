@@ -13,11 +13,13 @@ public class MyHeartShape extends View{
     protected static int WIDTH = 200;//500;
     protected static int HEIGHT = WIDTH * 3 / 5;//300;
 
-    protected Path path;
-    protected Paint paint;
+    public Path path;
+    public Paint paint;
 
     protected int top;
     protected int left;
+    private boolean beating = false;
+    public int heartColor = Color.RED;//beating ? Color.RED : Color.WHITE;
 
 
     public MyHeartShape(Context context) {
@@ -30,12 +32,14 @@ public class MyHeartShape extends View{
         left=10;
     }
 
+
+
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
         // Fill the canvas with background color
-        canvas.drawColor(Color.WHITE);
+        //canvas.drawColor(Color.WHITE);
         paint.setShader(null);
 
         // Defining of  the heart path starts
@@ -49,7 +53,7 @@ public class MyHeartShape extends View{
                 (left+4*WIDTH/5)+10,top,
                 left+WIDTH/2, (top+HEIGHT/4)+10);
 
-        paint.setColor(Color.RED); // Set with heart color
+        paint.setColor(heartColor); // Set with heart color
         //paint.setShader(shader);
         paint.setStyle(Style.FILL); // Fill with heart color
         canvas.drawPath(path, paint); // Actual drawing happens here
@@ -60,6 +64,7 @@ public class MyHeartShape extends View{
         paint.setStrokeWidth(4);
         paint.setStyle(Style.STROKE);
         canvas.drawPath(path, paint);
+        beating = !beating;
 
     }
     /*
