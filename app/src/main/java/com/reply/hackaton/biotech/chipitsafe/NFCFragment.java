@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
@@ -22,6 +23,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.reply.hackaton.biothech.chipitsafe.tools.SimulationConstants;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Text;
@@ -31,10 +34,13 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 
+import static android.content.Context.MODE_PRIVATE;
+
 interface OnNFCCompleted{
     void onNFCCompleted(String result);
 }
 public class NFCFragment extends Fragment implements OnNFCCompleted {
+
 
     public static final String TAG = "NFCFragment";
     public static final String MIME_TEXT_PLAIN = "text/plain";
@@ -60,10 +66,15 @@ public class NFCFragment extends Fragment implements OnNFCCompleted {
         Log.d(TAG,"OnCreateView");
         View v = inflater.inflate(R.layout.fragment_nfc, container, false);
         linearLayout = (LinearLayout) v.findViewById(R.id.fragment_nfc_linearLayout);
+        populateUI(getSharedPreferences());
+
         if (pendingIntent != null){
+            Log.d(TAG,"pendingIntent NOT null");
             handleIntent(pendingIntent);
             pendingIntent = null;
         }
+
+
         return v;
     }
 
@@ -116,10 +127,9 @@ public class NFCFragment extends Fragment implements OnNFCCompleted {
     public void onNFCCompleted(String result) {
         Log.d(TAG,"NFC result:"+result);
         try {
-
             JSONObject obj = new JSONObject(result);
             populateUI(obj);
-
+            putInSharedPreferences(result);
         } catch (Throwable t) {
             Log.e(TAG, "Could not parse malformed JSON: \"" + result + "\"");
         }
@@ -137,14 +147,14 @@ public class NFCFragment extends Fragment implements OnNFCCompleted {
         TextView therapyTextView = (TextView)linearLayout.findViewById(R.id.nfc_content_threapy);
 
         try {
-            nameTextView.setText(jsonObject.getString("Name"));
-            lastnameTextView.setText(jsonObject.getString("Lastname"));
-            fcodeTextView.setText(jsonObject.getString("FiscalCode"));
-            bloodTextView.setText(jsonObject.getString("BloodGroup"));
-            birthDateTextView.setText(jsonObject.getString("BithDate"));
-            allergiesTextView.setText(jsonObject.getString("Allergies"));
-            deseasesTextView.setText(jsonObject.getString("Relevent_deseases"));
-            therapyTextView.setText(jsonObject.getString("Therapy"));
+            nameTextView.setText(jsonObject.getString(SimulationConstants.NFC_KEY_NAME));
+            lastnameTextView.setText(jsonObject.getString(SimulationConstants.NFC_KEY_LASTNAME));
+            fcodeTextView.setText(jsonObject.getString(SimulationConstants.NFC_KEY_FCODE));
+            bloodTextView.setText(jsonObject.getString(SimulationConstants.NFC_KEY_BLOODGROUP));
+            birthDateTextView.setText(jsonObject.getString(SimulationConstants.NFC_KEY_BIRTH_DATE));
+            allergiesTextView.setText(jsonObject.getString(SimulationConstants.NFC_KEY_ALLERGIES));
+            deseasesTextView.setText(jsonObject.getString(SimulationConstants.NFC_KEY_DEASEASES));
+            therapyTextView.setText(jsonObject.getString(SimulationConstants.NFC_KEY_THERAPY));
 
         } catch (JSONException e) {
             Log.e(TAG, "PopulateUI"+e.getMessage());
@@ -153,7 +163,48 @@ public class NFCFragment extends Fragment implements OnNFCCompleted {
 
     }
 
+    private void putInSharedPreferences(String result){
+        SharedPreferences pref = this.getContext().getSharedPreferences(SimulationConstants.SHARED_PREFERNCES_NAME, MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+        try {
+            JSONObject jsonObject = new JSONObject(result);
+            editor.putString(SimulationConstants.NFC_KEY_NAME, jsonObject.getString(SimulationConstants.NFC_KEY_NAME));
+            editor.putString(SimulationConstants.NFC_KEY_LASTNAME, jsonObject.getString(SimulationConstants.NFC_KEY_LASTNAME));
+            editor.putString(SimulationConstants.NFC_KEY_FCODE, jsonObject.getString(SimulationConstants.NFC_KEY_FCODE));
+            editor.putString(SimulationConstants.NFC_KEY_BLOODGROUP, jsonObject.getString(SimulationConstants.NFC_KEY_BLOODGROUP));
+            editor.putString(SimulationConstants.NFC_KEY_BIRTH_DATE, jsonObject.getString(SimulationConstants.NFC_KEY_BIRTH_DATE));
+            editor.putString(SimulationConstants.NFC_KEY_ALLERGIES, jsonObject.getString(SimulationConstants.NFC_KEY_ALLERGIES));
+            editor.putString(SimulationConstants.NFC_KEY_DEASEASES, jsonObject.getString(SimulationConstants.NFC_KEY_DEASEASES));
+            editor.putString(SimulationConstants.NFC_KEY_THERAPY, jsonObject.getString(SimulationConstants.NFC_KEY_THERAPY));
+            editor.apply();
 
+        } catch (Exception e){
+            Log.e(TAG, "putInSharedPreferences"+e.getMessage());
+        }
+
+    }
+
+    private JSONObject getSharedPreferences(){
+
+        SharedPreferences pref = this.getContext().getSharedPreferences(SimulationConstants.SHARED_PREFERNCES_NAME, MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+        JSONObject jsonObject = new JSONObject();
+
+        try {
+            jsonObject.put(SimulationConstants.NFC_KEY_NAME,pref.getString(SimulationConstants.NFC_KEY_NAME,"- - -"));
+            jsonObject.put(SimulationConstants.NFC_KEY_LASTNAME,pref.getString(SimulationConstants.NFC_KEY_LASTNAME,"- - -"));
+            jsonObject.put(SimulationConstants.NFC_KEY_FCODE,pref.getString(SimulationConstants.NFC_KEY_FCODE,"- - -"));
+            jsonObject.put(SimulationConstants.NFC_KEY_BLOODGROUP,pref.getString(SimulationConstants.NFC_KEY_BLOODGROUP,"- - -"));
+            jsonObject.put(SimulationConstants.NFC_KEY_BIRTH_DATE,pref.getString(SimulationConstants.NFC_KEY_BIRTH_DATE,"- - -"));
+            jsonObject.put(SimulationConstants.NFC_KEY_ALLERGIES,pref.getString(SimulationConstants.NFC_KEY_ALLERGIES,"- - -"));
+            jsonObject.put(SimulationConstants.NFC_KEY_DEASEASES,pref.getString(SimulationConstants.NFC_KEY_DEASEASES,"- - -"));
+            jsonObject.put(SimulationConstants.NFC_KEY_THERAPY,pref.getString(SimulationConstants.NFC_KEY_THERAPY,"- - -"));
+        } catch (Exception e){
+            Log.e(TAG, "getSharedPreferences"+e.getMessage());
+
+        }
+        return jsonObject;
+    }
 }
 
 class NdefReaderTask extends AsyncTask<Tag, Void, String> {
