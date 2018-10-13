@@ -7,7 +7,10 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
 
+import com.reply.hackaton.biotech.chipitsafe.Firebase.FirstAidRequest;
 import com.reply.hackaton.biothech.chipitsafe.tools.GeoLocalizer;
 import com.reply.hackaton.biothech.chipitsafe.tools.SimulationConstants;
 
@@ -25,6 +28,7 @@ public class EmergencyFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
     public static String TAG = "EmergencyFragment";
+    private Button emergencyButton;
 
     public EmergencyFragment() {
         // Required empty public constructor
@@ -44,8 +48,24 @@ public class EmergencyFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setSmallIcon(R.drawable.notification_icon)
+                .setContentTitle(textTitle)
+                .setContentText(textContent)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_emergency, container, false);
+        View v = inflater.inflate(R.layout.fragment_emergency, container, false);
+        emergencyButton = (Button) v.findViewById(R.id.startEmergencySimulationButton);
+        emergencyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirstAidRequest.instanceOf().sendNotificationToRescuers(SimulationConstants.DOCTOR_TOKEN_ID, getActivity());
+
+                //emergencyButton.setAlpha(0);
+            }
+        });
+        return v;
     }
 
 

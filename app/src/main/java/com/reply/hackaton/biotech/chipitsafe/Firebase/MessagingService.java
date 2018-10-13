@@ -3,13 +3,17 @@ package com.reply.hackaton.biotech.chipitsafe.Firebase;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.NotificationChannel;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.provider.SyncStateContract;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.reply.hackaton.biotech.chipitsafe.R;
+import com.reply.hackaton.biothech.chipitsafe.tools.ApplicationState;
 import com.squareup.okhttp.MediaType;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
