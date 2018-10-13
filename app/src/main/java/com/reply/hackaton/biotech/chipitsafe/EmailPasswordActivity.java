@@ -104,6 +104,9 @@ public class EmailPasswordActivity extends AppCompatActivity implements OnComple
         String password = passwordText.getText().toString();
 
 
+        // hardcoded for demo purposes in order to detect if the app is the one of a doctor or a user
+        ApplicationState.state = email.equalsIgnoreCase("doctor@email.it") ? ApplicationState.UserState.doctor : ApplicationState.UserState.rescuer;
+
         firebase.emailPasswordLogin(email, password,  this);
 
     }
