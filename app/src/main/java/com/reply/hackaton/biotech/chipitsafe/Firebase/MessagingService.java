@@ -32,6 +32,7 @@ import org.json.JSONObject;
 
 public class MessagingService extends FirebaseMessagingService {
     private NotificationCompat.Builder mBuilder;
+    private static MessagingService messagingService;
 
     public static class Consants{
         public static final String LEGACY_SERVER_KEY = "AIzaSyCYm_q-C09DnXQrreTakfFOds1EaMo7gy0";
@@ -42,10 +43,8 @@ public class MessagingService extends FirebaseMessagingService {
 
     public String FID;
 
-    public MessagingService() {
-    }
 
-    public MessagingService(final Context context) {
+    private MessagingService(final Context context) {
         this.context = context;
 
         FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener((Activity) context, new OnSuccessListener<InstanceIdResult>() {
@@ -59,10 +58,16 @@ public class MessagingService extends FirebaseMessagingService {
         });
     }
 
+    public static MessagingService instanceOf(final Context context){
+        if(messagingService == null) messagingService = new MessagingService(context);
+
+        return messagingService;
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
-        mBuilder = new NotificationCompat.Builder(this, NotificationChannel.DEFAULT_CHANNEL_ID)
+        mBuilder = new NotificationCompat.Builder(this, ApplicationState.NOTIFICATION_CHANNEL_ID)
                 .setSmallIcon(R.drawable.googleg_standard_color_18)
                 .setContentTitle("Hey Doctor!")
                 .setContentText("I am in danger!")

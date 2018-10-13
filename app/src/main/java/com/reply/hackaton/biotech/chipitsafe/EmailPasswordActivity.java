@@ -19,6 +19,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.reply.hackaton.biotech.chipitsafe.Firebase.Firebase;
 import com.reply.hackaton.biotech.chipitsafe.Firebase.FirebaseDatabaseHelper;
 import com.reply.hackaton.biotech.chipitsafe.Firebase.MessagingService;
+import com.reply.hackaton.biothech.chipitsafe.tools.ApplicationState;
 
 
 public class EmailPasswordActivity extends AppCompatActivity implements OnCompleteListener<AuthResult> {
@@ -41,7 +42,7 @@ public class EmailPasswordActivity extends AppCompatActivity implements OnComple
         emailText = findViewById(R.id.emailView);
         passwordText = findViewById(R.id.passwordView);
 
-        messagingService = new MessagingService(EmailPasswordActivity.this);
+        messagingService = MessagingService.instanceOf(this);//new MessagingService(EmailPasswordActivity.this);
         firebase = new Firebase();
 
         createNotificationChannel();
@@ -58,8 +59,8 @@ public class EmailPasswordActivity extends AppCompatActivity implements OnComple
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = getString(R.string.channel_name);
             String description = getString(R.string.channel_description);
-            int importance = NotificationManager.IMPORTANCE_MAX;
-            NotificationChannel channel = new NotificationChannel(NotificationChannel.DEFAULT_CHANNEL_ID, name, importance);
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel channel = new NotificationChannel(ApplicationState.NOTIFICATION_CHANNEL_ID, name, importance);
             channel.setDescription(description);
             // Register the channel with the system; you can't change the importance
             // or other notification behaviors after this

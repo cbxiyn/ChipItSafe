@@ -2,7 +2,7 @@ package com.reply.hackaton.biothech.chipitsafe.tools;
 
 public class ApplicationState {
 
-    public static int NOTIFICATION_CHANNEL_ID = 1;
+    public static String NOTIFICATION_CHANNEL_ID = "my_channel_01";
     public static String NOTIFICATION_CHANNEL_NAME = "dangerToDoctor";
 
     public enum UserState {

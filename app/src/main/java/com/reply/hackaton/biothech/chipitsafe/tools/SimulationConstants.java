@@ -17,5 +17,4 @@ public class SimulationConstants {
     public static String DOCTOR_EMAIL = "doctor@email.it";
     public static String DOCTOR_TOKEN_ID = "foZcZgOAG0A:APA91bG6Bkkx90LhkLeD2QJngMhD5TvRiO2Mfss76S4_C4niOj02sxrPDPksoUIJo3xo5G-28PtTXZQfopeqdyK4QWs4IeAF69MksurJbaxVznhNQFZCEEeZ1qc0CLPsHW8Hy0cYKcgS";
 
-
 }
