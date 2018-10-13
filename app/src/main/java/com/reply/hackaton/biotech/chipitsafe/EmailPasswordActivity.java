@@ -106,7 +106,6 @@ public class EmailPasswordActivity extends AppCompatActivity implements OnComple
 
         firebase.emailPasswordLogin(email, password, EmailPasswordActivity.this);
 
-
     }
 
     public void updateUI(FirebaseUser user) {
@@ -126,6 +125,7 @@ public class EmailPasswordActivity extends AppCompatActivity implements OnComple
             firebase.updateUserAppToken(messagingService.FID,this);
 
             Intent intent = new Intent(EmailPasswordActivity.this,DevicePairingActivity.class);
+            firebaseDatabaseHelper.subscribeToFirstAidDocument("tms3ExbMiiY2nIf6a5vJYZxHsXI3");
             startActivity(intent);
         } else {
             // If sign in fails, display a message to the user.
