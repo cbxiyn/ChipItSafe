@@ -149,32 +149,36 @@ public class MessagingService extends FirebaseMessagingService {
         // TODO: Handle FCM messages here.
         Log.d(TAG, "From: " + remoteMessage.getFrom());
 
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+        if(ApplicationState.healthState != ApplicationState.HealthState.inDanger){
+            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
 
-        // notificationId is a unique int for each notification that you must define
-        notificationManager.notify(notifID++, mBuilder.build());
+            // notificationId is a unique int for each notification that you must define
+            notificationManager.notify(notifID++, mBuilder.build());
 
-        // Check if message contains a data payload.
-        if (remoteMessage.getData().size() > 0) {
-            Log.d(TAG, "Message data payload: " + remoteMessage.getData());
+            // Check if message contains a data payload.
+            if (remoteMessage.getData().size() > 0) {
+                Log.d(TAG, "Message data payload: " + remoteMessage.getData());
 
-            if (/* Check if data needs to be processed by long running job */ true) {
-                // For long-running tasks (10 seconds or more) use Firebase Job Dispatcher.
-                //TODO: Handle data when first aid request is requested.
-                //scheduleJob();
-            } else {
-                // Handle message within 10 seconds
-                //TODO: Handle data when first aid request is requested.
-                //handleNow();
+                if (/* Check if data needs to be processed by long running job */ true) {
+                    // For long-running tasks (10 seconds or more) use Firebase Job Dispatcher.
+                    //TODO: Handle data when first aid request is requested.
+                    //scheduleJob();
+                } else {
+                    // Handle message within 10 seconds
+                    //TODO: Handle data when first aid request is requested.
+                    //handleNow();
+                }
+
             }
 
+            // Check if message contains a notification payload.
+            if (remoteMessage.getNotification() != null) {
+                Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
+
+            }
         }
 
-        // Check if message contains a notification payload.
-        if (remoteMessage.getNotification() != null) {
-            Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
 
-        }
 
     }
     public static final MediaType JSON
