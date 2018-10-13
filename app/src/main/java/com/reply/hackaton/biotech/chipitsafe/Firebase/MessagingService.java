@@ -4,7 +4,9 @@ package com.reply.hackaton.biotech.chipitsafe.Firebase;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.NotificationChannel;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.provider.SyncStateContract;
 import android.support.v4.app.NotificationCompat;
@@ -14,6 +16,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.reply.hackaton.biotech.chipitsafe.R;
+import com.reply.hackaton.biotech.chipitsafe.casualrescuer.CasualRescuerDashboard;
 import com.reply.hackaton.biothech.chipitsafe.tools.ApplicationState;
 import com.squareup.okhttp.MediaType;
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -78,6 +81,23 @@ public class MessagingService extends FirebaseMessagingService {
                 .setContentTitle("Hey Doctor!")
                 .setContentText("I am in danger!")
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+        // set notification click action stuff
+        Intent notifyIntent;
+        if(ApplicationState.state == ApplicationState.UserState.rescuer) {
+            notifyIntent = new Intent(this, CasualRescuerDashboard.class);
+        } else /*if(ApplicationState.state == ApplicationState.UserState.doctor)*/{
+            // TODO: link to doctor section
+            notifyIntent = new Intent(this, CasualRescuerDashboard.class);
+        }
+        // Set the Activity to start in a new, empty task
+        notifyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        // Create the PendingIntent
+        PendingIntent notifyPendingIntent = PendingIntent.getActivity(
+                this, 0, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT
+        );
+        mBuilder.setContentIntent(notifyPendingIntent);
     }
 
     @Override
@@ -85,6 +105,27 @@ public class MessagingService extends FirebaseMessagingService {
         Log.d(TAG, "Refreshed token: " + token);
 
         sendRegistrationToServer(token);
+    }
+
+    public void registerNotificationClickAction(){
+
+
+        /*
+        Intent snoozeIntent = new Intent(this, MyBroadcastReceiver.class);
+        snoozeIntent.setAction(ACTION_SNOOZE);
+        snoozeIntent.putExtra(EXTRA_NOTIFICATION_ID, 0);
+        PendingIntent snoozePendingIntent =
+                PendingIntent.getBroadcast(this, 0, snoozeIntent, 0);
+
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setSmallIcon(R.drawable.notification_icon)
+                .setContentTitle("My notification")
+                .setContentText("Hello World!")
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setContentIntent(pendingIntent)
+                .addAction(R.drawable.ic_snooze, getString(R.string.snooze),
+                        snoozePendingIntent);
+         */
     }
 
     //TODO: Send new token to FireBase RT-DBS

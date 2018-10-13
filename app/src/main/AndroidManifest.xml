@@ -54,7 +54,13 @@
             android:label="@string/title_activity_heart_rate"
             android:parentActivityName=".StartActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".casualrescuer.CasualRescuerDashboard"></activity>
+        <activity android:name=".casualrescuer.CasualRescuerDashboard"
+            android:launchMode="singleTask"
+            android:taskAffinity=""
+            android:excludeFromRecents="true"
+            >
+
+        </activity>
         <activity android:name="com.reply.hackaton.biotech.chipitsafe.EmailPasswordActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
