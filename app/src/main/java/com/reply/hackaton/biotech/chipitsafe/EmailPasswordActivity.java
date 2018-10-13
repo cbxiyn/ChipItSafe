@@ -84,9 +84,6 @@ public class EmailPasswordActivity extends AppCompatActivity implements OnComple
         String email = emailText.getText().toString();
         String password = passwordText.getText().toString();
 
-        //TODO: Unit tests
-
-        //TODO: Data validation on views. Password Min 6 characters/Email must include @ symbol etc.
         if (!email.contains("@")) {
             Toast.makeText(EmailPasswordActivity.this, "Enter a valid email",
                     Toast.LENGTH_SHORT).show();
@@ -108,11 +105,6 @@ public class EmailPasswordActivity extends AppCompatActivity implements OnComple
 		
 
         firebase.emailPasswordLogin(email, password, EmailPasswordActivity.this);
-        //firebase.updateCurrentUser();
-
-       // firebase.updateUserAppToken(messagingService.FID, EmailPasswordActivity.this);
-
-
 
 
     }
@@ -132,7 +124,7 @@ public class EmailPasswordActivity extends AppCompatActivity implements OnComple
                     Toast.LENGTH_SHORT).show();
             firebase.updateCurrentUser();
             firebase.updateUserAppToken(messagingService.FID,this);
-            firstAidRequest.sendNotificationToRescuers(firebase.currentUser.getUid());
+
             Intent intent = new Intent(EmailPasswordActivity.this,DevicePairingActivity.class);
             startActivity(intent);
         } else {
