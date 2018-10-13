@@ -1,10 +1,17 @@
 package com.reply.hackaton.biotech.chipitsafe;
 
+import android.animation.Animator;
+import android.animation.ArgbEvaluator;
+import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
+import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
@@ -15,10 +22,14 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,6 +39,7 @@ import com.google.android.gms.maps.MapFragment;
 import com.movesense.mds.MdsException;
 import com.movesense.mds.MdsNotificationListener;
 import com.movesense.mds.MdsResponseListener;
+import com.reply.hackaton.biotech.chipitsafe.graphics.MyHeartShape;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -47,6 +59,7 @@ public class HealtStateFragment extends Fragment implements MdsResponseListener,
     private TextView deviceNameTV;
     private ProgressBar progressBar;
     private TextView parametersTV;
+    private MyHeartShape heartCustomView;
 
     public HealtStateFragment() {
         // Required empty public constructor
@@ -63,6 +76,7 @@ public class HealtStateFragment extends Fragment implements MdsResponseListener,
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         heartRateManager = HeartRateManager.instanceOfHeartRateManager();
         mNfcAdapter = NfcAdapter.getDefaultAdapter(getActivity());
 
@@ -119,6 +133,14 @@ public class HealtStateFragment extends Fragment implements MdsResponseListener,
         deviceNameTV = (TextView) v.findViewById(R.id.deviceName);
         parametersTV = (TextView) v.findViewById(R.id.hearthParamsTV);
         progressBar = (ProgressBar) v.findViewById(R.id.progressBar);
+        heartCustomView = new MyHeartShape(getActivity());
+        heartCustomView.setLayoutParams(
+                new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT,
+                        FrameLayout.LayoutParams.WRAP_CONTENT));
+        FrameLayout innerHeartFrameLayout = (FrameLayout) v.findViewById(R.id.heartLayout);
+        innerHeartFrameLayout.addView(heartCustomView);
+
+        //
         // Inflate the layout for this fragment
         return v;
     }
@@ -134,6 +156,7 @@ public class HealtStateFragment extends Fragment implements MdsResponseListener,
     public void onResume() {
         super.onResume();
         setupForegroundDispatch(getActivity(),mNfcAdapter);
+        showHeartBeatAnimation();
 
     }
 
@@ -183,11 +206,36 @@ public class HealtStateFragment extends Fragment implements MdsResponseListener,
             String devName = jObj.getJSONObject("Content").getString("productName");
             Log.e("DEVICEINFO", devName);
             deviceNameTV.setText(devName);
+            //showHeartBeatAnimation();
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
+    private void showHeartBeatAnimation(){
+
+        ObjectAnimator scaleDown = ObjectAnimator.ofPropertyValuesHolder(heartCustomView,
+                PropertyValuesHolder.ofFloat("scaleX", 1.2f),
+                PropertyValuesHolder.ofFloat("scaleY", 1.2f));
+        scaleDown.setDuration(300);
+
+        scaleDown.setRepeatCount(ObjectAnimator.INFINITE);
+        scaleDown.setRepeatMode(ObjectAnimator.REVERSE);
+
+        scaleDown.start();
+
+
+
+    }
+/*
+    public int adjustAlpha(int color, float factor) {
+        int alpha = Math.round(Color.alpha(color) * factor);
+        int red = Color.red(color);
+        int green = Color.green(color);
+        int blue = Color.blue(color);
+        return Color.argb(alpha, red, green, blue);
+    }
+*/
     /**
      * Called when Mds operation failed for any reason
      *
@@ -230,7 +278,7 @@ public class HealtStateFragment extends Fragment implements MdsResponseListener,
         Log.e("BPS", s);
         try {
 
-            JSONObject hrData = new JSONObject(s);
+            JSONObject hrData = new JSONObject(s).getJSONObject("Body");
             int average = hrData.getInt("average");
             parametersTV.setText("Average: "+average+"\n");
             // Retrieve number array from JSON object.
