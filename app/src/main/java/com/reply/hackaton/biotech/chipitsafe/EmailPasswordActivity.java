@@ -47,7 +47,10 @@ public class EmailPasswordActivity extends AppCompatActivity implements OnComple
 
         createNotificationChannel();
 
-
+        if(firebase.isLogged()){
+            Intent intent = new Intent(EmailPasswordActivity.this,DevicePairingActivity.class);
+            startActivity(intent);
+        }
 
 
     }

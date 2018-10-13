@@ -18,12 +18,11 @@ import com.reply.hackaton.biotech.chipitsafe.R;
 import com.reply.hackaton.biothech.chipitsafe.tools.GeoLocalizer;
 import com.reply.hackaton.biothech.chipitsafe.tools.SimulationConstants;
 
-public class CasualRescuerDashboard extends AppCompatActivity implements OnMapReadyCallback {
+public class CasualRescuerDashboard extends AppCompatActivity {
 
 
 
-    GoogleMap googleMap;
-    MapFragment mapFragment;
+
     private double lat;
     private double lon;
     private String personToBeRescuedName;
@@ -34,11 +33,11 @@ public class CasualRescuerDashboard extends AppCompatActivity implements OnMapRe
         setContentView(R.layout.activity_casual_rescuer_dashboard);
 
 
-        mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+        //mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
+        //mapFragment.getMapAsync(this);
 
         final Activity ctx = this;
-
+        /*
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -65,39 +64,17 @@ public class CasualRescuerDashboard extends AppCompatActivity implements OnMapRe
                                 .title("Apple"));
 
                         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(37.4233438, -122.0728817), 10));
-                        */
+
                     }
                 });
             }
         });
-
+*/
         Intent intent = getIntent();
-        personToBeRescuedName = intent.getStringExtra("person");
-        lat = intent.getDoubleExtra("lat", SimulationConstants.hLat);
-        lon = intent.getDoubleExtra("long", SimulationConstants.hLong);
+        //personToBeRescuedName = intent.getStringExtra("person");
+        lat = SimulationConstants.hLat;//intent.getDoubleExtra("lat", SimulationConstants.hLat);
+        lon = SimulationConstants.hLong;//intent.getDoubleExtra("long", SimulationConstants.hLong);
     }
 
-    @Override
-    public void onMapReady(GoogleMap gMap) {
-        googleMap = gMap;
-        googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-        try {
-            googleMap.setMyLocationEnabled(true);
-        } catch (SecurityException se) {
 
-        }
-
-        //Edit the following as per you needs
-        googleMap.setTrafficEnabled(true);
-        googleMap.setIndoorEnabled(true);
-        googleMap.setBuildingsEnabled(true);
-        googleMap.getUiSettings().setZoomControlsEnabled(true);
-        //
-
-        LatLng placeLocation = new LatLng(lat, lon); //Make them global
-        Marker placeMarker = googleMap.addMarker(new MarkerOptions().position(placeLocation)
-                .title(personToBeRescuedName));
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(placeLocation));
-        googleMap.animateCamera(CameraUpdateFactory.zoomTo(10), 1000, null);
-    }
 }

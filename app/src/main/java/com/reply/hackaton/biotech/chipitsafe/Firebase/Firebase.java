@@ -102,4 +102,11 @@ public class Firebase {
     public void updateCurrentUser() {
         currentUser = mAuth.getCurrentUser();
     }
+
+    public boolean isLogged(){
+        if(mAuth.getCurrentUser()==null){
+            return false;
+        }
+        return true;
+    }
 }
