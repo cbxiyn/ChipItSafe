@@ -102,7 +102,6 @@ public class BluetoothConnectionManager {
             che presenta metodi da cui trarre informazioni (getAddress() per l’indirizzo e getName() per il nome associato
             all’apparecchio, tanto per fare un paio di esempi) ed altri dedicati alla connessione GATT.
             */
-            Log.d(LOG_TAG,"onScanResult!");
 
             BluetoothDevice device = result.getDevice();
 
