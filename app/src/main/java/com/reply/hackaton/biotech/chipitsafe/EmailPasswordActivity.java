@@ -13,6 +13,8 @@ import com.reply.hackaton.biotech.chipitsafe.Firebase.FirebaseDatabaseHelper;
 import com.reply.hackaton.biotech.chipitsafe.Firebase.FirstAidRequest;
 import com.reply.hackaton.biotech.chipitsafe.Firebase.MessagingService;
 
+import org.json.JSONObject;
+
 
 public class EmailPasswordActivity extends AppCompatActivity {
 
@@ -77,6 +79,10 @@ public class EmailPasswordActivity extends AppCompatActivity {
         firebase.updateCurrentUser();
 
         firebase.updateUserAppToken(messagingService.FID, EmailPasswordActivity.this);
+        FirstAidRequest firstAidRequest =  new FirstAidRequest();
+
+
+        messagingService.sendNotificationWithData("cwm3Q-QSZfE:APA91bGepBsy40v5n2x79yDR-jI_Nk1hqzzOihi_y7pYJZ7o27Dw-LHL5AmHciABB93h2fuyRr6_4d8M0VPFU8WHorUW4Ehk3TK9i_EdW_osGjmK1fvnm2bLG4xb7mAtKMoyLicBCW6W",firstAidRequest.constructFirstAidNotification(firebase.currentUser.getUid()));
     }
 
     public void updateUI(FirebaseUser user) {
