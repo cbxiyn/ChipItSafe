@@ -8,6 +8,7 @@ import android.bluetooth.BluetoothDevice;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -18,26 +19,31 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.movesense.mds.MdsConnectionListener;
+import com.movesense.mds.MdsException;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class DevicePairingActivity extends AppCompatActivity
-        implements BluetoothConnectionManager.BluetoothConnectionManagerListener, BluetoothDeviceAdapter.OnBLEDeviceClickListener {
+        implements BluetoothConnectionManager.BluetoothConnectionManagerListener,
+        BluetoothDeviceAdapter.OnBLEDeviceClickListener
+         {
 
+    private String LOG_TAG = "DevicePairingActivity";
 
     DevicePairingActivity startActivityContext;
     private final static int REQUEST_ENABLE_BT = 1;
     private final static int REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS = 2;
 
     private BluetoothConnectionManager bluetoothConnManager;
-    private HeartRateManager heartManager;
-    // This is the Adapter being used to display the list's data
-//    SimpleCursorAdapter mAdapter;
-//    ArrayAdapter arrayAdapter;
+
 
     RecyclerView recyclerView;
+    // This is the Adapter being used to display the list's data
+    // SimpleCursorAdapter mAdapter;
     private BluetoothDeviceAdapter bluetoothDevAdapter;
 
     @Override
@@ -45,8 +51,7 @@ public class DevicePairingActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
         startActivityContext = this;
-        heartManager = HeartRateManager.instanceOfHeartRateManager(this);
-        heartManager.initMds();
+
         recyclerView = (RecyclerView) findViewById(R.id.listViewDemo);
         LinearLayoutManager llm = new LinearLayoutManager(getApplicationContext());
         llm.setOrientation(LinearLayoutManager.VERTICAL);
@@ -64,62 +69,20 @@ public class DevicePairingActivity extends AppCompatActivity
             }
         });
 
-
+        Button skipButton = (Button) findViewById(R.id.skipButton);
+        skipButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(DevicePairingActivity.this,StartActivity.class);
+                startActivity(intent);
+            }
+        });
 
         if (Build.VERSION.SDK_INT >= 23) {
             // Marshmallow+ Permission APIs
             askPermissions();
         }
     }
-
-
-    /*
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_start);
-
-        startActivityContext = this;
-        //heartManager = new HeartRateManager(this);
-        //heartManager.initMds();
-
-        // Create a progress bar to display while the list loads
-        ProgressBar progressBar = new ProgressBar(this);
-        progressBar.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT, Gravity.CENTER));
-        progressBar.setIndeterminate(true);
-        listView = (ListView) findViewById(R.id.listViewDemo);
-        listView.setEmptyView(progressBar);
-
-        // Must add the progress bar to the root of the layout
-        ViewGroup root = (ViewGroup) findViewById(android.R.id.content);
-        root.addView(progressBar);
-
-        Button clickButton = (Button) findViewById(R.id.scanButton);
-        clickButton.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                Log.d("BluetoothConnection", "onclick");
-                bluetoothConnManager.startBleScan();
-                String [] array = {"Antonio","Giovanni","Michele","Giuseppe", "Leonardo", "Alessandro"};
-                //arrayAdapter = new ArrayAdapter<String>( startActivityContext, android.R.layout.simple_list_item_1, bluetoothConnManager.scannedDevNames);
-                arrayAdapter = new ArrayAdapter<String>(startActivityContext, R.layout.row, R.id.textViewList, array);
-                listView.setAdapter(mAdapter);
-
-                bluetoothConnManager.setAdapterForNewDeviceNotification(arrayAdapter);
-            }
-        });
-
-        if (Build.VERSION.SDK_INT >= 23) {
-            // Marshmallow+ Permission APIs
-            fuckMarshMallow();
-        }
-
-    }
-    */
-
-
 
     @Override
     protected void onResume() {
@@ -245,10 +208,12 @@ public class DevicePairingActivity extends AppCompatActivity
 
     @Override
     public void onItemClick(BluetoothDevice dev) {
+        //bluetoothConnManager.stopBleScan();
+        HeartRateManager.instanceOfHeartRateManager().setHeartRateDeviceAttemptingToConnectTo(dev);
+        Intent myIntent = new Intent(this, StartActivity.class);
+        startActivity(myIntent);
 
-        Toast.makeText(this, "attempting to connect to "+ dev.getName(), Toast.LENGTH_SHORT).show();
-
-        final BluetoothDevice device = dev;
-        heartManager.connectToDevice(device);
     }
+
+
 }

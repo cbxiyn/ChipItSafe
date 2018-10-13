@@ -3,13 +3,49 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".HealtStateFragment">
+    tools:context=".HealtStateFragment"
+    >
+
+    <TextView
+        android:id="@+id/deviceName"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_gravity="top"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="90dp"
+        android:text="devices informations"
+        android:textSize="20sp" />
 
     <!-- TODO: Update blank fragment layout -->
     <TextView
+        android:id="@+id/hearthParamsTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:layout_marginBottom="-80dp"
+        tools:text="ECG Samples Values" />
+
+    <TextView
+        android:id="@+id/hearthParamsTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="-110dp"
         android:text="Show NFC and Bluetooth Device Params" />
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="80dp"
+        android:layout_gravity="center"/>
+
+    <FrameLayout
+        android:id="@+id/heartLayout"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="200dp"
+        android:layout_marginLeft="100dp"></FrameLayout>
 </FrameLayout>

@@ -13,6 +13,12 @@ import com.movesense.mds.MdsSubscription;
 
 public class HeartRateManager implements MdsNotificationListener{
 
+    /*
+    MOVESENSE APIs
+    https://bitbucket.org/suunto/movesense-device-lib
+     */
+
+
     private String LOG_TAG = "HeartRateManager";
 
     private Context currentContext;
@@ -23,94 +29,53 @@ public class HeartRateManager implements MdsNotificationListener{
     private BluetoothDevice heartRateDevice;
     private String hearRateDeviceSerial;
 
+    public void confirmHeartRateDevice(){
+        heartRateDevice = deviceAttemptingToConnectTo;
+    }
+
+    public void setHeartRateDeviceAttemptingToConnectTo(BluetoothDevice dev){
+        deviceAttemptingToConnectTo = dev;
+    }
+
+    public BluetoothDevice getDeviceAttemptingToConnectTo() {
+        return deviceAttemptingToConnectTo;
+    }
+
+    public void setHeartRateDeviceSerial(String serialNr){
+        hearRateDeviceSerial = serialNr;
+    }
 
     private static HeartRateManager heartRateManager = null;
 
-    private HeartRateManager(Context c){
-        currentContext = c;
+    private HeartRateManager(){
+
     }
 
-    public static HeartRateManager instanceOfHeartRateManager(Context c) {
-        if(heartRateManager == null) heartRateManager = new HeartRateManager(c);
+    public static HeartRateManager instanceOfHeartRateManager() {
+        if(heartRateManager == null) heartRateManager = new HeartRateManager();
 
         return heartRateManager;
     }
 
-    public void initMds() {
+    public void initMds(Context c) {
+        currentContext = c;
         mMds = Mds.builder().build(currentContext);
+
     }
 
 
-    public void connectToDevice(BluetoothDevice device){
+    private BluetoothDevice deviceAttemptingToConnectTo=null;
+
+    public boolean isConnectedToDevice = false;
+
+    public void connectToDevice(MdsConnectionListener listener){
+        if(deviceAttemptingToConnectTo == null)
+            Log.e(LOG_TAG, "null deviceAttemptingToConnectTo reference");
         /*if (!device.isConnected()) { */
             //RxBleDevice bleDevice = getBleClient().getBleDevice(device.macAddress);
-            Log.i(LOG_TAG, "Connecting to BLE device: " +  device.getAddress() /*bleDevice.getMacAddress()*/);
+            Log.i(LOG_TAG, "Connecting to BLE device: " +  deviceAttemptingToConnectTo.getAddress() /*bleDevice.getMacAddress()*/);
 
-            final BluetoothDevice deviceAttemptingToConnectTo = device;
-
-            mMds.connect(  device.getAddress() /*bleDevice.getMacAddress()*/,
-                    new MdsConnectionListener() {
-
-
-                /**
-                * Called when Mds / Whiteboard link-layer connection (BLE) has been succesfully established
-                *
-                */
-                @Override
-                public void onConnect(String s) {
-                    Log.d(LOG_TAG, "onConnect:" + s);
-
-                }
-
-                /**
-                * Called when the full Mds / Whiteboard connection has been succesfully established
-                *
-                */
-                @Override
-                public void onConnectionComplete(String macAddress, String serial) {
-                    Log.d(LOG_TAG, "onConnectionComplete:devSerial" + serial);
-                    heartRateDevice = deviceAttemptingToConnectTo;
-                    hearRateDeviceSerial = serial;
-                    subscribeToHeartECGNotifications();
-                    //getDeviceInfo();
-                    /*
-                    for (MyScanResult sr : mScanResArrayList) {
-                        if (sr.macAddress.equalsIgnoreCase(macAddress)) {
-                            sr.markConnected(serial);
-                            break;
-                        }
-                    }
-                    */
-                    //mScanResArrayAdapter.notifyDataSetChanged();
-                }
-
-                /**
-                * Called when Mds connect() call fails with error
-                *
-                */
-                @Override
-                public void onError(MdsException e) {
-                    Log.e(LOG_TAG, "onError:" + e);
-
-                    //showConnectionError(e);
-                }
-
-                /**
-                * Called when Mds connection disconnects (e.g. device out of range)
-                *
-                */
-                @Override
-                public void onDisconnect(String bleAddress) {
-                    Log.d(LOG_TAG, "onDisconnect: " + bleAddress);
-                    /*
-                    for (MyScanResult sr : mScanResArrayList) {
-                        if (bleAddress.equals(sr.macAddress))
-                            sr.markDisconnected();
-                    }
-                    */
-                    //mScanResArrayAdapter.notifyDataSetChanged();
-                }
-            });
+            mMds.connect(  deviceAttemptingToConnectTo.getAddress(), listener);
         /*
         }
         else
@@ -145,40 +110,11 @@ The MDS library exposes the REST api on the Movesense devices via the following 
 
     private final String SCHEME_PREFIX = "suunto://";
 
-    public void getDeviceInfo(){
+    public void getDeviceInfo(MdsResponseListener listener){
         //String uri = SCHEME_PREFIX + device.connectedSerial + "/Info";
         String uri = SCHEME_PREFIX + hearRateDeviceSerial + "/Info";
         //final Context ctx = currentContext;
-        mMds.get(uri, null, new MdsResponseListener() {
-            /**
-             * Called when Mds operation has been succesfully finished
-             *
-             * @param data Response in String format
-             */
-            @Override
-            public void onSuccess(String data) {
-                Log.i(LOG_TAG, "Device " + hearRateDeviceSerial+ " /info request succesful: " + data);
-                // Display info in alert dialog
-                /*
-                AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
-                builder.setTitle("Device info:")
-                        .setMessage(s)
-                        .show();
-                */
-                // The onSuccess() gets the result code and the returned data as a JSON string.
-
-            }
-
-            /**
-             * Called when Mds operation failed for any reason
-             *
-             * @param e Object containing the error
-             */
-            @Override
-            public void onError(MdsException e) {
-                Log.e(LOG_TAG, "Device " + hearRateDeviceSerial + " /info returned error: " + e);
-            }
-        });
+        mMds.get(uri, null, listener);
     }
 
 
@@ -211,15 +147,20 @@ The MDS library exposes the REST api on the Movesense devices via the following 
     NOTE: After the application is done with the notifications it should call the unsubscribe()
     methods in the MdsSubscription object that was returned from the call to subscribe().
     */
-    MdsSubscription subscription;
-    public void subscribeToHeartECGNotifications(){
+    MdsSubscription ECGsubscription;
+    public void subscribeToECGNotifications(MdsNotificationListener listener){
         Log.d("subscribeToHeartECGNot", "doing..");
         //String uri = SCHEME_PREFIX + hearRateDeviceSerial + "/Meas/ECG";
+        /*
+        Apparently ECG, like Magn and Acc but unlike HR, needs to have the sample rate included in the path
+        in order to return data. I fixed the issue by changing the API path from Meas/ECG to Meas/ECG/125,
+        125 being the default sample rate that the android app uses.
+         */
         String uriToSubscribeTo = "Meas/ECG/125";//Meas/Acc/13
-        subscription =
+        ECGsubscription =
                 mMds.subscribe("suunto://MDS/EventListener",
                         "{\"Uri\": \"" + hearRateDeviceSerial + "/" + uriToSubscribeTo + "\"}",
-                        this); // MdsNotificationListener callback class
+                        listener); // MdsNotificationListener callback class
 
 
 
@@ -241,5 +182,27 @@ The MDS library exposes the REST api on the Movesense devices via the following 
     @Override
     public void onError(MdsException e) {
 
+    }
+
+
+
+
+    MdsSubscription HRsubscription;
+    public void subscribeToHeartRateNotifications(MdsNotificationListener listener){
+        Log.d("subscribeToHeartRateNot", "doing..");
+        String uriToSubscribeTo = "Meas/HR";//Meas/Acc/13
+        ECGsubscription =
+                mMds.subscribe("suunto://MDS/EventListener",
+                        "{\"Uri\": \"" + hearRateDeviceSerial + "/" + uriToSubscribeTo + "\"}",
+                        listener); // MdsNotificationListener callback class
+
+
+
+
+    }
+
+    public void unsubscribeAll(){
+        if(HRsubscription!=null)HRsubscription.unsubscribe();
+        if(ECGsubscription!=null)ECGsubscription.unsubscribe();
     }
 }

@@ -6,6 +6,9 @@ xmlns:tools="http://schemas.android.com/tools"
 android:layout_width="match_parent"
 android:layout_height="match_parent">
 
+
+
+
     <android.support.v7.widget.Toolbar
         android:id="@+id/my_toolbar"
         android:layout_width="match_parent"
@@ -21,6 +24,7 @@ android:layout_height="match_parent">
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
+
 <android.support.design.widget.BottomNavigationView
     android:id="@+id/navigationView"
     android:layout_width="match_parent"
@@ -35,5 +39,6 @@ android:layout_height="match_parent">
     app:itemIconTint="@android:color/white"
     app:itemTextColor="@android:color/white"
     app:menu="@menu/navigation_bar"/>
+
 
 </android.support.constraint.ConstraintLayout>

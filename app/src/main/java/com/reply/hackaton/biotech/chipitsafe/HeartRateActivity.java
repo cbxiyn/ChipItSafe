@@ -35,8 +35,8 @@ public class HeartRateActivity extends AppCompatActivity {
 
 
         //bluetoothConnManager = new BluetoothConnectionManager(this);
-        heartManager = HeartRateManager.instanceOfHeartRateManager(this);
-        heartManager.initMds();
+        heartManager = HeartRateManager.instanceOfHeartRateManager();
+        heartManager.initMds(this);
         /*
         // Init Scan UI
         mScanResultListView = (ListView)findViewById(R.id.listScanResult);

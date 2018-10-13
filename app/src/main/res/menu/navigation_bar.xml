@@ -10,6 +10,10 @@
         android:id="@+id/navigation_emergency"
         android:icon="@android:drawable/ic_dialog_alert"
         android:title="Emergency"/>
+    <item
+        android:id="@+id/navigation_nfc"
+        android:icon="@android:drawable/ic_input_get"
+        android:title="NFC"/>
 >
 
 </menu>
