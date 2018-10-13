@@ -2,6 +2,7 @@ package com.reply.hackaton.biotech.chipitsafe;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -9,6 +10,7 @@ import android.widget.Toast;
 import com.google.firebase.auth.FirebaseUser;
 import com.reply.hackaton.biotech.chipitsafe.Firebase.Firebase;
 import com.reply.hackaton.biotech.chipitsafe.Firebase.FirebaseDatabaseHelper;
+import com.reply.hackaton.biotech.chipitsafe.Firebase.FirstAidRequest;
 import com.reply.hackaton.biotech.chipitsafe.Firebase.MessagingService;
 
 
