@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -77,11 +78,15 @@ public class MessagingService extends FirebaseMessagingService {
     @Override
     public void onCreate() {
         super.onCreate();
+        // Create an Intent for the activity you want to start
+        Intent resultIntent = new Intent(this, CasualRescuerDashboard.class);
+
+
         mBuilder = new NotificationCompat.Builder(this, ApplicationState.NOTIFICATION_CHANNEL_ID)
                 .setSmallIcon(R.drawable.googleg_standard_color_18)
                 //.setContentTitle("Hey Doctor!")
                 .setContentText("I am in danger!")
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+                .setPriority(NotificationCompat.PRIORITY_HIGH);
 
         // set notification click action stuff
         Intent notifyIntent;
@@ -93,6 +98,8 @@ public class MessagingService extends FirebaseMessagingService {
             notifyIntent = new Intent(this, DoctorDashboard.class);
             mBuilder.setContentTitle("DOCTOR HELP ME!");
         }
+
+        /*
         // Set the Activity to start in a new, empty task
         notifyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                 | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -100,6 +107,15 @@ public class MessagingService extends FirebaseMessagingService {
         PendingIntent notifyPendingIntent = PendingIntent.getActivity(
                 this, 0, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT
         );
+        */
+
+        // Create the TaskStackBuilder and add the intent, which inflates the back stack
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+        stackBuilder.addNextIntentWithParentStack(resultIntent);
+        // Get the PendingIntent containing the entire back stack
+        PendingIntent notifyPendingIntent =
+                stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+
         mBuilder.setContentIntent(notifyPendingIntent);
     }
 
@@ -148,6 +164,7 @@ public class MessagingService extends FirebaseMessagingService {
      */
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
+
 
         // TODO: Handle FCM messages here.
         Log.d(TAG, "From: " + remoteMessage.getFrom());
