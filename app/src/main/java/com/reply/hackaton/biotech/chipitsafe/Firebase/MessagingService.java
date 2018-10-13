@@ -32,7 +32,7 @@ import org.json.JSONObject;
 
 public class MessagingService extends FirebaseMessagingService {
     private NotificationCompat.Builder mBuilder;
-    private static MessagingService messagingService;
+    //private static MessagingService messagingService;
 
     public static class Consants{
         public static final String LEGACY_SERVER_KEY = "AIzaSyCYm_q-C09DnXQrreTakfFOds1EaMo7gy0";
@@ -44,7 +44,11 @@ public class MessagingService extends FirebaseMessagingService {
     public String FID;
 
 
-    private MessagingService(final Context context) {
+    public MessagingService() {
+
+    }
+
+    public MessagingService(final Context context) {
         this.context = context;
 
         FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener((Activity) context, new OnSuccessListener<InstanceIdResult>() {
@@ -58,11 +62,13 @@ public class MessagingService extends FirebaseMessagingService {
         });
     }
 
+    /*
     public static MessagingService instanceOf(final Context context){
         if(messagingService == null) messagingService = new MessagingService(context);
 
         return messagingService;
     }
+    */
 
     @Override
     public void onCreate() {
@@ -105,7 +111,7 @@ public class MessagingService extends FirebaseMessagingService {
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
 
         // notificationId is a unique int for each notification that you must define
-        notificationManager.notify(notifID, mBuilder.build());
+        notificationManager.notify(notifID++, mBuilder.build());
 
         // Check if message contains a data payload.
         if (remoteMessage.getData().size() > 0) {
