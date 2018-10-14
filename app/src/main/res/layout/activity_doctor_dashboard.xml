@@ -13,6 +13,8 @@
         android:id="@+id/hearthParamsTV"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:gravity="center_vertical"
+        android:paddingLeft="15dp"
         android:layout_weight="3"
         android:layout_gravity="center"
         android:textSize="48sp"
@@ -24,6 +26,8 @@
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
+        android:gravity="center_vertical"
+        android:paddingLeft="15dp"
         android:layout_weight="1"
         android:text="@string/emergency_questions_first_time" />
 
@@ -31,6 +35,8 @@
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
+        android:gravity="center_vertical"
+        android:paddingLeft="15dp"
         android:layout_weight="1"
         android:text="@string/answer_questions_chest" />
 
@@ -38,6 +44,8 @@
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
+        android:gravity="center_vertical"
+        android:paddingLeft="15dp"
         android:layout_weight="1"
         android:text="@string/answer_questions_faint" />
 
@@ -45,6 +53,8 @@
         android:id="@+id/textView4"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
+        android:gravity="center_vertical"
+        android:paddingLeft="15dp"
         android:layout_weight="1"
         android:text="@string/answer_questions_medicine" />
 
@@ -52,12 +62,16 @@
         android:id="@+id/textView5"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
+        android:gravity="center_vertical"
+        android:paddingLeft="15dp"
         android:layout_weight="1"
         android:text="@string/answer_questions_alone" />
 
     <TextView
         android:id="@+id/textView6"
         android:layout_width="wrap_content"
+        android:gravity="center_vertical"
+        android:paddingLeft="15dp"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:text="@string/answer_questions_sweating" />
@@ -65,6 +79,8 @@
     <TextView
         android:id="@+id/textView7"
         android:layout_width="wrap_content"
+        android:gravity="center_vertical"
+        android:paddingLeft="15dp"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:text="@string/answer_questions_breath" />
