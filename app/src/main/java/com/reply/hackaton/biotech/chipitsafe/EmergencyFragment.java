@@ -115,6 +115,7 @@ public class EmergencyFragment extends Fragment implements View.OnClickListener 
                 }
 
             }
+            MessagingService.sendNotificationWithData(SimulationConstants.RESCUER_TOKEN_ID,jsonObject, ApplicationState.openRescuerAction);
             MessagingService.sendNotificationWithData(SimulationConstants.DOCTOR_TOKEN_ID,jsonObject, ApplicationState.openDoctorAction);
         } else {
             questionTextView.setText(questionArray[index]);

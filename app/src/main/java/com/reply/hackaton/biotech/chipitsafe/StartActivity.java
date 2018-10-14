@@ -150,13 +150,13 @@ public class StartActivity extends AppCompatActivity
             mNfcAdapter.enableForegroundDispatch(this, pendingIntent, null, null);
         }
 
-        if(heartManager.isConnectedToDevice){
+       if(heartManager.isConnectedToDevice){
 
             BluetoothDevice dev = heartManager.getDeviceAttemptingToConnectTo();
             Toast.makeText(this, "attempting to connect to "+ dev.getName(), Toast.LENGTH_SHORT).show();
 
             heartManager.connectToDevice(this);
-        }
+       }
     }
 
     @Override
