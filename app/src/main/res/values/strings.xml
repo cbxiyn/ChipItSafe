@@ -38,6 +38,14 @@
     <string name="emergency_questions_breath">Is your breath missing?</string>
 
 
+    <string name="answer_questions_first_time">Is the first time it happens?  YES</string>
+    <string name="answer_questions_chest">Do you feel chest pain or a sense of oppression?  YES</string>
+    <string name="answer_questions_faint">Do you feel faint?  YES</string>
+    <string name="answer_questions_medicine">Do you usually take medicine for this problem?  YES</string>
+    <string name="answer_questions_alone">Are you alone?  YES</string>
+    <string name="answer_questions_sweating">Are you sweating?  YES</string>
+    <string name="answer_questions_breath">Is your breath missing?  YES</string>
+
 
     <string-array name="emergency_questions">
         <item>@string/emergency_questions_first_time</item>

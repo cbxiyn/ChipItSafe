@@ -194,6 +194,8 @@ public class MessagingService extends FirebaseMessagingService {
 
                     }
 
+
+
                 } else {
                     // Handle message within 10 seconds
                     //TODO: Handle data when first aid request is requested.
@@ -213,6 +215,9 @@ public class MessagingService extends FirebaseMessagingService {
 
                 }
             }
+        } else {
+
+
         }
 
     }
@@ -253,7 +258,9 @@ public class MessagingService extends FirebaseMessagingService {
         }.execute();
 
     }
-    public static void sendNotificationWithData(final String regToken,final JSONObject data){
+
+    // clickAction = OPEN_ACTIVITY_1 for rand rescure or OPEN_ACTIVITY_DOCTOR
+    public static void sendNotificationWithData(final String regToken, final JSONObject data, final String clickAction){
             new AsyncTask<Void, Void, Void>() {
                 @Override
                 protected Void doInBackground(Void... params) {
@@ -265,7 +272,7 @@ public class MessagingService extends FirebaseMessagingService {
                         //Body and title fields are required for a valid message
                         NotificationDataJson.put("body", "First Aid Requested");
                         NotificationDataJson.put("title", "Alert: First Aid Requested");
-                        NotificationDataJson.put("click_action","OPEN_ACTIVITY_1");
+                        NotificationDataJson.put("click_action",clickAction);
                         json.put("data", DataJSON);
                         json.put("notification", NotificationDataJson);
                         json.put("to", regToken);
@@ -284,5 +291,7 @@ public class MessagingService extends FirebaseMessagingService {
                 }
             }.execute();
         }
+
+
 
 }
