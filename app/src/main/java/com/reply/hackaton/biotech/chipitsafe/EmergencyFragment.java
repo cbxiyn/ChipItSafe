@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.reply.hackaton.biotech.chipitsafe.Firebase.FirstAidRequest;
 import com.reply.hackaton.biotech.chipitsafe.Firebase.MessagingService;
+import com.reply.hackaton.biothech.chipitsafe.tools.ApplicationState;
 import com.reply.hackaton.biothech.chipitsafe.tools.GeoLocalizer;
 import com.reply.hackaton.biothech.chipitsafe.tools.SimulationConstants;
 
@@ -99,7 +100,22 @@ public class EmergencyFragment extends Fragment implements View.OnClickListener 
         index++;
         if(index>=questionArray.length){
             index = 0;
-            //send to backend
+            JSONObject jsonObject = new JSONObject();
+            for(int i = 0; i<questionArray.length;i++){
+                Boolean b = questionHashMap.get(i);
+                String quest = questionArray[i];
+                String resp = "No";
+                if(b) resp = "Yes";
+                String key = "Q"+(i+1);
+
+                try {
+                    jsonObject.put(key,quest + " "+ resp);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+            MessagingService.sendNotificationWithData(SimulationConstants.DOCTOR_TOKEN_ID,jsonObject);
         } else {
             questionTextView.setText(questionArray[index]);
         }

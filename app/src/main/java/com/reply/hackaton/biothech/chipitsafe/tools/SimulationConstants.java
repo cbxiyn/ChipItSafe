@@ -30,4 +30,12 @@ public class SimulationConstants {
     public static String DOCTOR_EMAIL = "doctor@email.it";
     public static String DOCTOR_TOKEN_ID = "cvdRAgoBWkc:APA91bGhkzGkvnCxKlrmtYCMEFpLBVjVXArHmUuEc-T-8bd-ePzosx8U2NgPyWZMiHlWBM1FcTgnwaZOX2iMZocFNfjRhK1uFg64mv2wZ0R7EUN52a4udWuhMMkS_dnotQQYf37em2_Z";
 
+    public static String Q1 = "Q1";
+    public static String Q2 = "Q2";
+    public static String Q3 = "Q3";
+    public static String Q4 = "Q4";
+    public static String Q5 = "Q5";
+
+
+
 }
