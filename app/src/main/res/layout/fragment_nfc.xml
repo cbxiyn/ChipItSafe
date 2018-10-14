@@ -9,71 +9,103 @@
     android:orientation="vertical"
     tools:context=".NFCFragment">
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:paddingLeft="20dp"
+        android:text="PERSONAL DATA"
+        android:gravity="center_vertical"
+        android:fontFamily="sans-serif-thin"
+        android:textColor="@color/colorPrimaryDark"
+        android:textStyle="bold"
+        android:layout_weight="1"/>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:paddingLeft="20dp"
+        android:fillViewport="true"
+        android:layout_weight="7">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            >
+            <TextView
+                android:id="@+id/nfc_content_name"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:fontFamily="sans-serif-thin"
+                android:layout_marginLeft="@dimen/fab_margin"
+                android:gravity="center_vertical"
+                android:text="Name" />
+            <TextView
+                android:id="@+id/nfc_content_lastname"
+                android:layout_width="match_parent"
+                android:fontFamily="sans-serif-thin"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:layout_marginLeft="@dimen/fab_margin"
+                android:gravity="center_vertical"
+                android:text="Cognome" />
+            <TextView
+                android:id="@+id/nfc_content_fiscalCode"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:fontFamily="sans-serif-thin"
+                android:layout_marginLeft="@dimen/fab_margin"
+                android:gravity="center_vertical"
+                android:text="- - -" />
+            <TextView
+                android:id="@+id/nfc_content_blood"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:fontFamily="sans-serif-thin"
+                android:layout_marginLeft="@dimen/fab_margin"
+                android:gravity="center_vertical"
+                android:text="- - -" />
+            <TextView
+                android:id="@+id/nfc_content_birthDate"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:fontFamily="sans-serif-thin"
+                android:layout_marginLeft="@dimen/fab_margin"
+                android:gravity="center_vertical"
+                android:text="- - -" />
+            <TextView
+                android:id="@+id/nfc_content_allergies"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:fontFamily="sans-serif-thin"
+                android:layout_marginLeft="@dimen/fab_margin"
+                android:gravity="center_vertical"
+                android:text="- - -" />
+            <TextView
+                android:id="@+id/nfc_content_deseas"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:layout_marginLeft="@dimen/fab_margin"
+                android:fontFamily="sans-serif-thin"
+                android:gravity="center_vertical"
+                android:text="- - -" />
+            <TextView
+                android:id="@+id/nfc_content_threapy"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:fontFamily="sans-serif-thin"
+                android:layout_marginLeft="@dimen/fab_margin"
+                android:gravity="center_vertical"
+                android:text="Prova" />
+        </LinearLayout>
 
-    <TextView
-        android:id="@+id/nfc_content_name"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout_marginLeft="@dimen/fab_margin"
-        android:gravity="center_vertical"
-        android:text="- - -" />
-    <TextView
-        android:id="@+id/nfc_content_lastname"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout_marginLeft="@dimen/fab_margin"
-        android:gravity="center_vertical"
-        android:text="- - -" />
-    <TextView
-        android:id="@+id/nfc_content_fiscalCode"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout_marginLeft="@dimen/fab_margin"
-        android:gravity="center_vertical"
-        android:text="- - -" />
-    <TextView
-        android:id="@+id/nfc_content_blood"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout_marginLeft="@dimen/fab_margin"
-        android:gravity="center_vertical"
-        android:text="- - -" />
-    <TextView
-        android:id="@+id/nfc_content_birthDate"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout_marginLeft="@dimen/fab_margin"
-        android:gravity="center_vertical"
-        android:text="- - -" />
-    <TextView
-        android:id="@+id/nfc_content_allergies"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout_marginLeft="@dimen/fab_margin"
-        android:gravity="center_vertical"
-        android:text="- - -" />
-    <TextView
-        android:id="@+id/nfc_content_deseas"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout_marginLeft="@dimen/fab_margin"
-        android:gravity="center_vertical"
-        android:text="- - -" />
-    <TextView
-        android:id="@+id/nfc_content_threapy"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout_marginLeft="@dimen/fab_margin"
-        android:gravity="center_vertical"
-        android:text="- - -" />
+    </ScrollView>
+
 
 
 </LinearLayout>

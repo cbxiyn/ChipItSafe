@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginTop="60dp"
     android:orientation="vertical"
     tools:context=".EmergencyFragment">
 
@@ -12,6 +13,8 @@
         android:paddingLeft="20dp"
         android:gravity="center_vertical"
         android:text="ALARM"
+        android:fontFamily="sans-serif-thin"
+        android:textColor="@color/colorPrimaryDark"
         android:textStyle="bold"
         android:layout_weight="1"/>
     <TextView
@@ -22,7 +25,7 @@
         android:fontFamily="sans-serif-thin"
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
-        android:layout_weight="3"
+        android:layout_weight="4"
         android:gravity="center_vertical"
         android:textSize="35dp"
         android:textAlignment="center"
@@ -35,18 +38,20 @@
 
         <TextView
             android:id="@+id/yes_button"
-            android:layout_width="wrap_content"
+            android:layout_width="130dp"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-thin"
             android:layout_alignParentStart="true"
             android:layout_alignParentBottom="true"
             android:layout_gravity="center_vertical"
-            android:layout_marginStart="50dp"
+            android:layout_marginStart="30dp"
             android:layout_marginBottom="76dp"
             android:textStyle="bold"
             android:paddingLeft="30dp"
             android:paddingTop="10dp"
             android:paddingRight="30dp"
+            android:textColor="@android:color/white"
+            android:background="@color/redButtonColor"
             android:paddingBottom="10dp"
             android:textAlignment="center"
             android:text="YES"
@@ -54,15 +59,17 @@
 
         <TextView
             android:id="@+id/no_button"
-            android:layout_width="wrap_content"
+            android:layout_width="130dp"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-thin"
             android:textStyle="bold"
+            android:textColor="@android:color/white"
+            android:background="@color/greenButtonColor"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="30dp"
-            android:layout_marginEnd="50dp"
+            android:layout_marginEnd="30dp"
             android:layout_marginBottom="76dp"
             android:paddingLeft="30dp"
             android:paddingTop="10dp"
