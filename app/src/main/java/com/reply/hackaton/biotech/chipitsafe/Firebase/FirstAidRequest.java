@@ -6,6 +6,7 @@ import android.util.Log;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.reply.hackaton.biothech.chipitsafe.tools.ApplicationState;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -89,7 +90,7 @@ public class FirstAidRequest implements OnCompleteListener<DocumentSnapshot>{
                 String rescuerAppID = rescuerUIDtoRescuerAppToken.getUserAppToken(rescuer);
                 if(rescuerAppID != null)
                 {
-                    messagingService.sendNotificationWithData(rescuerAppID,constructFirstAidNotification(uid));
+                    messagingService.sendNotificationWithData(rescuerAppID,constructFirstAidNotification(uid), ApplicationState.openRescuerAction);
                 }
 
             }
