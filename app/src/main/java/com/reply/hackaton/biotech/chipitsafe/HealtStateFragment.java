@@ -40,6 +40,7 @@ import com.movesense.mds.MdsException;
 import com.movesense.mds.MdsNotificationListener;
 import com.movesense.mds.MdsResponseListener;
 import com.reply.hackaton.biotech.chipitsafe.graphics.MyHeartShape;
+import com.reply.hackaton.biothech.chipitsafe.tools.ApplicationState;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -59,6 +60,7 @@ public class HealtStateFragment extends Fragment implements MdsResponseListener,
     private ProgressBar progressBar;
     private TextView parametersTV;
     private MyHeartShape heartCustomView;
+    private TextView heartStatusTV;
 
     public HealtStateFragment() {
         // Required empty public constructor
@@ -87,6 +89,7 @@ public class HealtStateFragment extends Fragment implements MdsResponseListener,
         View v = inflater.inflate(R.layout.fragment_healt_state, container, false);
         deviceNameTV = (TextView) v.findViewById(R.id.deviceName);
         parametersTV = (TextView) v.findViewById(R.id.hearthParamsTV);
+        heartStatusTV = (TextView) v.findViewById(R.id.hearthParamsStatus);
         progressBar = (ProgressBar) v.findViewById(R.id.progressBar);
         heartCustomView = new MyHeartShape(getActivity());
         heartCustomView.setLayoutParams(
@@ -201,6 +204,11 @@ public class HealtStateFragment extends Fragment implements MdsResponseListener,
 
             JSONObject hrData = new JSONObject(s).getJSONObject("Body");
             int average = hrData.getInt("average");
+            if(ApplicationState.healthState == ApplicationState.HealthState.inDanger){
+                Random r = new Random();
+                int i1 = r.nextInt(130) + 100;
+                average = i1;
+            }
             //if(average < 53){
             //    Random generator = new Random(System.currentTimeMillis()); // see comments!
             //    int randomNum = rand.nextInt((max - min) + 1) + min;
@@ -215,7 +223,7 @@ public class HealtStateFragment extends Fragment implements MdsResponseListener,
                 /*...*/
             }
 
-            /*
+
             // Create an int array to accomodate the numbers.
             int[] hrSamples = new int[array.length()];
 
@@ -224,7 +232,7 @@ public class HealtStateFragment extends Fragment implements MdsResponseListener,
                 hrSamples[i] = array.optInt(i);
                 parametersTV.setText(parametersTV.getText().toString() + hrSamples[i] + "-");
             }
-            */
+
 
 
         } catch (JSONException e) {
