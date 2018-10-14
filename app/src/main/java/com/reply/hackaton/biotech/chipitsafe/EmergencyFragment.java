@@ -22,22 +22,19 @@ import com.reply.hackaton.biothech.chipitsafe.tools.SimulationConstants;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link EmergencyFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link EmergencyFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class EmergencyFragment extends Fragment {
+import java.util.HashMap;
 
 
-    private OnFragmentInteractionListener mListener;
+
+public class EmergencyFragment extends Fragment implements View.OnClickListener {
+
+
     public static String TAG = "EmergencyFragment";
     private Button emergencyButton;
-
+    private TextView questionTextView;
+    private String[] questionArray;
+    private HashMap<Integer,Boolean> questionHashMap = new HashMap<>();
+    private int index = 0;
     public EmergencyFragment() {
         // Required empty public constructor
     }
@@ -60,24 +57,15 @@ public class EmergencyFragment extends Fragment {
 
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_emergency, container, false);
-        emergencyButton = (Button) v.findViewById(R.id.startEmergencySimulationButton);
-        emergencyButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //FirstAidRequest.instanceOf().sendNotificationToRescuers(SimulationConstants.DOCTOR_TOKEN_ID, getActivity());
-                //MessagingService.sendNotification(SimulationConstants.DOCTOR_TOKEN_ID);
-                // TODO: should be sent to everybody instead
-                //MessagingService.sendNotification(SimulationConstants.RESCUER_TOKEN_ID);
-                //emergencyButton.setAlpha(0);
-                JSONObject obj = new JSONObject();
-                try {
-                    obj.put("name","vanessa");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                MessagingService.sendNotificationWithData(SimulationConstants.RESCUER_TOKEN_ID,obj);
-            }
-        });
+        questionTextView = (TextView)v.findViewById(R.id.emergency_question);
+        TextView yesTextView = (TextView)v.findViewById(R.id.yes_button);
+        TextView noTextView = (TextView)v.findViewById(R.id.no_button);
+        questionArray = getActivity().getResources().getStringArray(R.array.emergency_questions);
+
+        noTextView.setOnClickListener(this);
+        yesTextView.setOnClickListener(this);
+
+        questionTextView.setText(questionArray[index]);
 
         return v;
     }
@@ -96,21 +84,26 @@ public class EmergencyFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.yes_button:
+                questionHashMap.put(index,true);
+                break;
+            case R.id.no_button:
+                questionHashMap.put(index,false);
+                break;
+        }
+        index++;
+        if(index>=questionArray.length){
+            index = 0;
+            //send to backend
+        } else {
+            questionTextView.setText(questionArray[index]);
+        }
+
     }
+
 }
