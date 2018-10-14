@@ -20,7 +20,7 @@ public class SimulationConstants {
 
     // in danger notifications
     public static String IN_DANGER_EMAIL = "in.danger@email.it";
-    public static String IN_DANGER_TOKEN_ID = "catZOL5PdBw:APA91bHxmB8sqFUFvFUGLyS8aw7VTEkjDLX6KZ9RcLYLW9nGDpc8XelXlW2Zalf95oYE7F8-5mRGZoUtN6_VD-Wif3N0bNtGd7TvwI0FF3b3ksBr3EFAHa9r2aTHEbhKBoOx3sPolHMI";
+    public static String IN_DANGER_TOKEN_ID = "cjRDgiOOs70:APA91bEuYrHF-ChSd87wciG-0SxxgGI-ckvGyIDtSdiqIXiy6HxGrbkj6NLKy6xuzIkNJ6Kzd3luoYsnLLivTtAr3v9hT7NcbmlIsNUNt-qe-Pbz4ikvsfF448vyhqvYCzz1XNWAZ3me";
 
     // casual rescuer notifications
     public static String RESCUER_EMAIL = "rescuer@email.it";
@@ -28,7 +28,7 @@ public class SimulationConstants {
 
     // designeted rescuer / doctor
     public static String DOCTOR_EMAIL = "doctor@email.it";
-    public static String DOCTOR_TOKEN_ID = "cvdRAgoBWkc:APA91bGhkzGkvnCxKlrmtYCMEFpLBVjVXArHmUuEc-T-8bd-ePzosx8U2NgPyWZMiHlWBM1FcTgnwaZOX2iMZocFNfjRhK1uFg64mv2wZ0R7EUN52a4udWuhMMkS_dnotQQYf37em2_Z";
+    public static String DOCTOR_TOKEN_ID = "fRVp0I9K7zk:APA91bF0Ij9SvQ6DqaEzs4ckvdWqNQ-sNoAZTZKu2RE9uukcNINiCawng7DDfPB5RgcdPaISgF467P19e4oIL6otE9fzLt2QH4g4nMxPi06xhig9YyNbk1V9_hHIOPGJJFO-thQgI886";
 
     public static String Q1 = "Q1";
     public static String Q2 = "Q2";
