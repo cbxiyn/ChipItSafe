@@ -4,7 +4,10 @@ package com.reply.hackaton.biotech.chipitsafe.Firebase;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.NotificationChannel;
+import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.provider.SyncStateContract;
 import android.support.v4.app.NotificationCompat;
@@ -14,6 +17,8 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.reply.hackaton.biotech.chipitsafe.R;
+import com.reply.hackaton.biotech.chipitsafe.casualrescuer.CasualRescuerDashboard;
+import com.reply.hackaton.biotech.chipitsafe.doctor.DoctorDashboard;
 import com.reply.hackaton.biothech.chipitsafe.tools.ApplicationState;
 import com.squareup.okhttp.MediaType;
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -75,11 +80,48 @@ public class MessagingService extends FirebaseMessagingService {
     @Override
     public void onCreate() {
         super.onCreate();
+        // Create an Intent for the activity you want to start
+        Intent resultIntent = new Intent(this, CasualRescuerDashboard.class);
+
+
         mBuilder = new NotificationCompat.Builder(this, ApplicationState.NOTIFICATION_CHANNEL_ID)
                 .setSmallIcon(R.drawable.googleg_standard_color_18)
-                .setContentTitle("Hey Doctor!")
+                //.setContentTitle("Hey Doctor!")
                 .setContentText("I am in danger!")
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+                .setPriority(NotificationCompat.PRIORITY_HIGH);
+
+        // set notification click action stuff
+        Intent notifyIntent;
+        if(ApplicationState.state == ApplicationState.UserState.rescuer) {
+            notifyIntent = new Intent(this, CasualRescuerDashboard.class);
+            mBuilder.setContentTitle("Please Rescue Me!");
+        } else /*if(ApplicationState.state == ApplicationState.UserState.doctor)*/{
+            // TODO: link to doctor section
+            notifyIntent = new Intent(this, DoctorDashboard.class);
+            mBuilder.setContentTitle("DOCTOR HELP ME!");
+        }
+        notifyIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+
+        /*
+        // Set the Activity to start in a new, empty task
+        notifyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        // Create the PendingIntent
+        PendingIntent notifyPendingIntent = PendingIntent.getActivity(
+                this, 0, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT
+        );
+        */
+
+        // Create the TaskStackBuilder and add the intent, which inflates the back stack
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+        stackBuilder.addNextIntentWithParentStack(resultIntent);
+        // Get the PendingIntent containing the entire back stack
+        //PendingIntent notifyPendingIntent =
+                stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent notifyPendingIntent = PendingIntent.getActivity(this, 0, notifyIntent, PendingIntent.FLAG_ONE_SHOT);
+
+        mBuilder.setContentIntent(notifyPendingIntent);
     }
 
     @Override
@@ -87,6 +129,27 @@ public class MessagingService extends FirebaseMessagingService {
         Log.d(TAG, "Refreshed token: " + token);
 
         sendRegistrationToServer(token);
+    }
+
+    public void registerNotificationClickAction(){
+
+
+        /*
+        Intent snoozeIntent = new Intent(this, MyBroadcastReceiver.class);
+        snoozeIntent.setAction(ACTION_SNOOZE);
+        snoozeIntent.putExtra(EXTRA_NOTIFICATION_ID, 0);
+        PendingIntent snoozePendingIntent =
+                PendingIntent.getBroadcast(this, 0, snoozeIntent, 0);
+
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setSmallIcon(R.drawable.notification_icon)
+                .setContentTitle("My notification")
+                .setContentText("Hello World!")
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setContentIntent(pendingIntent)
+                .addAction(R.drawable.ic_snooze, getString(R.string.snooze),
+                        snoozePendingIntent);
+         */
     }
 
     //TODO: Send new token to FireBase RT-DBS
@@ -107,54 +170,53 @@ public class MessagingService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
 
+
         // TODO: Handle FCM messages here.
         Log.d(TAG, "From: " + remoteMessage.getFrom());
 
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+        if(ApplicationState.healthState != ApplicationState.HealthState.inDanger) {
+            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
 
-        // notificationId is a unique int for each notification that you must define
-        notificationManager.notify(notifID++, mBuilder.build());
+            // notificationId is a unique int for each notification that you must define
+            notificationManager.notify(notifID++, mBuilder.build());
 
-        // Check if message contains a data payload.
-        if (remoteMessage.getData().size() > 0) {
-            Log.d(TAG, "Message data payload: " + remoteMessage.getData());
+            // Check if message contains a data payload.
+            if (remoteMessage.getData().size() > 0) {
+                Log.d(TAG, "Message data payload: " + remoteMessage.getData());
 
-            if (/* Check if data needs to be processed by long running job */ true) {
-                // For long-running tasks (10 seconds or more) use Firebase Job Dispatcher.
-                //TODO: Handle data when first aid request is requested.
-                Map<String,String> data = remoteMessage.getData();
-                Log.d(TAG,data.toString());
-                if(data.containsValue("true"))
-                {
-                    Log.d(TAG,data.get("UID") + " Needs help!");
+                if (/* Check if data needs to be processed by long running job */ true) {
+                    // For long-running tasks (10 seconds or more) use Firebase Job Dispatcher.
+                    //TODO: Handle data when first aid request is requested.
+                    Map<String, String> data = remoteMessage.getData();
+                    Log.d(TAG, data.toString());
+                    if (data.containsValue("true")) {
+                        Log.d(TAG, data.get("UID") + " Needs help!");
 
+                    }
+
+                } else {
+                    // Handle message within 10 seconds
+                    //TODO: Handle data when first aid request is requested.
+                    Map<String, String> data = remoteMessage.getData();
+
+                    if (data.get("FirstAid:") == "true") {
+                        Log.d(TAG, data.get("UID") + " Needs help!");
+
+
+                    }
+                    //handleNow();
                 }
 
-            } else {
-                // Handle message within 10 seconds
-                //TODO: Handle data when first aid request is requested.
-                Map<String,String> data = remoteMessage.getData();
-
-                if(data.get("FirstAid:") == "true")
-                {
-                    Log.d(TAG,data.get("UID") + " Needs help!");
-
+                // Check if message contains a notification payload.
+                if (remoteMessage.getNotification() != null) {
+                    Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
 
                 }
-                //handleNow();
             }
-
-        }
-
-        // Check if message contains a notification payload.
-        if (remoteMessage.getNotification() != null) {
-            Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
-
         }
 
     }
-    public static final MediaType JSON
-            = MediaType.parse("application/json; charset=utf-8");
+    public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
     /**
      * This method sends a notification to a target device using the target's application token
      *
@@ -191,35 +253,35 @@ public class MessagingService extends FirebaseMessagingService {
         }.execute();
 
     }
-    public void sendNotificationWithData(final String regToken,final JSONObject data) {
-        new AsyncTask<Void,Void,Void>(){
-            @Override
-            protected Void doInBackground(Void... params) {
-                try {
-                    OkHttpClient client = new OkHttpClient();
-                    JSONObject json=new JSONObject();
-                    JSONObject NotificationDataJson=new JSONObject();
-                    JSONObject DataJSON = data;
-                    //Body and title fields are required for a valid message
-                    NotificationDataJson.put("body","First Aid Requested");
-                    NotificationDataJson.put("title","Alert: First Aid Requested");
-                    json.put("data",DataJSON);
-                    json.put("notification",NotificationDataJson);
-                    json.put("to",regToken);
-                    RequestBody body = RequestBody.create(JSON,json.toString());
-                    Request request = new Request.Builder()
-                            .header("Authorization","key="+Consants.LEGACY_SERVER_KEY)
-                            .url("https://fcm.googleapis.com/fcm/send")
-                            .post(body)
-                            .build();
-                    Response response = client.newCall(request).execute();
-                    String finalResponse = response.body().string();
-                }catch (Exception e){
-                    //Log.d(TAG,e+"");
+    public static void sendNotificationWithData(final String regToken,final JSONObject data){
+            new AsyncTask<Void, Void, Void>() {
+                @Override
+                protected Void doInBackground(Void... params) {
+                    try {
+                        OkHttpClient client = new OkHttpClient();
+                        JSONObject json = new JSONObject();
+                        JSONObject NotificationDataJson = new JSONObject();
+                        JSONObject DataJSON = data;
+                        //Body and title fields are required for a valid message
+                        NotificationDataJson.put("body", "First Aid Requested");
+                        NotificationDataJson.put("title", "Alert: First Aid Requested");
+                        json.put("data", DataJSON);
+                        json.put("notification", NotificationDataJson);
+                        json.put("to", regToken);
+                        RequestBody body = RequestBody.create(JSON, json.toString());
+                        Request request = new Request.Builder()
+                                .header("Authorization", "key=" + Consants.LEGACY_SERVER_KEY)
+                                .url("https://fcm.googleapis.com/fcm/send")
+                                .post(body)
+                                .build();
+                        Response response = client.newCall(request).execute();
+                        String finalResponse = response.body().string();
+                    } catch (Exception e) {
+                        //Log.d(TAG,e+"");
+                    }
+                    return null;
                 }
-                return null;
-            }
-        }.execute();
+            }.execute();
+        }
 
-    }
 }

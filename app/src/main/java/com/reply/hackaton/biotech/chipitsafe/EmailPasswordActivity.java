@@ -49,6 +49,10 @@ public class EmailPasswordActivity extends AppCompatActivity implements OnComple
 
         createNotificationChannel();
 
+        if(firebase.isLogged()){
+            Intent intent = new Intent(EmailPasswordActivity.this,DevicePairingActivity.class);
+            startActivity(intent);
+        }
 
 
     }
@@ -104,6 +108,10 @@ public class EmailPasswordActivity extends AppCompatActivity implements OnComple
 
         firebase.emailPasswordLogin(email, password, EmailPasswordActivity.this);
 
+        // hardcoded for demo purposes in order to detect if the app is the one of a doctor or a user
+        ApplicationState.state = email.equalsIgnoreCase("doctor@email.it") ? ApplicationState.UserState.doctor : ApplicationState.UserState.rescuer;
+
+        firebase.emailPasswordLogin(email, password,  this);
 
     }
 

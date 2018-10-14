@@ -62,7 +62,9 @@ public class EmergencyFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 //FirstAidRequest.instanceOf().sendNotificationToRescuers(SimulationConstants.DOCTOR_TOKEN_ID, getActivity());
-                MessagingService.sendNotification(SimulationConstants.DOCTOR_TOKEN_ID);
+                //MessagingService.sendNotification(SimulationConstants.DOCTOR_TOKEN_ID);
+                // TODO: should be sent to everybody instead
+                //MessagingService.sendNotification(SimulationConstants.RESCUER_TOKEN_ID);
                 //emergencyButton.setAlpha(0);
             }
         });

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -14,13 +14,13 @@
         tools:layout_editor_absoluteX="38dp"
         tools:layout_editor_absoluteY="38dp" />
 
-
+<!--
     <fragment
         android:id="@+id/map"
         android:layout_width="match_parent"
         android:layout_height="200dp"
         class="com.google.android.gms.maps.MapFragment" />
 
+-->
 
-
-</android.support.constraint.ConstraintLayout>
+</LinearLayout>
