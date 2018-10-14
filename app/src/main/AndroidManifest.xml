@@ -54,7 +54,12 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".casualrescuer.CasualRescuerDashboard"
-            ></activity>
+            >
+            <intent-filter>
+                <action android:name="OPEN_ACTIVITY_1" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
         <activity android:name=".EmailPasswordActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

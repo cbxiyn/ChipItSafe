@@ -24,7 +24,7 @@ public class SimulationConstants {
 
     // casual rescuer notifications
     public static String RESCUER_EMAIL = "rescuer@email.it";
-    public static String RESCUER_TOKEN_ID = "eI8fMhKCQo0:APA91bEnzYgbZm74bKcVofK2j8lIBtH94uUFo9Xt7al_mSvN83G8xqZxtiysKU5kjNziPhNuXRJmRwY6JL5AONdIbiruUG6TWMLRKxqxmGDkQ_hOQ-1foK3SmFSIChsizZIreglwKMEI";
+    public static String RESCUER_TOKEN_ID = "e1x9bHTrKHU:APA91bHYa3tr0BTM4d95EydkTABSCXoX_s8WCydSCMy__rlu4IlImhoh8eRc2ZTZm3_ZdAVR6fsI8RkJxSfHiJKXYLJ6dlddxeRgH27sFbU6pz5rrvBS_o8aq-W7RoCBRhEC1lXU1W43";
 
     // designeted rescuer / doctor
     public static String DOCTOR_EMAIL = "doctor@email.it";

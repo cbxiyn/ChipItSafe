@@ -19,6 +19,9 @@ import com.reply.hackaton.biotech.chipitsafe.Firebase.MessagingService;
 import com.reply.hackaton.biothech.chipitsafe.tools.GeoLocalizer;
 import com.reply.hackaton.biothech.chipitsafe.tools.SimulationConstants;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -66,6 +69,13 @@ public class EmergencyFragment extends Fragment {
                 // TODO: should be sent to everybody instead
                 //MessagingService.sendNotification(SimulationConstants.RESCUER_TOKEN_ID);
                 //emergencyButton.setAlpha(0);
+                JSONObject obj = new JSONObject();
+                try {
+                    obj.put("name","vanessa");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                MessagingService.sendNotificationWithData(SimulationConstants.RESCUER_TOKEN_ID,obj);
             }
         });
 

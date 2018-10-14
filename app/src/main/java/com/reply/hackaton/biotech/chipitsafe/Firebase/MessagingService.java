@@ -178,7 +178,7 @@ public class MessagingService extends FirebaseMessagingService {
             NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
 
             // notificationId is a unique int for each notification that you must define
-            notificationManager.notify(notifID++, mBuilder.build());
+            //notificationManager.notify(notifID++, mBuilder.build());
 
             // Check if message contains a data payload.
             if (remoteMessage.getData().size() > 0) {
@@ -265,6 +265,7 @@ public class MessagingService extends FirebaseMessagingService {
                         //Body and title fields are required for a valid message
                         NotificationDataJson.put("body", "First Aid Requested");
                         NotificationDataJson.put("title", "Alert: First Aid Requested");
+                        NotificationDataJson.put("click_action","OPEN_ACTIVITY_1");
                         json.put("data", DataJSON);
                         json.put("notification", NotificationDataJson);
                         json.put("to", regToken);
