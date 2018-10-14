@@ -14,8 +14,11 @@
         android:layout_gravity="top"
         android:layout_marginLeft="16dp"
         android:layout_marginTop="90dp"
-        android:text="devices informations"
-        android:textSize="20sp" />
+        android:text="DEVICE INFORMATIONS"
+        android:fontFamily="sans-serif-thin"
+        android:textColor="@color/colorPrimaryDark"
+        android:textStyle="bold"
+        android:textSize="15sp" />
 
 
 
