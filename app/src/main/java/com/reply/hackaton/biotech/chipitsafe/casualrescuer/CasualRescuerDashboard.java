@@ -20,26 +20,24 @@ import com.reply.hackaton.biotech.chipitsafe.R;
 import com.reply.hackaton.biothech.chipitsafe.tools.GeoLocalizer;
 import com.reply.hackaton.biothech.chipitsafe.tools.SimulationConstants;
 
-public class CasualRescuerDashboard extends AppCompatActivity implements OnMapReadyCallback {
+public class CasualRescuerDashboard extends AppCompatActivity  {
 
 
 
-    GoogleMap googleMap;
-    private double lat;
-    private double lon;
-    private String personToBeRescuedName= "hardcoded string";
-    private MapFragment mapFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_casual_rescuer_dashboard);
+        final Activity aCtx = this;
+        TextView yesButton = findViewById(R.id.yesRescuebutton);
+        yesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                GeoLocalizer.openMapsToTheRescueLocation(aCtx,SimulationConstants.hLat, SimulationConstants.hLong);
+            }
+        });
 
-        TextView tv = findViewById(R.id.)
-
-        personToBeRescuedName = intent.getStringExtra("person");
-        lat = SimulationConstants.hLat;//intent.getDoubleExtra("lat", SimulationConstants.hLat);
-        lon = SimulationConstants.hLong;//intent.getDoubleExtra("long", SimulationConstants.hLong);
     }
 
 }
