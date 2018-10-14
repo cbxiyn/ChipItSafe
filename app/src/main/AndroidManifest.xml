@@ -91,7 +91,12 @@
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/colorAccent" />
 
-        <activity android:name=".doctor.DoctorDashboard"></activity>
+        <activity android:name=".doctor.DoctorDashboard">
+            <intent-filter>
+                <action android:name="OPEN_ACTIVITY_DOCTOR" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

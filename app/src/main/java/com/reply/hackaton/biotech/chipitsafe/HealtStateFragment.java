@@ -47,6 +47,7 @@ import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
+import java.util.Random;
 
 
 public class HealtStateFragment extends Fragment implements MdsResponseListener, MdsNotificationListener {
@@ -200,7 +201,12 @@ public class HealtStateFragment extends Fragment implements MdsResponseListener,
 
             JSONObject hrData = new JSONObject(s).getJSONObject("Body");
             int average = hrData.getInt("average");
-            parametersTV.setText("Average: "+average+"\n");
+            //if(average < 53){
+            //    Random generator = new Random(System.currentTimeMillis()); // see comments!
+            //    int randomNum = rand.nextInt((max - min) + 1) + min;
+            //}
+
+            parametersTV.setText(average+" BPM");
             // Retrieve number array from JSON object.
             JSONArray array = hrData.optJSONArray("rrData");
 
@@ -209,6 +215,7 @@ public class HealtStateFragment extends Fragment implements MdsResponseListener,
                 /*...*/
             }
 
+            /*
             // Create an int array to accomodate the numbers.
             int[] hrSamples = new int[array.length()];
 
@@ -217,7 +224,7 @@ public class HealtStateFragment extends Fragment implements MdsResponseListener,
                 hrSamples[i] = array.optInt(i);
                 parametersTV.setText(parametersTV.getText().toString() + hrSamples[i] + "-");
             }
-
+            */
 
 
         } catch (JSONException e) {
