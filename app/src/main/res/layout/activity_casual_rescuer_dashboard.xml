@@ -4,23 +4,103 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".casualrescuer.CasualRescuerDashboard">
 
     <TextView
         android:id="@+id/casualRescuerViewTitle"
-        android:layout_width="308dp"
-        android:layout_height="38dp"
-        android:text="TextView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:text="A person nearby you is in danger"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="24sp"
+        android:textAlignment="center"
+        android:layout_marginTop="20dp"
         tools:layout_editor_absoluteX="38dp"
         tools:layout_editor_absoluteY="38dp" />
 
 
-    <fragment
-        android:id="@+id/map"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        class="com.google.android.gms.maps.MapFragment" />
+    <!--android:textAppearance="@style/gps"-->
 
+
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="5"
+        app:srcCompat="@drawable/map" />
+
+    <TextView
+        android:id="@+id/goingToRescueViewTitle"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:text="Are you going to help?"
+        android:textColor="@color/greyText"
+        android:textSize="24sp"
+        android:textAlignment="center"
+        android:layout_marginTop="20dp"
+        tools:layout_editor_absoluteX="38dp"
+        tools:layout_editor_absoluteY="38dp" />
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="3">
+
+        <TextView
+            android:id="@+id/yesRescuebutton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentBottom="true"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="50dp"
+            android:layout_marginBottom="76dp"
+            android:paddingLeft="30dp"
+            android:paddingTop="10dp"
+            android:paddingRight="30dp"
+            android:paddingBottom="10dp"
+            android:textAlignment="center"
+            android:background="@color/greenButtonColor"
+            android:textColor="@color/white"
+            android:text="YES"
+            android:textSize="30dp" />
+
+        <TextView
+            android:id="@+id/noRescueButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="50dp"
+            android:layout_marginBottom="76dp"
+            android:paddingLeft="30dp"
+            android:paddingTop="10dp"
+            android:paddingRight="30dp"
+            android:paddingBottom="10dp"
+            android:textAlignment="center"
+            android:background="@color/redButtonColor"
+            android:textColor="@color/white"
+            android:text="NO"
+            android:textSize="30dp" />
+
+    </RelativeLayout>
+
+
+
+    <!--
+        <fragment
+            android:id="@+id/map"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            class="com.google.android.gms.maps.MapFragment" />
+    -->
 
 
 </LinearLayout>
